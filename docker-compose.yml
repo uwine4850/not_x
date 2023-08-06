@@ -7,6 +7,12 @@ services:
       - './src:/var/www/html'
       - './php.ini:/usr/local/etc/php/php.ini'
 
+  composer:
+    image: composer:2.5.8
+    volumes:
+      - './src:/app'
+    working_dir: '/app'
+
   apache:
     image: httpd:2.4
     ports:
