@@ -1,4 +1,7 @@
 <?php
+require_once "handler.php";
+require_once "vendor/autoload.php";
+require_once "load_env.php";
 
 interface RouterUrls{
     public function add(string $url, string $handler);
@@ -126,23 +129,43 @@ class XRouter implements RouterUrls {
     /**
      * The main method that starts all routing methods.
      * @return void
+     * @throws Exception
      */
     public function route(): void{
         $current_path_segments = url_segmentation($this->current_path);
         $urls = $this->search_urls_with_slug($this->urls, $current_path_segments);
 
+        // Starts the standard address handler.
         $default_url = $this->search_url($this->urls, $this->current_path);
         if ($default_url != "") {
-            include getenv("PATH_TO_SRC") . $this->urls[$default_url];
+            $this->run_handler($_ENV["PATH_TO_HANDLERS"] . $this->urls[$default_url]);
         }
+
+        // Start the address handler with slug parameters.
         $slug_url = $this->compare_url_to_path($current_path_segments, $urls);
         if ($slug_url != ""){
             foreach ($this->slug_values as $key => $value){
-                $_GET[$key] = "AAA";
+                $_GET[$key] = $value;
             }
-            include getenv("PATH_TO_SRC") . $this->urls[$slug_url];
+            $this->run_handler($_ENV["PATH_TO_HANDLERS"] . $this->urls[$slug_url]);
         }
         exit();
+    }
+
+    /**
+     * Runs the address handler.
+     * @param string $path_to_handler Path to handler.
+     * @return void
+     */
+    private function run_handler(string $path_to_handler): void{
+        try {
+            $c = getChildClasses("BaseHandler", $path_to_handler);
+            foreach ($c as $handler_name){
+                exec_handler($handler_name);
+            }
+        } catch (Exception $e){
+            throw $e;
+        }
     }
 }
 
@@ -155,6 +178,10 @@ function url_segmentation(string $url): array|bool {
     return preg_split('[/]', $url, 0, PREG_SPLIT_NO_EMPTY);
 }
 
+/**
+ * Gets the url from the query string.
+ * @return string Receiving Address.
+ */
 function get_requested_url(): string{
     $requested_url = $_SERVER['REQUEST_URI'];
     $query_pos = strpos($requested_url, '?');
