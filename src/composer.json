@@ -1,0 +1,13 @@
+{
+    "name": "not_x/src",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "NotX\\Src\\": "./"
+        }
+    },
+    "require": {
+        "twig/twig": "^3.0",
+        "vlucas/phpdotenv": "^5.5"
+    }
+}

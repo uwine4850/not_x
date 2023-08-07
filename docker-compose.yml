@@ -2,7 +2,9 @@ version: '3'
 
 services:
   php:
-    image: php:8.2-fpm
+    build:
+      dockerfile: "Dockerfile"
+    restart: always
     volumes:
       - './src:/var/www/html'
       - './php.ini:/usr/local/etc/php/php.ini'
@@ -15,6 +17,7 @@ services:
 
   apache:
     image: httpd:2.4
+    restart: always
     ports:
       - "8000:80"
     volumes:
@@ -22,3 +25,25 @@ services:
       - './httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf'
     depends_on:
       - php
+
+  mysql:
+    container_name: "mysql"
+    image: mysql:5.7
+    restart: always
+    command: --port=3406
+    ports:
+      - "3406:3406"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1111
+    volumes:
+      - "./mysql:/var/lib/mysql"
+      - "./schema:/schema"
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    restart: always
+    ports:
+      - "8090:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3406
