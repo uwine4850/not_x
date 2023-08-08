@@ -1,6 +1,7 @@
 <?php
 require_once "vendor/autoload.php";
 require_once "load_env.php";
+require_once "middleware.php";
 
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -52,33 +53,6 @@ abstract class BaseHandler{
 }
 
 /**
- * Retrieving child classes of the parent's class.
- * @param $parentClassName string The name of the parent's class.
- * @param $filePath string Path to the file where the classes will be searched.
- * @return array An array of child class names.
- */
-function getChildClasses(string $parentClassName, string $filePath): array {
-    if (!file_exists($filePath)) {
-        throw new Exception("File not found: $filePath");
-    }
-
-    // Include the PHP file to make its classes available for reflection
-    require $filePath;
-
-    $allClasses = get_declared_classes();
-
-    // Filter out only the child classes of the parent class
-    return array_filter($allClasses, function ($className) use ($parentClassName) {
-        try {
-            $reflectionClass = new ReflectionClass($className);
-        } catch (ReflectionException $e) {
-            throw $e;
-        }
-        return $reflectionClass->isSubclassOf($parentClassName);
-    });
-}
-
-/**
  * Runs the handle method of the handler.
  *
  * <strong>The file with the handler class must be attached in a previously favorite way.</strong>
@@ -87,6 +61,7 @@ function getChildClasses(string $parentClassName, string $filePath): array {
  */
 function exec_handler(string $handler_name): void{
     try {
+        run_middlewares();
         $handler_instance = new $handler_name;
         $handler_instance->handle();
     } catch (Exception $e) {

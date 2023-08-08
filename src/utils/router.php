@@ -2,6 +2,7 @@
 require_once "handler.php";
 require_once "vendor/autoload.php";
 require_once "load_env.php";
+require_once "utils.php";
 
 interface RouterUrls{
     public function add(string $url, string $handler);
@@ -138,6 +139,7 @@ class XRouter implements RouterUrls {
         // Starts the standard address handler.
         $default_url = $this->search_url($this->urls, $this->current_path);
         if ($default_url != "") {
+            $_GET['url_pattern'] = $default_url;
             $this->run_handler($_ENV["PATH_TO_HANDLERS"] . $this->urls[$default_url]);
         }
 
@@ -147,6 +149,7 @@ class XRouter implements RouterUrls {
             foreach ($this->slug_values as $key => $value){
                 $_GET[$key] = $value;
             }
+            $_GET['url_pattern'] = $slug_url;
             $this->run_handler($_ENV["PATH_TO_HANDLERS"] . $this->urls[$slug_url]);
         }
         exit();
