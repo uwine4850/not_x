@@ -1,3 +1,5 @@
 mysql
 src/vendor/twig
 src/vendor/vlucas
+src/node_modules
+src/package-lock.json

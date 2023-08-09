@@ -47,3 +47,12 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3406
+
+  node:
+    build:
+      dockerfile: "Dockerfile.node"
+    ports:
+      - "3000:3000"
+    command: npm run start
+    volumes:
+      - "./src:/usr/app"
