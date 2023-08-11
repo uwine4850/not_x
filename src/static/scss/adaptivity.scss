@@ -1,0 +1,35 @@
+@mixin _1920{
+  @media (min-width: 1920px) {
+    @content
+  }
+}
+
+@mixin _1800{
+  @media (min-width: 1800px){
+    @content
+  }
+}
+
+@mixin _1600{
+  @media (min-width: 1600px){
+    @content
+  }
+}
+
+@mixin _1440{
+  @media (min-width: 1440px){
+    @content
+  }
+}
+
+@mixin _1200{
+  @media (min-width: 1200px) {
+    @content
+  }
+}
+
+@mixin _1024{
+  @media (min-width: 1024px) {
+    @content
+  }
+}

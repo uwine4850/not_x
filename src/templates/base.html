@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href='{{ static("css/style.css") }}'>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="blur-all blur-hidden" id="blur-all"></div>
+<div class="base">
+    <div class="nav-menu-wrapper">
+        <div class="nav-menu">
+            <div class="logo">not X</div>
+            <div class="nav-menu-content">
+                <a class="menu-link" href="/">
+                    <img src='{{ static("img/home.svg") }}' alt="">
+                    <div class="menu-text">Home</div>
+                </a>
+                <a class="menu-link" href="/profile">
+                    <img src='{{ static("img/user.svg") }}' alt="">
+                    <div class="menu-text">Profile</div>
+                </a>
+                <a class="menu-link" href="">
+                    <img src='{{ static("img/subscriptions.svg") }}' alt="">
+                    <div class="menu-text">Subscriptions</div>
+                </a>
+                <a class="menu-link" href="/create-post">
+                    <img src='{{ static("img/add.svg") }}' alt="">
+                    <div class="menu-text">Create a post</div>
+                </a>
+                <a href="" class="menu-link log-out-menu-btn">
+                    <img src='{{ static("img/logout.svg") }}' alt="">
+                    <div class="menu-text">Log out</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content" id="content">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+</div>
+<script type="text/javascript" src="./bundle.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{% extends "base_auth.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<form method="post" class="auth-content-wrap" id="auth-content">
+    <div class="auth-title">
+        <div class="a-logo">not X </div>
+        <div class="a-title">— Register</div>
+    </div>
+    <div class="auth-content">
+        <div class="input-field">
+            <label class="if-name if-name-auth" for="profile-name">Name</label>
+            <input id="profile-name" type="text" name="profile-name" alt="">
+        </div>
+        <div class="input-field">
+            <label class="if-name if-name-auth" for="profile-username">Username</label>
+            <input id="profile-username" type="password" name="profile-username" alt="">
+        </div>
+        <div class="input-field">
+            <label class="if-name if-name-auth" for="profile-password-reg">Password</label>
+            <input id="profile-password-reg" type="password" name="profile-password-reg" alt="">
+        </div>
+        <div class="input-field">
+            <label class="if-name if-name-auth" for="profile-password-reg-again">Password(again)</label>
+            <input id="profile-password-reg-again" type="password" name="profile-password-reg-again" alt="">
+        </div>
+        <div class="auth-footer">
+            <a href="/login">Log in</a>
+            <button>Log in</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

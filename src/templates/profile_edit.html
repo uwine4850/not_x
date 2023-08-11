@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Profile edit{% endblock %}
+
+{% block content %}
+<form method="post" class="content-profile-edit">
+    <h1 class="content-title">
+        Profile edit
+    </h1>
+    <div class="image-and-description">
+        <div class="edit-p-image">
+            <img alt="profile image" src="{{ static('img/default.jpeg') }}">
+        </div>
+        <div class="input-field">
+            <label class="if-name" for="description-p">Description</label>
+            <textarea id="description-p" name="description"></textarea>
+        </div>
+    </div>
+    <div class="input-fields">
+        <div class="input-field">
+            <label class="if-name" for="profile-image">Profile image</label>
+            <input id="profile-image" type="file" name="profile-image" alt="">
+        </div>
+        <div class="input-field">
+            <label class="if-name" for="profile-name">Name</label>
+            <input id="profile-name" type="text" name="profile-name" alt="">
+        </div>
+    </div>
+    <button class="submit-fields-btn" type="submit">
+        <span>
+            Save
+        </span>
+    </button>
+</form>
+{% endblock %}

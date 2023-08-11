@@ -1,0 +1,44 @@
+@import "vars";
+
+.blur-all{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  z-index: 10;
+}
+
+.blur-hidden{
+  display: none;
+}
+
+.pop-up-board{
+  position: absolute;
+  display: block;
+  z-index: 11;
+}
+
+.pop-up-style{
+  top: 200px;
+  box-sizing: border-box;
+  background-color: #111010;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 0 16px 5px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0 0 16px 5px rgba(0,0,0,0.75);
+  box-shadow: 0 0 16px 5px rgba(0, 0, 0, 0.75);
+  padding: 10px;
+  width: 700px;
+  height: fit-content;
+}
+
+.pop-up-board-hidden{
+  display: none;
+}
+
+.pop-up-title{
+  font-size: 20px;
+  border-bottom: $defaultBorder;
+  margin-bottom: 10px;
+}

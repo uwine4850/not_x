@@ -1,0 +1,337 @@
+@import "auth";
+@import "base";
+@import "board";
+@import "vars";
+@import "adaptivity";
+
+*{
+  padding: 0;
+  margin: 0;
+  color: $primaryFontColor;
+  text-decoration: none;
+  font-family: $primaryFontFamily;
+  font-weight: 500;
+}
+
+// BASE TEMPLATE
+body{
+  background-color: $defaultBg;
+}
+
+button{
+  outline: none;
+  border: none;
+}
+
+.base{
+  width: 100%;
+  display: flex;
+}
+
+.content{
+  min-width: 1000px;
+  min-height: 100vh;
+  border-left: $defaultBorder;
+  border-right: $defaultBorder;
+  margin-right: 20%;
+  box-sizing: border-box;
+  position: relative;
+  @include _1024(){
+    min-width: 1000px;
+    margin-right: 5%;
+  }
+  @include _1200{
+    min-width: 800px;
+    margin-right: 5%;
+  }
+  @include _1440{
+    min-width: 800px;
+    margin-right: 10%;
+  }
+  @include _1600{
+    min-width: 1000px;
+    margin-right: 10%;
+  }
+  @include _1800{
+    min-width: 1000px;
+    margin-right: 20%;
+  }
+  @include _1920{
+    min-width: 1000px;
+    margin-right: 20%;
+  }
+}
+
+// base template nav menu
+.nav-menu-wrapper{
+  width: 100%;
+  position: relative;
+
+  .nav-menu{
+    position: fixed;
+    left: 120px;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+
+    @include _1024{
+      left: 20px;
+      .menu-text{
+        display: none;
+      }
+      .menu-link{
+        width: 30px;
+        height: 30px;
+      }
+    }
+    @include _1200{
+      left: 100px;
+    }
+    @include _1440{
+      left: 40px;
+      .menu-text{
+        display: block;
+      }
+      .menu-link{
+        height: fit-content;
+        width: 100%;
+        box-sizing: border-box;
+      }
+    }
+    @include _1600{
+      left: 80px;
+    }
+    @include _1920{
+      left: 120px;
+    }
+
+    .nav-menu-content{
+      background-color: $secondaryBgColor;
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      padding: 15px;
+
+      .menu-link{
+        font-weight: 500;
+        padding: 10px 20px 10px 20px;
+        border-radius: 5px;
+        display: flex;
+        transition: .1s;
+        &:not(:last-child){
+          margin-bottom: 10px;
+        }
+        &:hover{
+          background-color: #35393C;
+        }
+        img{
+          margin-right: 10px;
+          height: 30px;
+        }
+        .menu-text{
+          margin: auto 0;
+          font-size: 20px;
+        }
+      }
+
+      .log-out-menu-btn{
+        color: #E74C3C;
+      }
+    }
+
+    .logo{
+      font-size: 32px;
+      font-weight: 600;
+      margin: 10px 0 10px 0;
+    }
+  }
+}
+
+// PROFILE TEMPLATE
+
+.profile{
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  height: 250px + 45px + 15px + 20px + 20px;
+  border-bottom: $defaultBorder;
+}
+
+.profile-left{
+  .img-wrap{
+    width: 250px;
+    height: 250px;
+    overflow: hidden;
+    border-radius: 5px;
+  }
+  img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  button{
+    $bg: #E74C3C;
+    margin-top: 15px;
+    width: 250px;
+    height: 45px;
+    background-color: $bg;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: 500;
+    transition: .1s;
+    &:hover{
+      cursor: pointer;
+      background-color: darken($bg, 3%);
+    }
+  }
+}
+
+.profile-right{
+  width: 1000px - 250px - 40px;
+  height: 100%;
+  margin-left: 20px;
+  overflow: hidden;
+
+  .name{
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  .username{
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 600;
+    color: $secondaryFontColor;
+  }
+
+  .profile-info{
+    margin-top: 10px;
+    display: flex;
+    font-size: 20px;
+
+    .profile-info-item{
+      margin-right: 20px;
+      display: flex;
+
+      .pii-value{
+        margin-right: 10px;
+      }
+
+      .pii-name{
+        color: $secondaryFontColor;
+      }
+    }
+  }
+
+  .profile-description{
+    margin-top: 10px;
+    background-color: transparent;
+    font-size: 18px;
+    &:hover{
+      cursor: pointer;
+    }
+    span{
+      text-align: left;
+      font-family: $fontLato;
+      overflow: hidden;
+      display: -webkit-box;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 9;
+      -webkit-box-orient: vertical;
+    }
+  }
+}
+
+// PROFILE EDIT
+
+.content-profile-edit{
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-title{
+  font-weight: 600;
+  border-bottom: $defaultBorder;
+  margin-bottom: 10px;
+}
+
+.image-and-description{
+  display: flex;
+  .edit-p-image{
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 250px;
+    max-height: 250px;
+    overflow: hidden;
+    border-radius: 5px;
+    margin-right: 10px;
+    img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+// CREATE POST
+
+.create-post-content{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+
+// POST EDIT
+
+.content-post-edit{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+.post-edit-images{
+  display: flex;
+  width: 100%;
+  max-height: 500px;
+  justify-content: space-between;
+  .post-edit-image{
+    position: relative;
+    width: 49.5%;
+    height: auto;
+    min-height: 300px;
+    overflow: hidden;
+    transition: .5s;
+    margin-bottom: 20px;
+    &:hover{
+      transform: scale(101%);
+    }
+    img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .pe-del-image{
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      background-color: #E74C3C;
+      transition: .1s;
+      &:hover{
+        cursor: pointer;
+        background-color: darken(#E74C3C, 10%);
+      }
+    }
+  }
+}

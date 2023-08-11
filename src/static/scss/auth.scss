@@ -1,0 +1,59 @@
+@import "vars";
+
+.auth-content-wrap{
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 200px;
+}
+
+.auth-title{
+  display: flex;
+  width: 100%;
+  .a-logo{
+    font-size: 32px;
+    font-weight: 600;
+  }
+  .a-title{
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 22px;
+    margin-left: 10px;
+  }
+}
+
+.auth-content{
+  margin-top: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: $defaultBorder;
+}
+
+
+.auth-footer{
+  display: flex;
+  justify-content: space-between;
+  a{
+    color: $secondaryFontColor;
+    margin: auto 0 auto 0;
+    font-size: 18px;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+  button{
+    background-color: transparent;
+    padding: 10px 30px;
+    border: $defaultBorder;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: .1s;
+    &:hover{
+      background-color: $secondaryBgColor;
+      cursor: pointer;
+    }
+  }
+}
+

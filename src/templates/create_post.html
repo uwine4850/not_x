@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<form action="" class="create-post-content">
+    <h1 class="content-title">
+        Create post
+    </h1>
+    <div class="input-fields">
+        <div class="input-field">
+            <label class="if-name" for="crt-p-text">Text</label>
+            <textarea id="crt-p-text" name="crt-p-text"></textarea>
+        </div>
+        <div class="input-field">
+            <label class="if-name" for="crt-p-images">Images</label>
+            <input id="crt-p-images" type="file" name="crt-p-images" alt="">
+        </div>
+    </div>
+    <button class="submit-fields-btn">
+        <span>
+            Save
+        </span>
+    </button>
+</form>
+{% endblock %}

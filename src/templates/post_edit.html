@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Post edit{% endblock %}
+
+{% block content %}
+<form method="post" class="content-post-edit">
+    <h1 class="content-title">
+        Post edit
+    </h1>
+    <div class="input-fields">
+        <div class="input-field">
+            <label class="if-name" for="post-text-edit">Text</label>
+            <textarea id="post-text-edit" name="post-text-edit"></textarea>
+        </div>
+    </div>
+    <div class="post-edit-images">
+        <div class="post-edit-image">
+            <button class="pe-del-image">Delete</button>
+            <img src="{{ static('img/temp/1.jpeg') }}" alt="">
+        </div>
+        <div class="post-edit-image">
+            <button class="pe-del-image">Delete</button>
+            <img src="{{ static('img/temp/2.jpeg') }}" alt="">
+        </div>
+    </div>
+    <button class="submit-fields-btn" type="submit">
+        <span>
+            Save
+        </span>
+    </button>
+</form>
+{% endblock %}
