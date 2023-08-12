@@ -32,15 +32,25 @@
                     <img src='{{ static("img/add.svg") }}' alt="">
                     <div class="menu-text">Create a post</div>
                 </a>
-                <a href="" class="menu-link log-out-menu-btn">
-                    <img src='{{ static("img/logout.svg") }}' alt="">
-                    <div class="menu-text">Log out</div>
-                </a>
+                <div class="menu-link log-out-menu-btn">
+                    <img class="log-out-menu-btn-img" src='{{ static("img/logout.svg") }}' alt="">
+                    <div class="menu-text log-out-menu-btn-text">Log out</div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="content" id="content">
+        <div class="pop-up-board pop-up-board-hidden pop-up-style log-out-board log-out-pop-up">
+            <div class="pop-up-title">
+                Log out
+            </div>
+            <form class="log-out-form" method="post">
+                <div>Do you really want to log out of your account?</div>
+                <input type="hidden" name="log-out">
+                <button class="log-out-btn">Log out</button>
+            </form>
+        </div>
         {% block content %}
 
         {% endblock %}

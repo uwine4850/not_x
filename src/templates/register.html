@@ -9,13 +9,14 @@
         <div class="a-title">— Register</div>
     </div>
     <div class="auth-content">
+        <span class="auth-error">{{ form_error }}</span>
         <div class="input-field">
             <label class="if-name if-name-auth" for="profile-name">Name</label>
             <input id="profile-name" type="text" name="profile-name" alt="">
         </div>
         <div class="input-field">
             <label class="if-name if-name-auth" for="profile-username">Username</label>
-            <input id="profile-username" type="password" name="profile-username" alt="">
+            <input id="profile-username" type="text" name="profile-username" alt="">
         </div>
         <div class="input-field">
             <label class="if-name if-name-auth" for="profile-password-reg">Password</label>
@@ -27,7 +28,7 @@
         </div>
         <div class="auth-footer">
             <a href="/login">Log in</a>
-            <button>Log in</button>
+            <button>Register</button>
         </div>
     </div>
 </form>

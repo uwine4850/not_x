@@ -31,6 +31,11 @@
   border: $defaultBorder;
 }
 
+.auth-error{
+  color: $primaryRed;
+  font-size: 20px;
+  font-weight: 600;
+}
 
 .auth-footer{
   display: flex;

@@ -97,7 +97,8 @@ class Database implements Db{
     public function insert(array $data): int|string{
         $fields = $this->insert_fields_to_str(array_keys($data));
         $values = array_values($data);
-        $stmt = $this->connection->prepare("INSERT INTO $this->table_name $fields VALUES (?,?)");
+        $str_values = $this->num_values_to_string($data);
+        $stmt = $this->connection->prepare("INSERT INTO $this->table_name $fields VALUES $str_values");
         if ($stmt->execute($values)){
             $insert_id = $this->connection->insert_id;
             $stmt->close();
@@ -120,6 +121,23 @@ class Database implements Db{
                 $val .= $values[$i] . ")";
             } else{
                 $val .= $values[$i] . ", ";
+            }
+        }
+        return $val;
+    }
+
+    /**
+     * Converts the number of array elements to a string for insertion. For example, 2 equals (?,?).
+     * @param array $values
+     * @return string
+     */
+    private function num_values_to_string(array $values): string{
+        $val = "(";
+        for ($i = 0; $i < count($values); $i++) {
+            if ($i == count($values)-1){
+                $val .= "?)";
+            } else {
+                $val .= "?,";
             }
         }
         return $val;

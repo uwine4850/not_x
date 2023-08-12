@@ -12,11 +12,11 @@ export class PopUpBoard{
     #enable_block_scroll = false;
 
     /**
-     * @param bordersClass (string) board element class.
+     * @param boardsClass (string) board element class.
      * @param openElementsClass (array) id of element to open the board by click method.
      */
-    constructor(bordersClass, openElementsClass) {
-        this.bordersClass = bordersClass;
+    constructor(boardsClass, openElementsClass) {
+        this.boardsClass = boardsClass;
         this.openElementsClass = openElementsClass;
         this.#getOpenElements();
     }
@@ -32,7 +32,7 @@ export class PopUpBoard{
      * @return HTMLElement
      */
     getBoards(){
-        return document.getElementsByClassName(this.bordersClass);
+        return document.getElementsByClassName(this.boardsClass);
     }
 
     enableBlur(){
@@ -66,14 +66,22 @@ export class PopUpBoard{
         // run custom method
         this.#runFunc(this.#on_display_func);
 
-        for (const elementClass of this.#openElements) {
-            for (let i = 0; i < elementClass.length; i++) {
-                elementClass[i].onclick = (e) => {
+        for (const openElementClass of this.#openElements) {
+            for (let i = 0; i < openElementClass.length; i++) {
+                openElementClass[i].onclick = (e) => {
                     // Double trigger disable
+                    if (e.target.classList.length > 1){
+                        for (const targetClass of e.target.classList) {
+                            if (this.openElementsClass.includes(targetClass)){
+                                e.stopPropagation();
+                            }
+                        }
+                    }
                     if (this.openElementsClass.includes(e.target.className)){
                         e.stopPropagation();
                     }
 
+                    // enable/disable scroll
                     if (this.#enable_block_scroll){
                         if (this.#getBodyOverflow() === 'hidden'){
                             document.body.style.overflow = "auto";
@@ -94,6 +102,13 @@ export class PopUpBoard{
 
         for (const board of boards) {
             document.addEventListener('click', (event) => {
+                if (event.target.classList.length > 1){
+                    for (const targetClass of event.target.classList) {
+                        if (this.openElementsClass.includes(targetClass)){
+                            return;
+                        }
+                    }
+                }
                 if (event.target !== board && !this.openElementsClass.includes(event.target.className)) {
                     board.classList.add('pop-up-board-hidden');
                     if (this.#enable_block_scroll){
@@ -142,7 +157,7 @@ export function profileDescriptionPopUpBoard(){
         profile_description_board.onClick(function (b){
             centerBoardRelativeToContent(b.currentClickElement);
         })
-        profile_description_board.display(true);
+        profile_description_board.display();
     }
 }
 
@@ -162,5 +177,23 @@ export function postMenuPopUpBoard(){
     if (document.getElementsByClassName('post-menu-btn')){
         let board = new PopUpBoard('post-menu-board', ['post-menu-btn', 'post-menu-btn-img']);
         board.display()
+    }
+}
+
+let logOutBoard = new PopUpBoard(['log-out-board'], ['log-out-menu-btn',
+    'log-out-menu-btn-img', 'log-out-menu-btn-text'])
+export function logOutPopUpBoard(){
+    if (document.getElementsByClassName('log-out-menu-btn')){
+        logOutBoard.enableBlur().enableBlockScroll();
+        logOutBoard.onClick(function (b){
+            centerBoardRelativeToContent(b.currentClickElement);
+        })
+        logOutBoard.display();
+    }
+}
+
+export function centerLogOutBoard(){
+    if (logOutBoard.currentClickElement){
+        centerBoardRelativeToContent(logOutBoard.currentClickElement);
     }
 }

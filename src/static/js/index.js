@@ -1,7 +1,8 @@
 import '../scss/style.scss';
 import './pop_up_board';
 import {
-    centerProfileDescriptionBoard,
+    centerLogOutBoard,
+    centerProfileDescriptionBoard, logOutPopUpBoard,
     postMenuPopUpBoard,
     profileDescriptionPopUpBoard
 } from "./pop_up_board";
@@ -21,9 +22,11 @@ centerAuthContent();
 
 profileDescriptionPopUpBoard();
 postMenuPopUpBoard();
+logOutPopUpBoard();
 
 window.onresize = function (){
     centerProfileDescriptionBoard();
     centerAuthContent();
+    centerLogOutBoard();
 }
 

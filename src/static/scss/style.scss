@@ -122,6 +122,7 @@ button{
           margin-bottom: 10px;
         }
         &:hover{
+          cursor: pointer;
           background-color: #35393C;
         }
         img{
@@ -135,7 +136,7 @@ button{
       }
 
       .log-out-menu-btn{
-        color: #E74C3C;
+        color: $primaryRed;
       }
     }
 
@@ -143,6 +144,26 @@ button{
       font-size: 32px;
       font-weight: 600;
       margin: 10px 0 10px 0;
+    }
+  }
+}
+
+.log-out-pop-up{
+  width: 500px;
+  .log-out-form{
+    display: flex;
+    flex-direction: column;
+    .log-out-btn{
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: $primaryRed;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: .1s;
+      &:hover{
+        cursor: pointer;
+        background-color: darken($primaryRed, 5%);
+      }
     }
   }
 }
@@ -171,7 +192,7 @@ button{
     object-fit: cover;
   }
   button{
-    $bg: #E74C3C;
+    $bg: $primaryRed;
     margin-top: 15px;
     width: 250px;
     height: 45px;
@@ -326,11 +347,11 @@ button{
       top: 20px;
       padding: 10px 20px;
       border-radius: 5px;
-      background-color: #E74C3C;
+      background-color: $primaryRed;
       transition: .1s;
       &:hover{
         cursor: pointer;
-        background-color: darken(#E74C3C, 10%);
+        background-color: darken($primaryRed, 10%);
       }
     }
   }
