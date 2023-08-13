@@ -191,19 +191,35 @@ button{
     height: 100%;
     object-fit: cover;
   }
-  button{
-    $bg: $primaryRed;
+  .profile-left-btn{
     margin-top: 15px;
     width: 250px;
     height: 45px;
-    background-color: $bg;
+    background-color: $primaryRed;
     border-radius: 5px;
     font-size: 20px;
     font-weight: 500;
     transition: .1s;
     &:hover{
       cursor: pointer;
-      background-color: darken($bg, 3%);
+      background-color: darken($primaryRed, 3%);
+    }
+  }
+  .plb-edit{
+    display: flex;
+    background-color: transparent;
+    border: $defaultBorder;
+    &:hover{
+      cursor: pointer;
+      background-color: $secondaryBgColor;
+    }
+  }
+  .plb-link{
+    width: 100%;
+    border-radius: 5px;
+    display: flex;
+    span{
+      margin: auto;
     }
   }
 }

@@ -29,7 +29,7 @@ class LoginHandler extends BaseHandler{
                 $password = get_not_empty_value($post_data, 'profile-password');
                 $user = $this->db->all_where("username='$username'");
                 if (empty($user)){
-                    $this->form_error = "User $username nto exist.";
+                    $this->form_error = "User $username not exist.";
                     return;
                 }
                 if (password_verify($password, $user[0]['password'])){

@@ -3,27 +3,38 @@
 {% block title %}Profile edit{% endblock %}
 
 {% block content %}
-<form method="post" class="content-profile-edit">
+<form method="post" class="content-profile-edit" enctype="multipart/form-data">
     <h1 class="content-title">
         Profile edit
     </h1>
+    <span class="form-error">{{ error }}</span>
     <div class="image-and-description">
-        <div class="edit-p-image">
-            <img alt="profile image" src="{{ static('img/default.jpeg') }}">
-        </div>
+        {% if user.path_to_user_image %}
+            <div class="edit-p-image">
+                <img alt="profile image" src="{{ user_img(user['path_to_user_image']) }}">
+            </div>
+        {% else %}
+            <div class="edit-p-image">
+                <img alt="profile image" src="{{ static('img/default.jpeg') }}">
+            </div>
+        {% endif %}
         <div class="input-field">
             <label class="if-name" for="description-p">Description</label>
-            <textarea id="description-p" name="description"></textarea>
+            <textarea id="description-p" name="description">{{ user['description'] }}</textarea>
         </div>
     </div>
     <div class="input-fields">
         <div class="input-field">
             <label class="if-name" for="profile-image">Profile image</label>
-            <input id="profile-image" type="file" name="profile-image" alt="">
+            <input id="profile-image" type="file" accept="image/*" name="profile-image" alt="">
+        </div>
+        <div class="input-field input-field-checkbox">
+            <label class="if-name" for="profile-image-del">Delete image</label>
+            <input id="profile-image-del" type="checkbox" name="profile-image-del">
         </div>
         <div class="input-field">
             <label class="if-name" for="profile-name">Name</label>
-            <input id="profile-name" type="text" name="profile-name" alt="">
+            <input id="profile-name" type="text" name="profile-name" value="{{ user['name'] }}">
         </div>
     </div>
     <button class="submit-fields-btn" type="submit">

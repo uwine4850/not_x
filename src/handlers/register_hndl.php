@@ -6,6 +6,7 @@ class RegisterHandler extends BaseHandler{
     private $form_error;
     private const form_fields = array('profile-name', 'profile-username', 'profile-password-reg', 'profile-password-reg-again');
     private $db;
+    private const PATH_TO_MEDIA_USERS = '/var/www/html/media/users/';
 
     public function __construct()
     {
@@ -75,6 +76,7 @@ class RegisterHandler extends BaseHandler{
                 return;
             }
             if ($this->db->insert($insert_values)){
+                $this->create_user_dir_if_not_exist($insert_values['username']);
                 header("Location: /login");
             }
         }
@@ -83,5 +85,11 @@ class RegisterHandler extends BaseHandler{
     {
         $this->post();
         $this->render('register.html', array('form_error' =>$this->form_error));
+    }
+    private function create_user_dir_if_not_exist(string $username): void{
+        $path = self::PATH_TO_MEDIA_USERS . $username;
+        if (!is_dir($path)){
+            mkdir($path);
+        }
     }
 }

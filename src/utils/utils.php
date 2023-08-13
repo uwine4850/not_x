@@ -201,3 +201,127 @@ class FormDbField{
 
 }
 
+interface SaveFile{
+    /**
+     * @param array $file_data Data about a particular file from the _FILES array.
+     * @param string $path_to_dir Path to the file saving directory.
+     */
+    public function __construct(array $file_data, string $path_to_dir);
+
+    /**
+     * The main function that saves the file and runs all the necessary checks.
+     * @return void
+     */
+    public function save():void;
+
+    /**
+     * Enables the file name hashing option.
+     * @return $this
+     */
+    public function hash_name():static;
+
+    /**
+     * Returns the path to the saved file.
+     * @return string
+     */
+    public function get_save_path():string;
+}
+
+class SaveImage implements SaveFile {
+    private array $file_data;
+    private string $path_to_dir;
+    private const IMAGE_TYPES = array('jpeg', 'jpg', 'png');
+    private bool $is_hash_name = false;
+    private const FILE_MAX_SIZE = 20_971_520; // 20 MB
+    private string $save_path = '';
+
+    public function __construct(array $file_data, string $path_to_dir)
+    {
+        $this->file_data = $file_data;
+        $this->path_to_dir = $path_to_dir;
+    }
+
+    public function save(): void
+    {
+        if (!$this->validate_image_size()){
+            throw new ExceedMaximumFileSize("Exceed the maximum file size. Maximum size 20 mb.");
+        }
+        $filetype = $this->get_image_type();
+        if (!$this->validate_image_types($filetype)){
+            throw new FileTypeError("The .$filetype file type is not supported.");
+        }
+        $filename = $this->get_filename();
+        $full_path_to_file = implode(DIRECTORY_SEPARATOR, [$this->path_to_dir, $filename]);
+        if (!move_uploaded_file($this->file_data['tmp_name'], $full_path_to_file)){
+            $f = $this->file_data['name'];
+            throw new ErrorUploadingFile("Error while uploading the $f file.");
+        }
+        $this->save_path = $full_path_to_file;
+    }
+
+    /**
+     * Returns the processed filename of the file.
+     * @return string
+     * @throws Exception
+     */
+    private function get_filename(): string{
+        $salt = bin2hex(random_bytes(4));
+        $filename = pathinfo($this->file_data['name'], PATHINFO_FILENAME) . $salt;
+        if ($this->is_hash_name){
+            $filename = substr(md5($this->file_data['name'] . $salt), 0, 8);
+        }
+        $filename = $filename . '.' . $this->get_image_type();
+        if (file_exists($this->path_to_dir . $filename)){
+            $filename = $this->get_filename();
+        }
+        return $filename;
+    }
+
+    /**
+     * Image Type Validation.
+     * @param string $type The type of image to be uploaded.
+     * @return bool
+     */
+    private function validate_image_types(string $type): bool{
+        if (in_array($type, self::IMAGE_TYPES)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Finds and returns the type of image to be loaded.
+     * @return string
+     */
+    private function get_image_type(): string{
+        return pathinfo($this->file_data['name'], PATHINFO_EXTENSION);
+    }
+
+    /**
+     * Image Size Validation.
+     * @return bool
+     */
+    private function validate_image_size(): bool{
+        if ($this->file_data['size'] > self::FILE_MAX_SIZE){
+            return false;
+        }
+        return true;
+    }
+
+    public function hash_name(): static
+    {
+        $this->is_hash_name = true;
+        return $this;
+    }
+
+    public function get_save_path(): string
+    {
+        return $this->save_path;
+    }
+}
+
+class FileTypeError extends Exception{}
+
+class ExceedMaximumFileSize extends Exception{}
+
+class ErrorUploadingFile extends Exception{}

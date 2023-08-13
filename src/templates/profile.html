@@ -19,19 +19,33 @@
 
 <div class="profile">
     <div class="profile-left">
-        <div class="img-wrap">
-            <img src='{{ static("img/temp/1.jpeg") }}' alt="profile image">
-        </div>
-        <button>
-            Subscribe
-        </button>
+        {% if user['path_to_user_image'] %}
+            <div class="img-wrap">
+                <img src="{{ user_img(user['path_to_user_image']) }}" alt="profile image">
+            </div>
+        {% else %}
+            <div class="img-wrap">
+                <img src="{{ static('img/default.jpeg') }}" alt="profile image">
+            </div>
+        {% endif %}
+        {% if is_current_user_profile %}
+            <button class="profile-left-btn plb-edit">
+                <a class="plb-link" href="/profile/{{ user['username'] }}/edit">
+                    <span>Edit</span>
+                </a>
+            </button>
+        {% else %}
+            <button class="profile-left-btn">
+                Subscribe
+            </button>
+        {% endif %}
     </div>
     <div class="profile-right">
         <div class="name">
-            User Usernamovich
+            {{ user['name'] }}
         </div>
         <div class="username">
-            @uuuserrrname4850
+            @{{ user['username'] }}
         </div>
         <div class="profile-info">
             <div class="profile-info-item">
@@ -53,14 +67,7 @@
         </div>
         <button class="profile-description" id="profile-description">
             <span class="profile-description-span">
-            It is a long established fact that a reader will be distracted by the readable content of a page when
-            looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-            letters, as opposed to using 'Content here, content here', making it look like readable English.
-            It is a long established fact that a reader will be distracted by the readable content of a page when!!!!
-            It is a long established fact that a reader will be distracted by the readable content of a page when!!!!
-            It23434635546 is a long established fact that a reader will be distracted by the readable content of a page when!!!!
-            It HELLO is a long established fact that a reader will be distracted by the readable content of a page when!!!!
-            It HELLO is a long established fact that a reader will be distracted by the readable content of a page when!!!!
+            {{ user['description'] }}
             </span>
         </button>
     </div>

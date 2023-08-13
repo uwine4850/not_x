@@ -20,6 +20,10 @@ abstract class BaseHandler{
             'cache' => false,
         ]);
         $this->twig->addFunction((new TwigFunction("static", [$this, "static"])));
+        $this->twig->addFunction((new TwigFunction("user_img", [$this, "get_path_to_user_image"])));
+        if (!empty($_GET['username_g'])){
+            $this->twig->addGlobal('username_g', $_GET['username_g']);
+        }
     }
 
     /**
@@ -34,6 +38,15 @@ abstract class BaseHandler{
         } else{
             throw new Exception("File: $filepath not exist.");
         }
+    }
+
+    /**
+     * Creates a path from the absolute path to the user's image that can display the image on the page.
+     * @param string $absolute_path_to_image The absolute path to the user's image.
+     * @return string
+     */
+    public function get_path_to_user_image(string $absolute_path_to_image): string{
+        return '/media' . explode('/media', $absolute_path_to_image, 2)[1];
     }
 
     /**
