@@ -48,7 +48,7 @@ class ProfileEditHandler extends BaseHandler{
                 $this->delete_image($this->user['path_to_user_image']);
             } else{
                 // Delete old image
-                if (isset($this->user['path_to_user_image'])){
+                if (!empty($_FILES['profile-image']['name'])){
                     $this->delete_image($this->user['path_to_user_image']);
                 }
                 // Save new image

@@ -20,11 +20,11 @@
                     <img src='{{ static("img/home.svg") }}' alt="">
                     <div class="menu-text">Home</div>
                 </a>
-                <a class="menu-link" href="/profile/{{ username_g }}">
+                <a class="menu-link" href="/profile/{{ user_g['username'] }}">
                     <img src='{{ static("img/user.svg") }}' alt="">
                     <div class="menu-text">Profile</div>
                 </a>
-                <a class="menu-link" href="">
+                <a class="menu-link" href="/subscriptions">
                     <img src='{{ static("img/subscriptions.svg") }}' alt="">
                     <div class="menu-text">Subscriptions</div>
                 </a>
@@ -56,6 +56,7 @@
         {% endblock %}
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="/bundle.js"></script>
 </body>
 </html>

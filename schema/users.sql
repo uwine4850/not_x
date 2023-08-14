@@ -8,3 +8,12 @@ CREATE TABLE IF NOT EXISTS users(
     description text NULL,
     path_to_user_image text NULL
 );
+
+CREATE TABLE IF NOT EXISTS subscriptions(
+    id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    subscriber_id INT NOT NULL,
+    profile_id INT NOT NULL,
+    UNIQUE KEY subscription (subscriber_id, profile_id),
+    FOREIGN KEY (subscriber_id) REFERENCES users(id),
+    FOREIGN KEY (profile_id) REFERENCES users(id)
+);

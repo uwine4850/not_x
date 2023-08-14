@@ -7,6 +7,7 @@ import {
     profileDescriptionPopUpBoard
 } from "./pop_up_board";
 import {getCssValueById} from "./utils";
+import './ajax_form';
 
 /**
  * Centers the authentication content relative to the size of the browser window.

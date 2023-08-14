@@ -9,4 +9,5 @@ $router->add("/login", 'login_hndl.php');
 $router->add("/register", 'register_hndl.php');
 $router->add("/create-post", 'create_post_hndl.php');
 $router->add("/edit-post", 'post_edit_hndl.php');
+$router->add("/subscriptions", 'subscriptions_hndl.php');
 $router->route();

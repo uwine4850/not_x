@@ -7,14 +7,7 @@
     <div class="pop-up-title">
         Profile description
     </div>
-    It is a long established fact that a reader will be distracted by the readable content of a page when
-    looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-    letters, as opposed to using 'Content here, content here', making it look like readable English.
-    It is a long established fact that a reader will be distracted by the readable content of a page when!!!!
-    It is a long established fact that a reader will be distracted by the readable content of a page when!!!!
-    It23434635546 is a long established fact that a reader will be distracted by the readable content of a page when!!!!
-    It HELLO is a long established fact that a reader will be distracted by the readable content of a page when!!!!
-    It HELLO is a long established fact that a reader will be distracted by the readable content of a page when!!!!
+    {{ user['description'] | raw }}
 </div>
 
 <div class="profile">
@@ -28,19 +21,30 @@
                 <img src="{{ static('img/default.jpeg') }}" alt="profile image">
             </div>
         {% endif %}
-        {% if is_current_user_profile %}
-            <button class="profile-left-btn plb-edit">
+        <form method="post" id="subscription_form">
+            <input type="hidden" name="is-sub">
+            <input type="hidden" name="sub-profile-id" value="{{ user['id'] }}">
+            {% if is_current_user_profile %}
+            <button type="button" class="profile-left-btn plb-edit">
                 <a class="plb-link" href="/profile/{{ user['username'] }}/edit">
                     <span>Edit</span>
                 </a>
             </button>
-        {% else %}
-            <button class="profile-left-btn">
-                Subscribe
-            </button>
-        {% endif %}
+            {% else %}
+                {% if user_subscribed() %}
+                    <button type="submit" id="profile-left-btn-sub" class="profile-left-btn plb-gray">
+                        Subscribed
+                    </button>
+                {% else %}
+                    <button type="submit" id="profile-left-btn-sub" class="profile-left-btn">
+                        Subscribe
+                    </button>
+                {% endif %}
+            {% endif %}
+        </form>
     </div>
     <div class="profile-right">
+        <span class="form-error" id="form-error">{{ error }}</span>
         <div class="name">
             {{ user['name'] }}
         </div>
@@ -50,7 +54,7 @@
         <div class="profile-info">
             <div class="profile-info-item">
                 <div class="pii-value">
-                    2354
+                    {{ subscribers }}
                 </div>
                 <div class="pii-name">
                     subscribers
@@ -67,7 +71,7 @@
         </div>
         <button class="profile-description" id="profile-description">
             <span class="profile-description-span">
-            {{ user['description'] }}
+            {{ user['description'] | raw }}
             </span>
         </button>
     </div>

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Subscriptions{% endblock %}
+
+{% block content %}
+<div class="subscriptions">
+    {% for subscription in subscriptions %}
+    {% set user = get_subscribe_profile_by_id(subscription['profile_id']) %}
+    <div class="subscription">
+        {% if user['path_to_user_image'] %}
+            <div class="subscription-image">
+                <img src="{{ user_img(user['path_to_user_image']) }}" alt="subscription image">
+            </div>
+        {% else %}
+            <div class="subscription-image">
+                <img src="{{ static('img/default.jpeg') }}" alt="subscription image">
+            </div>
+        {% endif %}
+        <div class="subscription-info">
+            <a href="/profile/{{ user['username'] }}" class="subscription-info-name">
+                {{ user['name'] }}
+            </a>
+            <div class="subscription-info-username">
+                @{{ user['username'] }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -105,11 +105,25 @@ export class PopUpBoard{
                 if (event.target.classList.length > 1){
                     for (const targetClass of event.target.classList) {
                         if (this.openElementsClass.includes(targetClass)){
-                            return;
+                            event.stopPropagation();
                         }
                     }
                 }
-                if (event.target !== board && !this.openElementsClass.includes(event.target.className)) {
+
+                for (const targetClass of event.target.classList) {
+                    if (targetClass !== this.boardsClass){
+                        board.classList.add('pop-up-board-hidden');
+                        if (this.#enable_block_scroll){
+                            document.body.style.overflow = "auto";
+                        }
+                        //check blur
+                        if (this.#enable_blur){
+                            this.#useBlur(true);
+                        }
+                    }
+                }
+
+                if (event.target === board && !this.openElementsClass.includes(event.target.className)) {
                     board.classList.add('pop-up-board-hidden');
                     if (this.#enable_block_scroll){
                         document.body.style.overflow = "auto";
@@ -180,7 +194,7 @@ export function postMenuPopUpBoard(){
     }
 }
 
-let logOutBoard = new PopUpBoard(['log-out-board'], ['log-out-menu-btn',
+let logOutBoard = new PopUpBoard('log-out-board', ['log-out-menu-btn',
     'log-out-menu-btn-img', 'log-out-menu-btn-text'])
 export function logOutPopUpBoard(){
     if (document.getElementsByClassName('log-out-menu-btn')){

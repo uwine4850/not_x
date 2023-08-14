@@ -20,7 +20,7 @@
         {% endif %}
         <div class="input-field">
             <label class="if-name" for="description-p">Description</label>
-            <textarea id="description-p" name="description">{{ user['description'] }}</textarea>
+            <textarea id="description-p" name="description">{{ user['description'] | raw }}</textarea>
         </div>
     </div>
     <div class="input-fields">

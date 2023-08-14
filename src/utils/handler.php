@@ -11,7 +11,7 @@ use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
 abstract class BaseHandler{
-    private Environment $twig;
+    protected Environment $twig;
 
     public function __construct()
     {
@@ -21,9 +21,20 @@ abstract class BaseHandler{
         ]);
         $this->twig->addFunction((new TwigFunction("static", [$this, "static"])));
         $this->twig->addFunction((new TwigFunction("user_img", [$this, "get_path_to_user_image"])));
-        if (!empty($_GET['username_g'])){
-            $this->twig->addGlobal('username_g', $_GET['username_g']);
+        if (!empty($_GET['user_g'])){
+            $this->twig->addGlobal('user_g', $_GET['user_g']);
         }
+    }
+
+    protected function is_ajax(): bool{
+        if (isset($_POST['is_ajax'])){
+            return true;
+        }
+        return false;
+    }
+
+    protected function ajax_response($form_error): string{
+        return json_encode(array('error' => $form_error));
     }
 
     /**

@@ -205,6 +205,12 @@ button{
       background-color: darken($primaryRed, 3%);
     }
   }
+  .plb-gray{
+    background-color: $secondaryBgColor;
+    &:hover{
+      background-color: lighten($secondaryBgColor, 3%);
+    }
+  }
   .plb-edit{
     display: flex;
     background-color: transparent;
@@ -372,3 +378,67 @@ button{
     }
   }
 }
+
+// SUBSCRIPTIONS
+
+.subscriptions{
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  .subscription{
+    margin-bottom: 20px;
+    background-color: $secondaryBgColor;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    border-radius: 5px;
+    display: flex;
+  }
+}
+
+.subscription-image{
+  width: 70px;
+  height: 70px;
+  overflow: hidden;
+  border-radius: 5px;
+  img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.subscription-info{
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  .subscription-info-name{
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    &:hover{
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+  .subscription-info-username{
+    font-size: 18px;
+    font-weight: 500;
+    color: $secondaryFontColor;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

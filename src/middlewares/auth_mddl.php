@@ -15,8 +15,9 @@ class AuthMddl extends Middleware{
         if (isset($_COOKIE['UID'])){
             $db = new Database('users');
             $uid = $_COOKIE['UID'];
-            $username = $db->all_where("id=$uid")[0]['username'];
-            $_GET['username_g'] = $username;
+            $username = $db->all_where("id=$uid")[0];
+            unset($username['password']);
+            $_GET['user_g'] = $username;
         }
     }
 }

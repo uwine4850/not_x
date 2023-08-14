@@ -55,6 +55,9 @@ function validate_post_data(array $form_fields): array{
             }
         }
     }
+    if ($err != ''){
+        throw new FormFieldNotExist($err);
+    }
     return $post_data;
 }
 

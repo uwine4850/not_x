@@ -9,6 +9,7 @@ interface Db{
     public function delete(string $id): void;
     public function update(string $upd_id, array $params): void;
     public function insert(array $data): int|string;
+    public function count(string $where);
 }
 
 class Database implements Db{
@@ -158,5 +159,10 @@ class Database implements Db{
     public function __destruct()
     {
         $this->close();
+    }
+
+    public function count(string $where): array{
+        $res = $this->connection->query("SELECT COUNT(*) FROM $this->table_name WHERE $where");
+        return $res->fetch_row();
     }
 }
