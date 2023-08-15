@@ -235,7 +235,7 @@ class SaveImage implements SaveFile {
     private string $path_to_dir;
     private const IMAGE_TYPES = array('jpeg', 'jpg', 'png');
     private bool $is_hash_name = false;
-    private const FILE_MAX_SIZE = 20_971_520; // 20 MB
+    private const FILE_MAX_SIZE = 20971520; // 20 MB
     private string $save_path = '';
 
     public function __construct(array $file_data, string $path_to_dir)
@@ -321,6 +321,28 @@ class SaveImage implements SaveFile {
     {
         return $this->save_path;
     }
+}
+
+/**
+ * Saves the image from the form to the selected directory.
+ * @param array $image Data from a single image form.
+ * @param string $path_to_dir The path to the directory for saving.
+ * @return string The path to the saved image.
+ * @throws ErrorUploadingFile
+ * @throws ExceedMaximumFileSize
+ * @throws FileTypeError
+ */
+function save_image(array $image, string $path_to_dir): string{
+    $save_path = '';
+    $save = new SaveImage($image, $path_to_dir);
+    $save->hash_name();
+    try {
+        $save->save();
+        $save_path = $save->get_save_path();
+    } catch (ErrorUploadingFile|ExceedMaximumFileSize|FileTypeError $e) {
+        throw $e;
+    }
+    return $save_path;
 }
 
 class FileTypeError extends Exception{}

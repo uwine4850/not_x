@@ -11,7 +11,7 @@
     <div class="image-and-description">
         {% if user.path_to_user_image %}
             <div class="edit-p-image">
-                <img alt="profile image" src="{{ user_img(user['path_to_user_image']) }}">
+                <img alt="profile image" src="{{ media_img(user['path_to_user_image']) }}">
             </div>
         {% else %}
             <div class="edit-p-image">

@@ -14,7 +14,7 @@
     <div class="profile-left">
         {% if user['path_to_user_image'] %}
             <div class="img-wrap">
-                <img src="{{ user_img(user['path_to_user_image']) }}" alt="profile image">
+                <img src="{{ media_img(user['path_to_user_image']) }}" alt="profile image">
             </div>
         {% else %}
             <div class="img-wrap">
@@ -76,17 +76,22 @@
         </button>
     </div>
 </div>
+{% for post in posts %}
 <div class="post">
     <div class="post-user-image">
-        <img src='{{ static("img/temp/1.jpeg") }}' alt="user image">
+        {% if user['path_to_user_image'] %}
+            <img src='{{ media_img(user["path_to_user_image"]) }}' alt="user image">
+        {% else %}
+            <img src='{{ static("img/default.jpeg") }}' alt="user image">
+        {% endif %}
     </div>
     <div class="post-content">
         <div class="post-user-info">
-            <a href="#" class="pui-name">
-                User Usernamovich
+            <a href="/profile/{{ user['username'] }}" class="pui-name">
+                {{ user['name'] }}
             </a>
             <div class="pui-username">
-                @uuuserrrname4850
+                @{{ user['username'] }}
             </div>
             <div class="post-menu-wrap">
                 <button class="post-menu-btn">
@@ -104,13 +109,17 @@
         </div>
         <button class="post-text-btn">
             <span class="post-text">
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
+                {{ post['text'] | raw }}
             </span>
+            {% if get_post_image(post['id']) %}
+                <span class="post-images">
+                    {% for img in get_post_image(post['id']) %}
+                    <span class="post-image">
+                        <img alt="post image" src='{{ media_img(img["image"]) }}'>
+                    </span>
+                    {% endfor %}
+                </span>
+            {% endif %}
         </button>
         <div class="post-info">
             <div class="post-interactions">
@@ -124,70 +133,10 @@
                 </button>
             </div>
             <div class="publication-date">
-                31/02/2023
+                {{ post['date'] }}
             </div>
         </div>
     </div>
 </div>
-<div class="post">
-    <div class="post-user-image">
-        <img src='{{ static("img/temp/1.jpeg") }}' alt="user image">
-    </div>
-    <div class="post-content">
-        <div class="post-user-info">
-            <a href="#" class="pui-name">
-                User Usernamovich
-            </a>
-            <div class="pui-username">
-                @uuuserrrname4850
-            </div>
-            <div class="post-menu-wrap">
-                <button class="post-menu-btn">
-                    <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
-                </button>
-                <span class="post-menu-board pop-up-board pop-up-board-hidden">
-                    <a href="#" class="post-menu-board-item">
-                        Update
-                    </a>
-                    <button class="post-menu-board-item">
-                        Delete
-                    </button>
-                </span>
-            </div>
-        </div>
-        <button class="post-text-btn">
-            <span class="post-text">
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-            </span>
-            <span class="post-images">
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/1.jpeg") }}'>
-                </span>
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/2.jpeg") }}'>
-                </span>
-            </span>
-        </button>
-        <div class="post-info">
-            <div class="post-interactions">
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/like.svg") }}'>
-                    <span class="value">234</span>
-                </button>
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/comments.svg") }}'>
-                    <span class="value">74</span>
-                </button>
-            </div>
-            <div class="publication-date">
-                31/02/2023
-            </div>
-        </div>
-    </div>
-</div>
+{% endfor %}
 {% endblock %}

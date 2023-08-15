@@ -14,6 +14,6 @@ CREATE TABLE IF NOT EXISTS subscriptions(
     subscriber_id INT NOT NULL,
     profile_id INT NOT NULL,
     UNIQUE KEY subscription (subscriber_id, profile_id),
-    FOREIGN KEY (subscriber_id) REFERENCES users(id),
-    FOREIGN KEY (profile_id) REFERENCES users(id)
+    FOREIGN KEY (subscriber_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (profile_id) REFERENCES users(id) ON DELETE CASCADE
 );

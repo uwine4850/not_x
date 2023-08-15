@@ -3,10 +3,11 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<form action="" class="create-post-content">
+<form method="post" action="" class="create-post-content" enctype="multipart/form-data">
     <h1 class="content-title">
         Create post
     </h1>
+    <span class="form-error">{{ error }}</span>
     <div class="input-fields">
         <div class="input-field">
             <label class="if-name" for="crt-p-text">Text</label>
@@ -14,10 +15,10 @@
         </div>
         <div class="input-field">
             <label class="if-name" for="crt-p-images">Images</label>
-            <input id="crt-p-images" type="file" name="crt-p-images" alt="">
+            <input id="crt-p-images" type="file" multiple name="crt-p-images[]" alt="">
         </div>
     </div>
-    <button class="submit-fields-btn">
+    <button type="submit" class="submit-fields-btn">
         <span>
             Save
         </span>

@@ -20,7 +20,6 @@ abstract class BaseHandler{
             'cache' => false,
         ]);
         $this->twig->addFunction((new TwigFunction("static", [$this, "static"])));
-        $this->twig->addFunction((new TwigFunction("user_img", [$this, "get_path_to_user_image"])));
         if (!empty($_GET['user_g'])){
             $this->twig->addGlobal('user_g', $_GET['user_g']);
         }
@@ -49,15 +48,6 @@ abstract class BaseHandler{
         } else{
             throw new Exception("File: $filepath not exist.");
         }
-    }
-
-    /**
-     * Creates a path from the absolute path to the user's image that can display the image on the page.
-     * @param string $absolute_path_to_image The absolute path to the user's image.
-     * @return string
-     */
-    public function get_path_to_user_image(string $absolute_path_to_image): string{
-        return '/media' . explode('/media', $absolute_path_to_image, 2)[1];
     }
 
     /**
@@ -90,5 +80,16 @@ function exec_handler(string $handler_name): void{
         $handler_instance->handle();
     } catch (Exception $e) {
         throw $e;
+    }
+}
+
+trait HandlerUtils{
+    /**
+     * Creates a path from the absolute path to the image that can display the image on the page.
+     * @param string $absolute_path_to_image The absolute path to image.
+     * @return string Formatted image path.
+     */
+    public function get_path_to_media_image(string $absolute_path_to_image): string{
+        return '/media' . explode('/media', $absolute_path_to_image, 2)[1];
     }
 }

@@ -4,8 +4,11 @@ require_once 'utils/database.php';
 require_once 'profile_utils.php';
 
 class ProfileHndl extends BaseHandler {
+    use HandlerUtils;
     private Database $sub_db;
     private Database $users_db;
+    private Database $posts_db;
+    private Database $post_images_db;
     private array $current_user_data;
 
     public function __construct()
@@ -13,6 +16,8 @@ class ProfileHndl extends BaseHandler {
         parent::__construct();
         $this->sub_db = new Database('subscriptions');
         $this->users_db = new Database('users');
+        $this->posts_db = new Database('posts');
+        $this->post_images_db = new Database('post_image');
         $this->current_user_data = get_user_data();
     }
 
@@ -50,6 +55,22 @@ class ProfileHndl extends BaseHandler {
         return $this->sub_db->count("profile_id=$id")[0];
     }
 
+    /**
+     * @return array All publications by this user.
+     */
+    private function get_user_posts(): array{
+        $user_id = $this->current_user_data['id'];
+        return $this->posts_db->all_where("user=$user_id");
+    }
+
+    /**
+     * @param int $post_id Post ID.
+     * @return array List of images of this post.
+     */
+    public function get_post_image(int $post_id): array{
+        return $this->post_images_db->all_where("parent_post=$post_id");
+    }
+
     public function handle(): void
     {
         if (!$this->check_user_exist()){
@@ -63,12 +84,15 @@ class ProfileHndl extends BaseHandler {
             return;
         }
 
+        $this->twig->addFunction((new \Twig\TwigFunction("media_img", [$this, "get_path_to_media_image"])));
         $this->twig->addFunction((new \Twig\TwigFunction('user_subscribed', [$this, 'user_subscribed'])));
+        $this->twig->addFunction((new \Twig\TwigFunction('get_post_image', [$this, 'get_post_image'])));
         $this->render("profile.html", array(
             'user' => $this->current_user_data,
             'is_current_user_profile' => is_current_user_profile(),
             'error' => $form_error,
             'subscribers' => $this->get_subscribers(),
+            'posts' => $this->get_user_posts(),
         ));
     }
 }

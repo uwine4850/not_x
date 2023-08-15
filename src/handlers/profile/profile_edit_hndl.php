@@ -4,6 +4,7 @@ require_once 'utils/database.php';
 require_once 'profile_utils.php';
 
 class ProfileEditHandler extends BaseHandler{
+    use HandlerUtils;
     private string $form_error = "";
     private const form_fields = array('profile-name', 'description');
     private Database $db;
@@ -102,16 +103,11 @@ class ProfileEditHandler extends BaseHandler{
         }
 
         // save image
-        if (!empty($_FILES['profile-image']['name'])){
-            $save_im = new SaveImage($_FILES['profile-image'], $image_dir);
-            try {
-                $save_im->hash_name();
-                $save_im->save();
-                $save_path = $save_im->get_save_path();
-            } catch (FileTypeError|ExceedMaximumFileSize|ErrorUploadingFile $e) {
-                $this->form_error = $e->getMessage();
-                return $save_path;
-            }
+        try {
+            $save_path = save_image($_FILES['profile-image'], $image_dir);
+        } catch (FileTypeError|ExceedMaximumFileSize|ErrorUploadingFile $e) {
+            $this->form_error = $e->getMessage();
+            return $save_path;
         }
         return $save_path;
     }
@@ -119,6 +115,7 @@ class ProfileEditHandler extends BaseHandler{
     public function handle(): void
     {
         $this->post();
+        $this->twig->addFunction((new \Twig\TwigFunction("media_img", [$this, "get_path_to_media_image"])));
         $this->render('profile_edit.html', array('error' => $this->form_error, 'user' => $this->user));
     }
 }
