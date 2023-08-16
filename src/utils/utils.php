@@ -345,6 +345,33 @@ function save_image(array $image, string $path_to_dir): string{
     return $save_path;
 }
 
+/**
+ * Saves multiple files in the file system.
+ * @param array $_POST_FILES Specific field from a form with files.
+ * @param string $saveDir The path to the directory for saving.
+ * @param int $file_count Number of files to be saved.
+ * @return array The path to each saved file.
+ * @throws ErrorUploadingFile
+ * @throws ExceedMaximumFileSize
+ * @throws FileTypeError
+ */
+function save_multiple_images(array $_POST_FILES, string $saveDir, int $file_count): array{
+    $image = array();
+    $images_save_path = array();
+    for ($i = 0; $i < $file_count; $i++) {
+        foreach ($_POST_FILES as $key => $value){
+            $image[$key] = $value[$i];
+        }
+        try {
+            $save_path = save_image($image, $saveDir);
+            $images_save_path[] = $save_path;
+        } catch (ErrorUploadingFile|ExceedMaximumFileSize|FileTypeError $e) {
+            throw $e;
+        }
+    }
+    return $images_save_path;
+}
+
 class FileTypeError extends Exception{}
 
 class ExceedMaximumFileSize extends Exception{}

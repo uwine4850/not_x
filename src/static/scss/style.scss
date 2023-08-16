@@ -376,6 +376,12 @@ button{
         background-color: darken($primaryRed, 10%);
       }
     }
+    .pe-del-image-true{
+      background-color: $secondaryBgColor;
+      &:hover{
+        background-color: lighten($secondaryBgColor, 10%);
+      }
+    }
   }
 }
 

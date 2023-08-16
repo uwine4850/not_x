@@ -9,7 +9,7 @@
     <div class="subscription">
         {% if user['path_to_user_image'] %}
             <div class="subscription-image">
-                <img src="{{ user_img(user['path_to_user_image']) }}" alt="subscription image">
+                <img src="{{ media_img(user['path_to_user_image']) }}" alt="subscription image">
             </div>
         {% else %}
             <div class="subscription-image">

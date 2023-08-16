@@ -3,30 +3,63 @@
 {% block title %}Post edit{% endblock %}
 
 {% block content %}
-<form method="post" class="content-post-edit">
+<form method="post" class="content-post-edit" enctype="multipart/form-data">
+    <input type="hidden" name="del_images" id="del_images">
     <h1 class="content-title">
         Post edit
     </h1>
+    <span class="form-error">{{ error }}</span>
     <div class="input-fields">
         <div class="input-field">
             <label class="if-name" for="post-text-edit">Text</label>
-            <textarea id="post-text-edit" name="post-text-edit"></textarea>
+            <textarea id="post-text-edit" name="post-text-edit">{{ post['text'] | raw }}</textarea>
+        </div>
+        <div class="input-field">
+            <label class="if-name" for="post-edit-new-images">New images</label>
+            <input id="post-edit-new-images" type="file" multiple name="post-edit-new-images[]" accept="image/*">
         </div>
     </div>
+    {% if images %}
     <div class="post-edit-images">
+        {% for image in images %}
         <div class="post-edit-image">
-            <button class="pe-del-image">Delete</button>
-            <img src="{{ static('img/temp/1.jpeg') }}" alt="">
+            <button type="button" class="pe-del-image">
+                <input type="hidden" value="{{ image['id'] }}">
+                <span>Delete</span>
+            </button>
+            <img src="{{ media_img(image['image']) }}" alt="">
         </div>
-        <div class="post-edit-image">
-            <button class="pe-del-image">Delete</button>
-            <img src="{{ static('img/temp/2.jpeg') }}" alt="">
-        </div>
+        {% endfor %}
     </div>
+    {% endif %}
     <button class="submit-fields-btn" type="submit">
         <span>
             Save
         </span>
     </button>
 </form>
+
+<script>
+    let del_img_buttons = document.getElementsByClassName('pe-del-image');
+    let del_images_input = document.getElementById('del_images');
+    for (let i = 0; i < del_img_buttons.length; i++) {
+        del_img_buttons[i].onclick = function (){
+            let input = del_img_buttons[i].getElementsByTagName('input')[0];
+            let im = del_images_input.value.split(';');
+            if (!im.includes(input.value)){
+                del_images_input.value += input.value + ";";
+            } else {
+                im = im.filter(i => i !== input.value);
+                del_images_input.value = im.join(';');
+            }
+            del_img_buttons[i].classList.toggle('pe-del-image-true');
+            if (del_img_buttons[i].classList.contains('pe-del-image-true')){
+                del_img_buttons[i].getElementsByTagName('span')[0].innerHTML = "To be deleted";
+            } else {
+                del_img_buttons[i].getElementsByTagName('span')[0].innerHTML = "Delete";
+            }
+        }
+    }
+</script>
+
 {% endblock %}

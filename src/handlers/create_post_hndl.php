@@ -87,18 +87,12 @@ class CreatePostHandler extends BaseHandler{
         }
 
         // Save images.
-        $image = array();
         $images_save_path = array();
-        for ($i = 0; $i < $file_count; $i++) {
-            foreach ($_FILES['crt-p-images'] as $key => $value){
-                $image[$key] = $value[$i];
-            }
-            try {
-                $save_path = save_image($image, $post_img_dir);
-                $images_save_path[] = $save_path;
-            } catch (ErrorUploadingFile|ExceedMaximumFileSize|FileTypeError $e) {
-                $this->form_error = $e->getMessage();
-            }
+        try {
+            $images_save_path = save_multiple_images($_FILES['crt-p-images'], $post_img_dir, $file_count);
+        } catch (ErrorUploadingFile|ExceedMaximumFileSize|FileTypeError $e) {
+            $this->form_error = $e->getMessage();
+            return array();
         }
         return $images_save_path;
     }
