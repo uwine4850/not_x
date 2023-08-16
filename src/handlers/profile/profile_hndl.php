@@ -2,6 +2,7 @@
 require_once "utils/handler.php";
 require_once 'utils/database.php';
 require_once 'profile_utils.php';
+require_once 'handlers/post/post_utils.php';
 
 class ProfileHndl extends BaseHandler {
     use HandlerUtils;
@@ -80,10 +81,12 @@ class ProfileHndl extends BaseHandler {
         $form_error = $subscribe->post_subscribe();
 
         if ($this->is_ajax()){
-            echo $this->ajax_response($form_error);
+            echo $this->ajax_response(array('error' => $form_error));
             return;
         }
 
+        $this->twig->addFunction((new \Twig\TwigFunction("post_like_count", "post_like_count")));
+        $this->twig->addFunction((new \Twig\TwigFunction("is_liked", "is_liked")));
         $this->twig->addFunction((new \Twig\TwigFunction("media_img", [$this, "get_path_to_media_image"])));
         $this->twig->addFunction((new \Twig\TwigFunction('user_subscribed', [$this, 'user_subscribed'])));
         $this->twig->addFunction((new \Twig\TwigFunction('get_post_image', [$this, 'get_post_image'])));

@@ -32,8 +32,8 @@ abstract class BaseHandler{
         return false;
     }
 
-    protected function ajax_response($form_error): string{
-        return json_encode(array('error' => $form_error));
+    protected function ajax_response(array $resp): string{
+        return json_encode($resp);
     }
 
     /**

@@ -92,11 +92,21 @@
         padding: 2px 5px 2px 5px;
         border-radius: 50px;
         margin-right: 20px;
+        .is-like{
+          fill: $primaryRed;
+          stroke: $primaryRed;
+        }
+        .like-btn-svg{
+          transition: .1s;
+        }
+        .like-btn-path{
+          transition: .1s;
+        }
         &:hover{
           cursor: pointer;
           background-color: $secondaryBgColor;
         }
-        img{
+        svg, img{
           margin-right: 10px;
         }
         .value{

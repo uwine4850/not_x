@@ -21,7 +21,7 @@
                 <img src="{{ static('img/default.jpeg') }}" alt="profile image">
             </div>
         {% endif %}
-        <form method="post" id="subscription_form">
+        <form method="post" class="subscription_form">
             <input type="hidden" name="is-sub">
             <input type="hidden" name="sub-profile-id" value="{{ user['id'] }}">
             {% if is_current_user_profile %}
@@ -122,16 +122,25 @@
             {% endif %}
         </button>
         <div class="post-info">
-            <div class="post-interactions">
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/like.svg") }}'>
-                    <span class="value">234</span>
+            <form method="post" class="post-interactions post-like-form">
+                <input type="hidden" name="post_like_id" value="{{ post['id'] }}">
+                <button type="submit" class="post-interaction post-like-btn">
+                    {% if is_liked(user_g['id'], post['id']) %}
+                        <svg class="like-btn-svg" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="like-btn-path is-like" d="M14.7992 5.83342L14 6.65305L13.2008 5.83344C10.7147 3.28394 6.68399 3.28393 4.19791 5.83344C1.77859 8.31448 1.70426 12.3129 4.02959 14.8867L10.7103 22.2813C12.4851 24.2458 15.5149 24.2457 17.2897 22.2813L23.9704 14.8867C26.2958 12.3129 26.2214 8.31445 23.8021 5.83342C21.316 3.28392 17.2853 3.28392 14.7992 5.83342Z" stroke="#5D6367" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    {% else %}
+                        <svg class="like-btn-svg" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="like-btn-path" d="M14.7992 5.83342L14 6.65305L13.2008 5.83344C10.7147 3.28394 6.68399 3.28393 4.19791 5.83344C1.77859 8.31448 1.70426 12.3129 4.02959 14.8867L10.7103 22.2813C12.4851 24.2458 15.5149 24.2457 17.2897 22.2813L23.9704 14.8867C26.2958 12.3129 26.2214 8.31445 23.8021 5.83342C21.316 3.28392 17.2853 3.28392 14.7992 5.83342Z" stroke="#5D6367" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    {% endif %}
+                    <span class="value">{{ post_like_count(post['id']) }}</span>
                 </button>
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/comments.svg") }}'>
+                <button type="button" class="post-interaction">
+                    <img alt="post comments" src='{{ static("img/comments.svg") }}'>
                     <span class="value">74</span>
                 </button>
-            </div>
+            </form>
             <div class="publication-date">
                 {{ post['date'] }}
             </div>
