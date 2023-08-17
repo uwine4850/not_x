@@ -53,10 +53,9 @@ sub_form.on_submit(function (resp){
         sub_btn.html('Subscribe')
     }
 });
-
-// Like form
 sub_form.run();
 
+// Like form
 let like_form = new AjaxForm('post-like-form', 'http://localhost:8000/post-like');
 like_form.on_submit(function (resp){
     console.log(resp);

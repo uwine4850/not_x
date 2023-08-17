@@ -18,3 +18,14 @@ function get_user_data(){
     unset($data['password']);
     return $data;
 }
+
+function get_user_by_id(int $uid){
+    $db = new Database('users');
+    $u = $db->all_where("id=$uid");
+    if (empty($u)){
+        return array();
+    }
+    unset($u[0]['password']);
+    return $u[0];
+}
+

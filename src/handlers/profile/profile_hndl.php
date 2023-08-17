@@ -85,6 +85,7 @@ class ProfileHndl extends BaseHandler {
             return;
         }
 
+        $this->twig->addFunction((new \Twig\TwigFunction("comments_count", "get_count_of_comment_by_post_id")));
         $this->twig->addFunction((new \Twig\TwigFunction("post_like_count", "post_like_count")));
         $this->twig->addFunction((new \Twig\TwigFunction("is_liked", "is_liked")));
         $this->twig->addFunction((new \Twig\TwigFunction("media_img", [$this, "get_path_to_media_image"])));

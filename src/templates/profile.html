@@ -107,7 +107,7 @@
                 </span>
             </div>
         </div>
-        <button class="post-text-btn">
+        <a href="/post/{{ post['id'] }}" class="post-text-btn">
             <span class="post-text">
                 {{ post['text'] | raw }}
             </span>
@@ -120,7 +120,7 @@
                     {% endfor %}
                 </span>
             {% endif %}
-        </button>
+        </a>
         <div class="post-info">
             <form method="post" class="post-interactions post-like-form">
                 <input type="hidden" name="post_like_id" value="{{ post['id'] }}">
@@ -136,10 +136,10 @@
                     {% endif %}
                     <span class="value">{{ post_like_count(post['id']) }}</span>
                 </button>
-                <button type="button" class="post-interaction">
+                <a href="/post/{{ post['id'] }}" class="post-interaction">
                     <img alt="post comments" src='{{ static("img/comments.svg") }}'>
-                    <span class="value">74</span>
-                </button>
+                    <span class="value">{{ comments_count(post['id']) }}</span>
+                </a>
             </form>
             <div class="publication-date">
                 {{ post['date'] }}

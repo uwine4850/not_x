@@ -31,3 +31,15 @@ window.onresize = function (){
     centerLogOutBoard();
 }
 
+
+// Answer comment click
+$('.comment-answer-btn').on('click', function (){
+    $('#answer_id').val($(this).data('comment-id'));
+    $('.answer-name').html('@' + $(this).data('comment-username'));
+    $('.answer-name').css('display', 'block');
+});
+
+$('.answer-name').on('click', function (){
+    $('#answer_id').val('');
+    $(this).css('display', 'none');
+});

@@ -165,4 +165,23 @@ class Database implements Db{
         $res = $this->connection->query("SELECT COUNT(*) FROM $this->table_name WHERE $where");
         return $res->fetch_row();
     }
+
+    /**
+     * Outputs data from a selected table that is linked using foreign key.
+     * @param string $fk_table_name The name of the table that has a foreign key relationship to the current table.
+     * @param string $fk_field_name The name of the foreign key field.
+     * @param int $count Number of output results.
+     * @param string $where Condition.
+     * @return array
+     */
+    public function all_fk(string $fk_table_name, string $fk_field_name, int $count = 0, string $where = ''): array{
+        $limit = '';
+        if ($count){
+            $limit = "LIMIT $count";
+        }
+        $res = $this->connection->query("SELECT $fk_table_name.* FROM $this->table_name
+                                        JOIN $fk_table_name ON $fk_table_name.$fk_field_name = $this->table_name.id
+                                        WHERE $where $limit;");
+        return $res->fetch_all(MYSQLI_ASSOC);
+    }
 }

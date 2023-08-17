@@ -10,5 +10,6 @@ $router->add("/register", 'register_hndl.php');
 $router->add("/create-post", '/post/create_post_hndl.php');
 $router->add("/edit-post/{post_id}", '/post/post_edit_hndl.php');
 $router->add("/post-like", '/post/post_like_hndl.php');
+$router->add("/post/{post_id}", '/post/post_view_hndl.php');
 $router->add("/subscriptions", 'subscriptions_hndl.php');
 $router->route();
