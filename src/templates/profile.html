@@ -77,7 +77,11 @@
     </div>
 </div>
 {% for post in posts %}
+{% if loop.last %}
+<div class="post" id="last-post" data-last_post_id="{{ post['id'] }}" data-user_id="{{ user['id'] }}">
+{% else %}
 <div class="post">
+{% endif %}
     <div class="post-user-image">
         {% if user['path_to_user_image'] %}
             <img src='{{ media_img(user["path_to_user_image"]) }}' alt="user image">

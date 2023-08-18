@@ -59,3 +59,15 @@ function get_count_of_comment_by_post_id(int $post_id): int{
     return $db->count("parent_post_id=$post_id")[0];
 }
 
+/**
+ * Loading posts for a user starting with a specific post ID.
+ * @param int $uid User ID.
+ * @param int $start_post_id Id of the post from which the output starts.
+ * @param int $count Number of posts.
+ * @return array
+ */
+function load_user_posts(int $uid, int $start_post_id, int $count): array{
+    $db = new Database('posts');
+    return $db->all_where("id > $start_post_id AND user=$uid", $count);
+}
+

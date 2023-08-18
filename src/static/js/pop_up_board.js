@@ -1,5 +1,4 @@
 import './utils';
-import {getCssValueById} from "./utils";
 
 // An object to control any popup window.
 export class PopUpBoard{
@@ -201,6 +200,8 @@ export function logOutPopUpBoard(){
         logOutBoard.enableBlur().enableBlockScroll();
         logOutBoard.onClick(function (b){
             centerBoardRelativeToContent(b.currentClickElement);
+            let scroll = window.pageYOffset || document.documentElement.scrollTop;
+            b.currentClickElement.style.top = scroll + 200 + 'px';
         })
         logOutBoard.display();
     }

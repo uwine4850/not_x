@@ -61,7 +61,7 @@ class ProfileHndl extends BaseHandler {
      */
     private function get_user_posts(): array{
         $user_id = $this->current_user_data['id'];
-        return $this->posts_db->all_where("user=$user_id");
+        return $this->posts_db->all_where("user=$user_id", 2);
     }
 
     /**

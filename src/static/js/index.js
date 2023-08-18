@@ -6,8 +6,11 @@ import {
     postMenuPopUpBoard,
     profileDescriptionPopUpBoard
 } from "./pop_up_board";
-import {getCssValueById} from "./utils";
+import {getCssValueById, like_btn_click_style} from "./utils";
 import './ajax_form';
+import './lazy_loading';
+import {LazyLoader} from "./lazy_loading";
+import {run_ajax_like_form} from "./ajax_form";
 
 /**
  * Centers the authentication content relative to the size of the browser window.
@@ -42,4 +45,16 @@ $('.comment-answer-btn').on('click', function (){
 $('.answer-name').on('click', function (){
     $('#answer_id').val('');
     $(this).css('display', 'none');
+});
+
+// Like forms
+run_ajax_like_form();
+like_btn_click_style();
+
+// Load new posts
+let l = new LazyLoader('last-post', ['last_post_id', 'user_id'], '/post-load', 'content', true)
+l.start(function (){
+    postMenuPopUpBoard();
+    like_btn_click_style();
+    run_ajax_like_form();
 });

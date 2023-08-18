@@ -5,7 +5,7 @@ interface Db{
     public function close(): void;
     public function query(string $query): bool|mysqli_result;
     public function all(): array;
-    public function all_where(string $where): array;
+    public function all_where(string $where, int $count = 0): array;
     public function delete(string $id): void;
     public function update(string $upd_id, array $params): void;
     public function insert(array $data): int|string;
@@ -37,10 +37,15 @@ class Database implements Db{
     /**
      * Outputs table fields that match the given condition as an associative array.
      * @param string $where Withdrawal Conditions.
+     * @param int $count Number of rows
      * @return array
      */
-    public function all_where(string $where): array{
-        $res = $this->connection->query("SELECT * FROM $this->table_name WHERE $where");
+    public function all_where(string $where, int $count = 0): array{
+        $limit = '';
+        if ($count){
+            $limit = "LIMIT $count";
+        }
+        $res = $this->connection->query("SELECT * FROM $this->table_name WHERE $where $limit;");
         return $res->fetch_all(MYSQLI_ASSOC);
     }
 

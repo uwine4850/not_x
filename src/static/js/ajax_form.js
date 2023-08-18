@@ -20,7 +20,9 @@ class AjaxForm{
 
     init_form(){
         let this_ = this;
-        $('.' + this.#form_class).on('submit', function(e) {
+        let form_classes = $('.' + this.#form_class);
+        form_classes.off('submit');
+        form_classes.on('submit', function(e) {
             e.preventDefault();
             let data = $(this).serialize();
             data += '&is_ajax=1';
@@ -55,22 +57,10 @@ sub_form.on_submit(function (resp){
 });
 sub_form.run();
 
-// Like form
-let like_form = new AjaxForm('post-like-form', 'http://localhost:8000/post-like');
-like_form.on_submit(function (resp){
-    console.log(resp);
-});
-like_form.run();
-
-// Like button.
-$('.post-like-btn').on('click', function (){
-    let like_btn_path = $(this).children('.like-btn-svg').children('.like-btn-path');
-    let like_val = $(this).children('.value').html();
-    if (like_btn_path.hasClass('is-like')){
-        $(this).children('.value').html(parseInt(like_val)-1);
-    } else {
-        $(this).children('.value').html(parseInt(like_val)+1);
-
-    }
-    like_btn_path.toggleClass('is-like');
-});
+export function run_ajax_like_form(){
+    let like_form = new AjaxForm('post-like-form', 'http://localhost:8000/post-like');
+    like_form.on_submit(function (resp){
+        console.log(resp);
+    });
+    like_form.run();
+}
