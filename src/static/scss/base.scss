@@ -184,6 +184,24 @@
   }
 }
 
+.posts-not-exist-msg{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+  img{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    width: 100px;
+  }
+  .posts-not-exist-msg-text{
+    margin: auto;
+    font-size: 26px;
+    font-weight: 600;
+  }
+}
+
 // COMMENTS
 .comment-form{
   box-sizing: border-box;

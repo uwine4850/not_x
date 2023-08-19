@@ -96,5 +96,6 @@ trait HandlerUtils{
     public function set_current_url_pattern(): void{
         session_start();
         $_SESSION['current_pattern'] = $_GET["url_pattern"];
+        $_SESSION['current_url'] = $_SERVER['REQUEST_URI'];
     }
 }

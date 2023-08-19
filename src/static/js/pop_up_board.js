@@ -212,3 +212,14 @@ export function centerLogOutBoard(){
         centerBoardRelativeToContent(logOutBoard.currentClickElement);
     }
 }
+
+export function postDeletePopUpBoard(){
+    let postDelBoard = new PopUpBoard('post-delete-pop-up', ['post-delete-btn']);
+    postDelBoard.enableBlur().enableBlockScroll();
+    postDelBoard.onClick(function (b){
+        centerBoardRelativeToContent(b.currentClickElement);
+        let scroll = window.pageYOffset || document.documentElement.scrollTop;
+        b.currentClickElement.style.top = scroll + 200 + 'px';
+    });
+    postDelBoard.display();
+}

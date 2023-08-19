@@ -34,7 +34,7 @@ class LazyLoadHomeHandler extends BaseHandler {
         $this->twig->addFunction((new \Twig\TwigFunction("is_liked", "is_liked")));
         $this->twig->addFunction((new \Twig\TwigFunction("media_img", [$this, "get_path_to_media_image"])));
         $this->twig->addFunction((new \Twig\TwigFunction('get_post_image', [$this, 'get_post_image'])));
-        $this->render('post.html', array(
+        $this->render('includes/post.html', array(
             'posts' => $this->posts,
         ));
     }

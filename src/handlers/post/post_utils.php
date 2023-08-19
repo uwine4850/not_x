@@ -71,3 +71,7 @@ function load_user_posts(int $uid, int $start_post_id, int $count): array{
     return $db->all_where("id < $start_post_id AND user=$uid ORDER BY posts.id DESC", $count);
 }
 
+function delete_post_by_id (int $post_id): void{
+    $db = new Database('posts');
+    $db->delete($post_id);
+}

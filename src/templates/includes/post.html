@@ -1,4 +1,5 @@
 {% for post in posts %}
+{% include 'includes/post_delete_pop_up.html' %}
 {% set user = get_post_user(post['user']) %}
 {% if loop.last %}
 <div class="post" id="last-post" data-last_post_id="{{ post['id'] }}" data-user_id="{{ user['id'] }}">
@@ -21,6 +22,7 @@
                 @{{ user['username'] }}
             </div>
             <div class="post-menu-wrap">
+                {% if user['id'] == user_g['id'] %}
                 <button class="post-menu-btn">
                     <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
                 </button>
@@ -28,10 +30,11 @@
                     <a href="/edit-post/{{ post['id'] }}" class="post-menu-board-item">
                         Update
                     </a>
-                    <button class="post-menu-board-item">
+                    <button data-del_post_id="{{ post['id'] }}" class="post-menu-board-item post-delete-btn">
                         Delete
                     </button>
                 </span>
+                {% endif %}
             </div>
         </div>
         <a href="/post/{{ post['id'] }}" class="post-text-btn">

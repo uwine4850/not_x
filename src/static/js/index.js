@@ -2,7 +2,7 @@ import '../scss/style.scss';
 import './pop_up_board';
 import {
     centerLogOutBoard,
-    centerProfileDescriptionBoard, logOutPopUpBoard,
+    centerProfileDescriptionBoard, logOutPopUpBoard, postDeletePopUpBoard,
     postMenuPopUpBoard,
     profileDescriptionPopUpBoard
 } from "./pop_up_board";
@@ -29,6 +29,7 @@ centerAuthContent();
 profileDescriptionPopUpBoard();
 postMenuPopUpBoard();
 logOutPopUpBoard();
+postDeletePopUpBoard();
 
 window.onresize = function (){
     centerProfileDescriptionBoard();
@@ -52,4 +53,3 @@ $('.answer-name').on('click', function (){
 // Like forms
 run_ajax_like_form();
 like_btn_click_style();
-

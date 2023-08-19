@@ -13,6 +13,7 @@ $router->add("/post-like", '/post/post_like_hndl.php');
 $router->add("/post/{post_id}", '/post/post_view_hndl.php');
 $router->add("/post-load", '/post/lazyload_post_hndl.php');
 $router->add("/post-load-home", '/post/lazyload_home_hndl.php');
+$router->add("/post-delete", '/post/delete_hndl.php');
 $router->add("/subscriptions", 'subscriptions_hndl.php');
 $router->add("/server-data", 'server_data_hndl.php');
 $router->route();

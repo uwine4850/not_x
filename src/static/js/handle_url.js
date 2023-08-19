@@ -1,5 +1,5 @@
 import {LazyLoader} from "./lazy_loading";
-import {postMenuPopUpBoard} from "./pop_up_board";
+import {postDeletePopUpBoard, postMenuPopUpBoard} from "./pop_up_board";
 import {like_btn_click_style} from "./utils";
 import {run_ajax_like_form} from "./ajax_form";
 
@@ -23,6 +23,7 @@ function handle(resp){
                 postMenuPopUpBoard();
                 like_btn_click_style();
                 run_ajax_like_form();
+                postDeletePopUpBoard();
             });
             break;
         case "/profile/{username}":
@@ -31,8 +32,8 @@ function handle(resp){
                 postMenuPopUpBoard();
                 like_btn_click_style();
                 run_ajax_like_form();
+                postDeletePopUpBoard();
             });
             break;
     }
 }
-

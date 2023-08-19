@@ -1,0 +1,10 @@
+<div class="pop-up-board pop-up-board-hidden pop-up-style post-delete-pop-up">
+    <div class="pop-up-title">
+        Post delete
+    </div>
+    <form class="log-out-form" method="post" action="/post-delete">
+        <div>Do you really want to delete this post?</div>
+        <input type="hidden" name="post-del-id" value="{{ post['id'] }}">
+        <button class="pop-up-long-btn">Delete</button>
+    </form>
+</div>
