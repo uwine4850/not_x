@@ -68,6 +68,6 @@ function get_count_of_comment_by_post_id(int $post_id): int{
  */
 function load_user_posts(int $uid, int $start_post_id, int $count): array{
     $db = new Database('posts');
-    return $db->all_where("id > $start_post_id AND user=$uid", $count);
+    return $db->all_where("id < $start_post_id AND user=$uid ORDER BY posts.id DESC", $count);
 }
 

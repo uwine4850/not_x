@@ -92,4 +92,9 @@ trait HandlerUtils{
     public function get_path_to_media_image(string $absolute_path_to_image): string{
         return '/media' . explode('/media', $absolute_path_to_image, 2)[1];
     }
+
+    public function set_current_url_pattern(): void{
+        session_start();
+        $_SESSION['current_pattern'] = $_GET["url_pattern"];
+    }
 }

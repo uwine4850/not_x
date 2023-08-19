@@ -9,8 +9,8 @@ import {
 import {getCssValueById, like_btn_click_style} from "./utils";
 import './ajax_form';
 import './lazy_loading';
-import {LazyLoader} from "./lazy_loading";
 import {run_ajax_like_form} from "./ajax_form";
+import {handle_server_url} from './handle_url';
 
 /**
  * Centers the authentication content relative to the size of the browser window.
@@ -21,6 +21,8 @@ function centerAuthContent(){
         content.style.left = window.innerWidth/2 - (parseInt(getCssValueById('auth-content', 'width'))/2) + 'px';
     }
 }
+
+handle_server_url();
 
 centerAuthContent();
 
@@ -51,10 +53,3 @@ $('.answer-name').on('click', function (){
 run_ajax_like_form();
 like_btn_click_style();
 
-// Load new posts
-let l = new LazyLoader('last-post', ['last_post_id', 'user_id'], '/post-load', 'content', true)
-l.start(function (){
-    postMenuPopUpBoard();
-    like_btn_click_style();
-    run_ajax_like_form();
-});

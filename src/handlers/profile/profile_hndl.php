@@ -15,6 +15,7 @@ class ProfileHndl extends BaseHandler {
     public function __construct()
     {
         parent::__construct();
+        $this->set_current_url_pattern();
         $this->sub_db = new Database('subscriptions');
         $this->users_db = new Database('users');
         $this->posts_db = new Database('posts');
@@ -61,7 +62,7 @@ class ProfileHndl extends BaseHandler {
      */
     private function get_user_posts(): array{
         $user_id = $this->current_user_data['id'];
-        return $this->posts_db->all_where("user=$user_id", 2);
+        return $this->posts_db->all_where("id <= (SELECT MAX(id) FROM posts) AND user=$user_id ORDER BY posts.id DESC", 2);
     }
 
     /**
@@ -85,6 +86,7 @@ class ProfileHndl extends BaseHandler {
             return;
         }
 
+        $this->twig->addFunction((new \Twig\TwigFunction("get_post_user", "get_user_by_id")));
         $this->twig->addFunction((new \Twig\TwigFunction("comments_count", "get_count_of_comment_by_post_id")));
         $this->twig->addFunction((new \Twig\TwigFunction("post_like_count", "post_like_count")));
         $this->twig->addFunction((new \Twig\TwigFunction("is_liked", "is_liked")));

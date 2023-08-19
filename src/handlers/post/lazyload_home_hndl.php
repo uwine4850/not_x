@@ -5,7 +5,7 @@ require_once 'handlers/post/post_utils.php';
 require_once 'handlers/profile/profile_utils.php';
 require_once 'lazyload_post.php';
 
-class LazyLoadPostHandler extends BaseHandler {
+class LazyLoadHomeHandler extends BaseHandler {
     use LazyLoadPost;
     use HandlerUtils;
 
@@ -21,9 +21,8 @@ class LazyLoadPostHandler extends BaseHandler {
             return;
         }
         $post_id = $_GET['last_post_id'];
-        $uid = $_GET['user_id'];
-        $this->posts = load_user_posts($uid, $post_id, 2);
-        $this->user = get_user_by_id($uid);
+        $uid = $_GET['user_g']['id'];
+        $this->posts = $this->get_subscriptions_posts($uid, $post_id, 2);
     }
 
     public function handle(): void
@@ -37,7 +36,6 @@ class LazyLoadPostHandler extends BaseHandler {
         $this->twig->addFunction((new \Twig\TwigFunction('get_post_image', [$this, 'get_post_image'])));
         $this->render('post.html', array(
             'posts' => $this->posts,
-            'user' => $this->user,
         ));
     }
 

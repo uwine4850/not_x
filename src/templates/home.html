@@ -3,476 +3,81 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+{% for post in posts %}
+{% set user = get_post_user(post['user']) %}
+{% if loop.last %}
+<div class="post" id="last-post" data-last_post_id="{{ post['id'] }}" data-user_id="{{ user['id'] }}">
+{% else %}
 <div class="post">
-    <div class="post-user-image">
-        <img src='{{ static("img/temp/1.jpeg") }}' alt="user image">
-    </div>
-    <div class="post-content">
-        <div class="post-user-info">
-            <a href="#" class="pui-name">
-                User Usernamovich
-            </a>
-            <div class="pui-username">
-                @uuuserrrname4850
-            </div>
-            <div class="post-menu-wrap">
-                <button class="post-menu-btn">
-                    <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
-                </button>
-                <span class="post-menu-board pop-up-board pop-up-board-hidden">
-                    <a href="#" class="post-menu-board-item">
+{% endif %}
+        <div class="post-user-image">
+            {% if user['path_to_user_image'] %}
+            <img src='{{ media_img(user["path_to_user_image"]) }}' alt="user image">
+            {% else %}
+            <img src='{{ static("img/default.jpeg") }}' alt="user image">
+            {% endif %}
+        </div>
+        <div class="post-content">
+            <div class="post-user-info">
+                <a href="/profile/{{ user['username'] }}" class="pui-name">
+                    {{ user['name'] }}
+                </a>
+                <div class="pui-username">
+                    @{{ user['username'] }}
+                </div>
+                <div class="post-menu-wrap">
+                    <button class="post-menu-btn">
+                        <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
+                    </button>
+                    <span class="post-menu-board pop-up-board pop-up-board-hidden">
+                    <a href="/edit-post/{{ post['id'] }}" class="post-menu-board-item">
                         Update
                     </a>
                     <button class="post-menu-board-item">
                         Delete
                     </button>
                 </span>
+                </div>
             </div>
-        </div>
-        <button class="post-text-btn">
+            <a href="/post/{{ post['id'] }}" class="post-text-btn">
             <span class="post-text">
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
+                {{ post['text'] | raw }}
             </span>
-        </button>
-        <div class="post-info">
-            <div class="post-interactions">
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/like.svg") }}'>
-                    <span class="value">234</span>
-                </button>
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/comments.svg") }}'>
-                    <span class="value">74</span>
-                </button>
-            </div>
-            <div class="publication-date">
-                31/02/2023
-            </div>
-        </div>
-    </div>
-</div>
-<div class="post">
-    <div class="post-user-image">
-        <img src='{{ static("img/temp/1.jpeg") }}' alt="user image">
-    </div>
-    <div class="post-content">
-        <div class="post-user-info">
-            <a href="#" class="pui-name">
-                User Usernamovich
+                {% if get_post_image(post['id']) %}
+                <span class="post-images">
+                    {% for img in get_post_image(post['id']) %}
+                    <span class="post-image">
+                        <img alt="post image" src='{{ media_img(img["image"]) }}'>
+                    </span>
+                    {% endfor %}
+                </span>
+                {% endif %}
             </a>
-            <div class="pui-username">
-                @uuuserrrname4850
-            </div>
-            <div class="post-menu-wrap">
-                <button class="post-menu-btn">
-                    <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
-                </button>
-                <span class="post-menu-board pop-up-board pop-up-board-hidden">
-                    <a href="#" class="post-menu-board-item">
-                        Update
-                    </a>
-                    <button class="post-menu-board-item">
-                        Delete
+            <div class="post-info">
+                <form method="post" class="post-interactions post-like-form">
+                    <input type="hidden" name="post_like_id" value="{{ post['id'] }}">
+                    <button type="submit" class="post-interaction post-like-btn">
+                        {% if is_liked(user_g['id'], post['id']) %}
+                        <svg class="like-btn-svg" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="like-btn-path is-like" d="M14.7992 5.83342L14 6.65305L13.2008 5.83344C10.7147 3.28394 6.68399 3.28393 4.19791 5.83344C1.77859 8.31448 1.70426 12.3129 4.02959 14.8867L10.7103 22.2813C12.4851 24.2458 15.5149 24.2457 17.2897 22.2813L23.9704 14.8867C26.2958 12.3129 26.2214 8.31445 23.8021 5.83342C21.316 3.28392 17.2853 3.28392 14.7992 5.83342Z" stroke="#5D6367" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        {% else %}
+                        <svg class="like-btn-svg" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="like-btn-path" d="M14.7992 5.83342L14 6.65305L13.2008 5.83344C10.7147 3.28394 6.68399 3.28393 4.19791 5.83344C1.77859 8.31448 1.70426 12.3129 4.02959 14.8867L10.7103 22.2813C12.4851 24.2458 15.5149 24.2457 17.2897 22.2813L23.9704 14.8867C26.2958 12.3129 26.2214 8.31445 23.8021 5.83342C21.316 3.28392 17.2853 3.28392 14.7992 5.83342Z" stroke="#5D6367" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        {% endif %}
+                        <span class="value">{{ post_like_count(post['id']) }}</span>
                     </button>
-                </span>
-            </div>
-        </div>
-        <button class="post-text-btn">
-            <span class="post-text">
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-            </span>
-            <span class="post-images">
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/1.jpeg") }}'>
-                </span>
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/2.jpeg") }}'>
-                </span>
-            </span>
-        </button>
-        <div class="post-info">
-            <div class="post-interactions">
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/like.svg") }}'>
-                    <span class="value">234</span>
-                </button>
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/comments.svg") }}'>
-                    <span class="value">74</span>
-                </button>
-            </div>
-            <div class="publication-date">
-                31/02/2023
-            </div>
-        </div>
-    </div>
-</div>
-<div class="post">
-    <div class="post-user-image">
-        <img src='{{ static("img/temp/1.jpeg") }}' alt="user image">
-    </div>
-    <div class="post-content">
-        <div class="post-user-info">
-            <a href="#" class="pui-name">
-                User Usernamovich
-            </a>
-            <div class="pui-username">
-                @uuuserrrname4850
-            </div>
-            <div class="post-menu-wrap">
-                <button class="post-menu-btn">
-                    <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
-                </button>
-                <span class="post-menu-board pop-up-board pop-up-board-hidden">
-                    <a href="#" class="post-menu-board-item">
-                        Update
+                    <a href="/post/{{ post['id'] }}" class="post-interaction">
+                        <img alt="post comments" src='{{ static("img/comments.svg") }}'>
+                        <span class="value">{{ comments_count(post['id']) }}</span>
                     </a>
-                    <button class="post-menu-board-item">
-                        Delete
-                    </button>
-                </span>
-            </div>
-        </div>
-        <button class="post-text-btn">
-            <span class="post-text">
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-            </span>
-            <span class="post-images">
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/1.jpeg") }}'>
-                </span>
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/2.jpeg") }}'>
-                </span>
-            </span>
-        </button>
-        <div class="post-info">
-            <div class="post-interactions">
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/like.svg") }}'>
-                    <span class="value">234</span>
-                </button>
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/comments.svg") }}'>
-                    <span class="value">74</span>
-                </button>
-            </div>
-            <div class="publication-date">
-                31/02/2023
+                </form>
+                <div class="publication-date">
+                    {{ post['date'] }}
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="post">
-    <div class="post-user-image">
-        <img src='{{ static("img/temp/1.jpeg") }}' alt="user image">
-    </div>
-    <div class="post-content">
-        <div class="post-user-info">
-            <a href="#" class="pui-name">
-                User Usernamovich
-            </a>
-            <div class="pui-username">
-                @uuuserrrname4850
-            </div>
-            <div class="post-menu-wrap">
-                <button class="post-menu-btn">
-                    <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
-                </button>
-                <span class="post-menu-board pop-up-board pop-up-board-hidden">
-                    <a href="#" class="post-menu-board-item">
-                        Update
-                    </a>
-                    <button class="post-menu-board-item">
-                        Delete
-                    </button>
-                </span>
-            </div>
-        </div>
-        <button class="post-text-btn">
-            <span class="post-text">
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-            </span>
-        </button>
-        <div class="post-info">
-            <div class="post-interactions">
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/like.svg") }}'>
-                    <span class="value">234</span>
-                </button>
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/comments.svg") }}'>
-                    <span class="value">74</span>
-                </button>
-            </div>
-            <div class="publication-date">
-                31/02/2023
-            </div>
-        </div>
-    </div>
-</div>
-<div class="post">
-    <div class="post-user-image">
-        <img src='{{ static("img/temp/1.jpeg") }}' alt="user image">
-    </div>
-    <div class="post-content">
-        <div class="post-user-info">
-            <a href="#" class="pui-name">
-                User Usernamovich
-            </a>
-            <div class="pui-username">
-                @uuuserrrname4850
-            </div>
-            <div class="post-menu-wrap">
-                <button class="post-menu-btn">
-                    <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
-                </button>
-                <span class="post-menu-board pop-up-board pop-up-board-hidden">
-                    <a href="#" class="post-menu-board-item">
-                        Update
-                    </a>
-                    <button class="post-menu-board-item">
-                        Delete
-                    </button>
-                </span>
-            </div>
-        </div>
-        <button class="post-text-btn">
-            <span class="post-text">
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-            </span>
-            <span class="post-images">
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/1.jpeg") }}'>
-                </span>
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/2.jpeg") }}'>
-                </span>
-            </span>
-        </button>
-        <div class="post-info">
-            <div class="post-interactions">
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/like.svg") }}'>
-                    <span class="value">234</span>
-                </button>
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/comments.svg") }}'>
-                    <span class="value">74</span>
-                </button>
-            </div>
-            <div class="publication-date">
-                31/02/2023
-            </div>
-        </div>
-    </div>
-</div>
-<div class="post">
-    <div class="post-user-image">
-        <img src='{{ static("img/temp/1.jpeg") }}' alt="user image">
-    </div>
-    <div class="post-content">
-        <div class="post-user-info">
-            <a href="#" class="pui-name">
-                User Usernamovich
-            </a>
-            <div class="pui-username">
-                @uuuserrrname4850
-            </div>
-            <div class="post-menu-wrap">
-                <button class="post-menu-btn">
-                    <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
-                </button>
-                <span class="post-menu-board pop-up-board pop-up-board-hidden">
-                    <a href="#" class="post-menu-board-item">
-                        Update
-                    </a>
-                    <button class="post-menu-board-item">
-                        Delete
-                    </button>
-                </span>
-            </div>
-        </div>
-        <button class="post-text-btn">
-            <span class="post-text">
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-            </span>
-            <span class="post-images">
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/1.jpeg") }}'>
-                </span>
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/2.jpeg") }}'>
-                </span>
-            </span>
-        </button>
-        <div class="post-info">
-            <div class="post-interactions">
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/like.svg") }}'>
-                    <span class="value">234</span>
-                </button>
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/comments.svg") }}'>
-                    <span class="value">74</span>
-                </button>
-            </div>
-            <div class="publication-date">
-                31/02/2023
-            </div>
-        </div>
-    </div>
-</div>
-<div class="post">
-    <div class="post-user-image">
-        <img src='{{ static("img/temp/1.jpeg") }}' alt="user image">
-    </div>
-    <div class="post-content">
-        <div class="post-user-info">
-            <a href="#" class="pui-name">
-                User Usernamovich
-            </a>
-            <div class="pui-username">
-                @uuuserrrname4850
-            </div>
-            <div class="post-menu-wrap">
-                <button class="post-menu-btn">
-                    <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
-                </button>
-                <span class="post-menu-board pop-up-board pop-up-board-hidden">
-                    <a href="#" class="post-menu-board-item">
-                        Update
-                    </a>
-                    <button class="post-menu-board-item">
-                        Delete
-                    </button>
-                </span>
-            </div>
-        </div>
-        <button class="post-text-btn">
-            <span class="post-text">
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-            </span>
-            <span class="post-images">
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/1.jpeg") }}'>
-                </span>
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/2.jpeg") }}'>
-                </span>
-            </span>
-        </button>
-        <div class="post-info">
-            <div class="post-interactions">
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/like.svg") }}'>
-                    <span class="value">234</span>
-                </button>
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/comments.svg") }}'>
-                    <span class="value">74</span>
-                </button>
-            </div>
-            <div class="publication-date">
-                31/02/2023
-            </div>
-        </div>
-    </div>
-</div>
-<div class="post">
-    <div class="post-user-image">
-        <img src='{{ static("img/temp/1.jpeg") }}' alt="user image">
-    </div>
-    <div class="post-content">
-        <div class="post-user-info">
-            <a href="#" class="pui-name">
-                User Usernamovich
-            </a>
-            <div class="pui-username">
-                @uuuserrrname4850
-            </div>
-            <div class="post-menu-wrap">
-                <button class="post-menu-btn">
-                    <img class="post-menu-btn-img" alt="post menu btn" src='{{ static("img/post_menu_icon.svg") }}'>
-                </button>
-                <span class="post-menu-board pop-up-board pop-up-board-hidden">
-                    <a href="#" class="post-menu-board-item">
-                        Update
-                    </a>
-                    <button class="post-menu-board-item">
-                        Delete
-                    </button>
-                </span>
-            </div>
-        </div>
-        <button class="post-text-btn">
-            <span class="post-text">
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-                It is a long established fact that a reader will be distracted by the readable content of a page when
-                looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of
-            </span>
-            <span class="post-images">
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/1.jpeg") }}'>
-                </span>
-                <span class="post-image">
-                    <img alt="post image" src='{{ static("img/temp/2.jpeg") }}'>
-                </span>
-            </span>
-        </button>
-        <div class="post-info">
-            <div class="post-interactions">
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/like.svg") }}'>
-                    <span class="value">234</span>
-                </button>
-                <button class="post-interaction">
-                    <img alt="post likes" src='{{ static("img/comments.svg") }}'>
-                    <span class="value">74</span>
-                </button>
-            </div>
-            <div class="publication-date">
-                31/02/2023
-            </div>
-        </div>
-    </div>
-</div>
+    {% endfor %}
 {% endblock %}
