@@ -1,8 +1,6 @@
 <?php
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
-require_once 'handlers/post/post_utils.php';
-require_once 'handlers/profile/profile_utils.php';
 
 trait LazyLoadPost{
     private Database $posts_db;
@@ -13,10 +11,6 @@ trait LazyLoadPost{
     public function lazy_load_post_construct(): void{
         $this->posts_db = new Database('posts');
         $this->post_images_db = new Database('post_image');
-    }
-
-    public function get_post_image(int $post_id): array{
-        return $this->post_images_db->all_where("parent_post=$post_id");
     }
 
     /**

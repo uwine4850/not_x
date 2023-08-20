@@ -1,16 +1,18 @@
 <?php
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
+require_once 'handlers/post/post_utils.php';
+require_once 'handlers/twig_functions.php';
+require_once 'config.php';
 
 class PostEditHandler extends BaseHandler{
-    use HandlerUtils;
+    use \TwigFunc\GlobalFunc;
+
     private Database $posts_db;
     private Database $post_images_db;
     private array $post;
     private array $post_images;
     private string $form_error = '';
-    private const PATH_TO_MEDIA_USERS = '/var/www/html/media/users/';
-    private const MAX_IMAGES = 2;
 
     public function __construct()
     {
@@ -18,17 +20,12 @@ class PostEditHandler extends BaseHandler{
         $this->posts_db = new Database('posts');
         $this->post_images_db = new Database('post_image');
         $this->post = $this->get_post();
-        $this->post_images = $this->get_post_images();
+        $this->post_images = get_post_image($this->post['id']);
     }
 
     private function get_post(): array{
         $p_id = $_GET['post_id'];
         return $this->posts_db->all_where("id=$p_id")[0];
-    }
-
-    private function get_post_images(): array{
-        $p_id = $this->post['id'];
-        return $this->post_images_db->all_where("parent_post=$p_id");
     }
 
     private function post(): void{
@@ -82,7 +79,8 @@ class PostEditHandler extends BaseHandler{
                 return;
             }
         }
-        header("Location: /");
+        $post_id = $this->post['id'];
+        header("Location: /post/$post_id");
     }
 
     /**
@@ -97,7 +95,7 @@ class PostEditHandler extends BaseHandler{
      */
     private function validate_update_del_count(int $del_count, int $upl_count, int $current_image_count): void{
         // You cannot delete or add more images than the maximum number of images.
-        if (self::MAX_IMAGES < $del_count || self::MAX_IMAGES < $upl_count){
+        if (config\MAX_IMAGES < $del_count || config\MAX_IMAGES < $upl_count){
             throw new ErrDifferentNumberDelUplImages();
         }
 
@@ -111,7 +109,7 @@ class PostEditHandler extends BaseHandler{
         // Accordingly, if the number of images is not equal to zero, the number of new images is added to this number.
         // Accordingly, this number should not exceed the maximum.
         $curr_images_after_delete = $current_image_count - $del_count;
-        if ($curr_images_after_delete != 0 && $curr_images_after_delete + $upl_count > self::MAX_IMAGES){
+        if ($curr_images_after_delete != 0 && $curr_images_after_delete + $upl_count > config\MAX_IMAGES){
             throw new ErrNumUplImagesToLarge();
         }
     }
@@ -151,7 +149,7 @@ class PostEditHandler extends BaseHandler{
      */
     private function save_new_images(int $upload_img_count): array{
         $username = $_GET['user_g']['username'];
-        $post_img_dir = implode(DIRECTORY_SEPARATOR, [self::PATH_TO_MEDIA_USERS . $username, 'post_images']);
+        $post_img_dir = implode(DIRECTORY_SEPARATOR, [config\PATH_TO_MEDIA_USERS . $username, 'post_images']);
         try {
             return save_multiple_images($_FILES['post-edit-new-images'], $post_img_dir, $upload_img_count);
         } catch (ErrorUploadingFile|ExceedMaximumFileSize|FileTypeError $e) {
@@ -167,7 +165,7 @@ class PostEditHandler extends BaseHandler{
      */
     private function delete_images(array $delete_images_id): void{
         // Checks if the IDs of the images to be deleted match the IDs of the images in this post.
-        $current_images = $this->get_post_images();
+        $current_images = $this->post_images;
         foreach ($delete_images_id as $del_id){
             $ok = false;
             foreach ($current_images as $curr_image){
@@ -189,8 +187,8 @@ class PostEditHandler extends BaseHandler{
 
     public function handle(): void{
         $this->post();
-        $this->twig->addFunction((new \Twig\TwigFunction("media_img", [$this, "get_path_to_media_image"])));
-        $this->render('post_edit.html', array(
+        $this->enable_global_func($this->twig);
+        $this->render('post/post_edit.html', array(
             'post' => $this->post,
             'images' => $this->post_images,
             'error' => $this->form_error,

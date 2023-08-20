@@ -2,9 +2,12 @@
 require_once "utils/handler.php";
 require_once 'utils/database.php';
 require_once 'profile_utils.php';
-require_once 'handlers/post/post_utils.php';
+require_once 'handlers/twig_functions.php';
 
 class ProfileHndl extends BaseHandler {
+    use \TwigFunc\PostFunc;
+    use \TwigFunc\GlobalFunc;
+
     use HandlerUtils;
     private Database $sub_db;
     private Database $users_db;
@@ -85,15 +88,10 @@ class ProfileHndl extends BaseHandler {
             echo $this->ajax_response(array('error' => $form_error));
             return;
         }
-
-        $this->twig->addFunction((new \Twig\TwigFunction("get_post_user", "get_user_by_id")));
-        $this->twig->addFunction((new \Twig\TwigFunction("comments_count", "get_count_of_comment_by_post_id")));
-        $this->twig->addFunction((new \Twig\TwigFunction("post_like_count", "post_like_count")));
-        $this->twig->addFunction((new \Twig\TwigFunction("is_liked", "is_liked")));
-        $this->twig->addFunction((new \Twig\TwigFunction("media_img", [$this, "get_path_to_media_image"])));
+        $this->enable_post_func($this->twig);
+        $this->enable_global_func($this->twig);
         $this->twig->addFunction((new \Twig\TwigFunction('user_subscribed', [$this, 'user_subscribed'])));
-        $this->twig->addFunction((new \Twig\TwigFunction('get_post_image', [$this, 'get_post_image'])));
-        $this->render("profile.html", array(
+        $this->render("profile/profile.html", array(
             'user' => $this->current_user_data,
             'is_current_user_profile' => is_current_user_profile(),
             'error' => $form_error,

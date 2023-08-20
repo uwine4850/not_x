@@ -84,16 +84,7 @@ function exec_handler(string $handler_name): void{
 }
 
 trait HandlerUtils{
-    /**
-     * Creates a path from the absolute path to the image that can display the image on the page.
-     * @param string $absolute_path_to_image The absolute path to image.
-     * @return string Formatted image path.
-     */
-    public function get_path_to_media_image(string $absolute_path_to_image): string{
-        return '/media' . explode('/media', $absolute_path_to_image, 2)[1];
-    }
-
-    public function set_current_url_pattern(): void{
+   public function set_current_url_pattern(): void{
         session_start();
         $_SESSION['current_pattern'] = $_GET["url_pattern"];
         $_SESSION['current_url'] = $_SERVER['REQUEST_URI'];

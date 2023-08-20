@@ -9,7 +9,8 @@ interface Db{
     public function delete(string $id): void;
     public function update(string $upd_id, array $params): void;
     public function insert(array $data): int|string;
-    public function count(string $where);
+    public function count(string $where): array;
+    public function all_fk(string $fk_table_name, string $fk_field_name, int $count = 0, string $where = ''): array;
 }
 
 class Database implements Db{

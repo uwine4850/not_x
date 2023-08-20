@@ -88,11 +88,15 @@
 
 <div class="comments">
   {% for comment in comments %}
-  {% set post_user = get_user_by_id(comment['user_id']) %}
+  {% set post_user = get_post_user(comment['user_id']) %}
   <div class="comment">
     <div class="comment-info">
       <div class="comment-user-image">
-        <img src="{{ static('img/temp/1.jpeg') }}" alt="">
+        {% if post_user['path_to_user_image'] %}
+        <img src="{{ media_img( post_user['path_to_user_image']) }}" alt="">
+        {% else %}
+        <img src="{{ static('img/default.jpeg') }}" alt="">
+        {% endif %}
       </div>
       <div class="comment-content">
         <div class="comment-user">
@@ -107,11 +111,15 @@
     <button data-comment-id="{{ comment['id'] }}" data-comment-username="{{ post_user['username'] }}" class="comment-answer-btn">Answer</button>
     <div class="comment-answers">
       {% for answer in get_answer_comments(comment['id']) %}
-      {% set post_user = get_user_by_id(answer['user_id']) %}
+      {% set post_user = get_post_user(answer['user_id']) %}
         <div class="comment">
           <div class="comment-info">
             <div class="comment-user-image">
-              <img src="{{ static('img/temp/1.jpeg') }}" alt="">
+              {% if post_user['path_to_user_image'] %}
+              <img src="{{ media_img( post_user['path_to_user_image']) }}" alt="">
+              {% else %}
+              <img src="{{ static('img/default.jpeg') }}" alt="">
+              {% endif %}
             </div>
             <div class="comment-content">
               <div class="comment-user">

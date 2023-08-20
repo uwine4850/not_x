@@ -3,7 +3,7 @@ require_once 'utils/handler.php';
 require_once 'utils/database.php';
 
 class LoginHandler extends BaseHandler{
-    private $form_error;
+    private $form_error = '';
     private const form_field = array('profile-username', 'profile-password');
     private $db;
 

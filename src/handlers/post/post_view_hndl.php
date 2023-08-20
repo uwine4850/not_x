@@ -1,11 +1,13 @@
 <?php
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
-require_once 'handlers/post/post_utils.php';
 require_once 'handlers/profile/profile_utils.php';
+require_once 'handlers/twig_functions.php';
 
 class PostViewHandler extends BaseHandler{
-    use HandlerUtils;
+    use \TwigFunc\PostFunc;
+    use \TwigFunc\GlobalFunc;
+
     private Database $posts_db;
     private Database $users_db;
     private Database $comments_db;
@@ -24,7 +26,7 @@ class PostViewHandler extends BaseHandler{
         $this->comments_answer_db = new Database('comments_answer');
         $this->post = $this->get_post();
         if ($this->post){
-            $this->user = $this->get_post_user($this->post['user']);
+            $this->user = get_user_by_id($this->post['user']);
             $post_id = $this->post['id'];
             $this->comments = $this->posts_db->all_fk('comments',
                 'parent_post_id', where: "posts.id=$post_id");
@@ -38,10 +40,6 @@ class PostViewHandler extends BaseHandler{
             return array();
         }
         return $post[0];
-    }
-
-    private function get_post_user(int $user_id): array{
-        return $this->users_db->all_where("id=$user_id")[0];
     }
 
     private function post(): void{
@@ -133,14 +131,10 @@ class PostViewHandler extends BaseHandler{
             return;
         }
         $this->post();
-        $this->twig->addFunction((new \Twig\TwigFunction("comments_count", "get_count_of_comment_by_post_id")));
+        $this->enable_post_func($this->twig);
+        $this->enable_global_func($this->twig);
         $this->twig->addFunction((new \Twig\TwigFunction("get_answer_comments", "get_answer_comments")));
-        $this->twig->addFunction((new \Twig\TwigFunction("get_user_by_id", "get_user_by_id")));
-        $this->twig->addFunction((new \Twig\TwigFunction("post_like_count", "post_like_count")));
-        $this->twig->addFunction((new \Twig\TwigFunction("is_liked", "is_liked")));
-        $this->twig->addFunction((new \Twig\TwigFunction('get_post_image', 'get_post_image')));
-        $this->twig->addFunction((new \Twig\TwigFunction("media_img", [$this, "get_path_to_media_image"])));
-        $this->render('post_view.html', array(
+        $this->render('post/post_view.html', array(
             'post' => $this->post,
             'user' => $this->user,
             'error' => $this->form_error,

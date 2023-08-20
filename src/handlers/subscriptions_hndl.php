@@ -1,9 +1,11 @@
 <?php
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
+require_once 'handlers/twig_functions.php';
 
 class SubscriptionsHandler extends BaseHandler{
-    use HandlerUtils;
+    use \TwigFunc\GlobalFunc;
+
     private Database $sub_db;
     private Database $user_db;
 
@@ -36,7 +38,7 @@ class SubscriptionsHandler extends BaseHandler{
 
     public function handle(): void
     {
-        $this->twig->addFunction((new \Twig\TwigFunction("media_img", [$this, "get_path_to_media_image"])));
+        $this->enable_global_func($this->twig);
         $this->twig->addFunction((new \Twig\TwigFunction('get_subscribe_profile_by_id', [$this, 'get_subscribe_profile_by_id'])));
         $this->render('subscriptions.html', array('subscriptions' => $this->get_subscriptions()));
     }

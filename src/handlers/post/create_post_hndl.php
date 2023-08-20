@@ -1,20 +1,19 @@
 <?php
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
+require_once 'config.php';
 
 class CreatePostHandler extends BaseHandler{
     private Database $posts_db;
     private Database $post_image_db;
-    private Database $users_db;
     private string $form_error = '';
-    private const PATH_TO_MEDIA_USERS = '/var/www/html/media/users/';
+//    private const PATH_TO_MEDIA_USERS = '/var/www/html/media/users/';
 
     public function __construct()
     {
         parent::__construct();
         $this->posts_db = new Database('posts');
         $this->post_image_db = new Database('post_image');
-        $this->users_db = new Database('users');
     }
 
     private function post(): void{
@@ -57,13 +56,13 @@ class CreatePostHandler extends BaseHandler{
             }
         }
         if (!$this->form_error){
-            header("Location: /");
+            header("Location: /post/$new_post_id");
         }
     }
 
     private function save_images(): array{
         $username = $_GET['user_g']['username'];
-        $user_dir = self::PATH_TO_MEDIA_USERS . $username;
+        $user_dir = config\PATH_TO_MEDIA_USERS . $username;
         if (!is_dir($user_dir)){
             $this->form_error = "User dir not exist.";
             return array();
@@ -100,6 +99,6 @@ class CreatePostHandler extends BaseHandler{
     public function handle(): void
     {
         $this->post();
-        $this->render('create_post.html', array('error' => $this->form_error));
+        $this->render('post/create_post.html', array('error' => $this->form_error));
     }
 }

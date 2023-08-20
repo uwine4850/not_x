@@ -377,3 +377,12 @@ class FileTypeError extends Exception{}
 class ExceedMaximumFileSize extends Exception{}
 
 class ErrorUploadingFile extends Exception{}
+
+/**
+ * Creates a path from the absolute path to the image that can display the image on the page.
+ * @param string $absolute_path_to_image The absolute path to image.
+ * @return string Formatted image path.
+ */
+function get_path_to_media_image(string $absolute_path_to_image): string{
+    return '/media' . explode('/media', $absolute_path_to_image, 2)[1];
+}

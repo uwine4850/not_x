@@ -2,14 +2,16 @@
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
 require_once 'profile_utils.php';
+require_once 'handlers/twig_functions.php';
+require_once 'config.php';
 
 class ProfileEditHandler extends BaseHandler{
-    use HandlerUtils;
+    use \TwigFunc\GlobalFunc;
+
     private string $form_error = "";
     private const form_fields = array('profile-name', 'description');
     private Database $db;
     private array $user;
-    private const PATH_TO_MEDIA_USERS = '/var/www/html/media/users/';
 
     public function __construct()
     {
@@ -90,7 +92,7 @@ class ProfileEditHandler extends BaseHandler{
         $save_path = '';
         // check exist user dir
         $username = $this->user['username'];
-        $user_dir = self::PATH_TO_MEDIA_USERS . $username;
+        $user_dir = config\PATH_TO_MEDIA_USERS . $username;
         if (!is_dir($user_dir)){
             $this->form_error = "User dir not exist.";
             return $save_path;
@@ -115,7 +117,7 @@ class ProfileEditHandler extends BaseHandler{
     public function handle(): void
     {
         $this->post();
-        $this->twig->addFunction((new \Twig\TwigFunction("media_img", [$this, "get_path_to_media_image"])));
-        $this->render('profile_edit.html', array('error' => $this->form_error, 'user' => $this->user));
+        $this->enable_global_func($this->twig);
+        $this->render('profile/profile_edit.html', array('error' => $this->form_error, 'user' => $this->user));
     }
 }
