@@ -1,0 +1,4 @@
+FROM php:8.2-fpm
+RUN docker-php-ext-install mysqli
+EXPOSE 50099
+CMD ["php", "handlers/chat_socket.php"]

@@ -3,6 +3,7 @@
 @import "board";
 @import "vars";
 @import "adaptivity";
+@import "chat";
 
 *{
   padding: 0;
@@ -11,6 +12,13 @@
   text-decoration: none;
   font-family: $primaryFontFamily;
   font-weight: 500;
+}
+
+::-webkit-scrollbar{
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: $secondaryBgColor;
 }
 
 // BASE TEMPLATE
@@ -197,41 +205,67 @@ button{
     height: 100%;
     object-fit: cover;
   }
-  .profile-left-btn{
-    margin-top: 15px;
-    width: 250px;
-    height: 45px;
-    background-color: $primaryRed;
-    border-radius: 5px;
-    font-size: 20px;
-    font-weight: 500;
-    transition: .1s;
-    &:hover{
-      cursor: pointer;
-      background-color: darken($primaryRed, 3%);
-    }
-  }
-  .plb-gray{
-    background-color: $secondaryBgColor;
-    &:hover{
-      background-color: lighten($secondaryBgColor, 3%);
-    }
-  }
-  .plb-edit{
+  .profile-left-buttons{
     display: flex;
-    background-color: transparent;
-    border: $defaultBorder;
-    &:hover{
-      cursor: pointer;
-      background-color: $secondaryBgColor;
-    }
-  }
-  .plb-link{
     width: 100%;
-    border-radius: 5px;
-    display: flex;
-    span{
-      margin: auto;
+    .subscription_form{
+      width: 100%;
+      .profile-left-btn{
+        margin-top: 15px;
+        width: 100%;
+        height: 45px;
+        background-color: $primaryRed;
+        border-radius: 5px;
+        font-size: 20px;
+        font-weight: 500;
+        transition: .1s;
+        &:hover{
+          cursor: pointer;
+          background-color: darken($primaryRed, 3%);
+        }
+      }
+      .plb-gray{
+        background-color: $secondaryBgColor;
+        &:hover{
+          background-color: lighten($secondaryBgColor, 3%);
+        }
+      }
+      .plb-edit{
+        display: flex;
+        background-color: transparent;
+        border: $defaultBorder;
+        &:hover{
+          cursor: pointer;
+          background-color: $secondaryBgColor;
+        }
+      }
+      .plb-link{
+        width: 100%;
+        border-radius: 5px;
+        display: flex;
+        span{
+          margin: auto;
+        }
+      }
+    }
+    .profile-msg-form{
+      margin-top: auto;
+      .message_user{
+        height: 45px;
+        min-width: 45px;
+        background-color: $secondaryBgColor;
+        margin-left: 10px;
+        border-radius: 5px;
+        display: flex;
+        &:hover{
+          cursor: pointer;
+        }
+        img{
+          margin: auto;
+          width: 30px;
+          height: 30px;
+        }
+      }
     }
   }
 }

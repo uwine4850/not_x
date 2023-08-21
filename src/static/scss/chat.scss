@@ -1,0 +1,145 @@
+@import "vars";
+
+.chat-list{
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.chat-list-item{
+  display: flex;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 5px;
+  transition: .1s;
+  margin-bottom: 20px;
+  &:hover{
+    cursor: pointer;
+    background-color: $secondaryBgColor;
+  }
+  .chat-list-item-img{
+    width: 70px;
+    min-width: 70px;
+    height: 70px;
+    overflow: hidden;
+    border-radius: 5px;
+    img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.chat-info{
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  font-size: 18px;
+  font-family: $fontLato;
+  .chat-user{
+    display: flex;
+    margin-bottom: 5px;
+  }
+  .last-msg{
+    color: $secondaryFontColor;
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}
+
+
+// CHAT ROOM
+
+.chat-header{
+  width: 100%;
+  height: 60px;
+  display: flex;
+  padding: 10px;
+  background-color: $secondaryBgColor;
+  box-sizing: border-box;
+  .chat-header-user-image{
+    height: 100%;
+    width: 40px;
+    overflow: hidden;
+    border-radius: 5px;
+    img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  .chat-header-username{
+    margin: auto auto auto 10px;
+    font-size: 20px;
+    font-weight: 600;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+}
+
+.chat-messages{
+  box-sizing: border-box;
+  padding: 10px;
+  height: 200px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  .chat-message{
+    border: $defaultBorder;
+    width: fit-content;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: $secondaryBgColor;
+    max-width: 350px;
+    overflow-wrap: break-word;
+    &:last-child{
+      margin-bottom: auto;
+    }
+  }
+  .my-msg{
+    margin-left: auto;
+    background-color: transparent;
+  }
+}
+
+.chat-input{
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  textarea{
+    box-sizing: border-box;
+    height: 100px;
+    width: 100%;
+    resize: none;
+    border-radius: 5px;
+    background-color: $secondaryBgColor;
+    border: none;
+    outline: none;
+    padding: 10px;
+  }
+  button{
+    width: 100px;
+    height: 40px;
+    margin-top: auto;
+    margin-left: 10px;
+    background-color: transparent;
+    border: $defaultBorder;
+    border-radius: 5px;
+    transition: .1s;
+    &:hover{
+      cursor: pointer;
+      background-color: $secondaryBgColor;
+    }
+  }
+}

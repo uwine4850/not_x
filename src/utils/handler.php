@@ -84,9 +84,33 @@ function exec_handler(string $handler_name): void{
 }
 
 trait HandlerUtils{
-   public function set_current_url_pattern(): void{
-        session_start();
-        $_SESSION['current_pattern'] = $_GET["url_pattern"];
-        $_SESSION['current_url'] = $_SERVER['REQUEST_URI'];
+    /**
+     * Starts a session if it has not been started before.
+     * @return void
+     */
+    private function start_session():void {
+        if (session_status() != PHP_SESSION_ACTIVE){
+            session_start();
+        }
     }
+
+    /**
+     * Sets some url data in the session.
+     * @return void
+     */
+    public function set_current_url_pattern():void {
+       $this->start_session();
+       $_SESSION['curr_url_pattern'] = $_GET["url_pattern"];
+       $_SESSION['current_url'] = $_SERVER['REQUEST_URI'];
+   }
+
+    /**
+     * Sets the data that should go into the js.
+     * @param array $data
+     * @return void
+     */
+    public function set_custom_js_data(array $data):void {
+       $this->start_session();
+       $_SESSION = array_merge($_SESSION, $data);
+   }
 }

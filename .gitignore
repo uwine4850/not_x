@@ -1,5 +1,15 @@
 mysql
 src/vendor/twig
 src/vendor/vlucas
+src/vendor/ratchet
+src/vendor/cboden
+src/vendor/react
+src/vendor/ralouphie
+src/vendor/psr
+src/vendor/phpoption
+src/vendor/guzzlehttp
+src/vendor/graham-campbell
+src/vendor/evenement
+src/vendor/symfony
 src/node_modules
 src/package-lock.json

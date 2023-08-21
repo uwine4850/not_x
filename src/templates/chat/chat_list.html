@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Chat list{% endblock %}
+
+{% block content %}
+<div class="chat-list">
+    {% for room in rooms %}
+    {% set user = interlocutor(room) %}
+    {% set last_msg = get_last_msg(room['id']) %}
+    {% set last_msg_username = get_user_by_id(last_msg['user'])['username'] %}
+    <a href="/chat-room/{{ room['id'] }}" class="chat-list-item">
+        <div class="chat-list-item-img">
+            {% if user['path_to_user_image'] %}
+            <img src="{{ media_img(user['path_to_user_image']) }}" alt="chat-img">
+            {% else %}
+            <img src="{{ static('img/default.jpeg') }}" alt="chat-img">
+            {% endif %}
+        </div>
+        <div class="chat-info">
+            <div class="chat-user">
+                @{{ user['username'] }}
+            </div>
+            <div class="last-msg">
+                {{ last_msg_username }}: {{ last_msg['text'] }}
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

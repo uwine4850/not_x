@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Chat</title>
+</head>
+<body>
+<div id="chat"></div>
+<input type="text" id="message" placeholder="Type a message">
+<button onclick="sendMessage()">Send</button>
+
+<script>
+  const currentUrl = window.location.href;
+  // Создаём объект URLSearchParams, передавая строку с параметрами запроса
+  const params = new URLSearchParams(new URL(currentUrl).search);
+  // Получаем значение параметра по его имени
+  const room = params.get('room');
+  const socket = new WebSocket('ws://localhost:50099'); // Замените порт, если нужно
+  socket.onopen = function (){
+    console.log(room);
+    const roomData = {
+      action: 'join_room',
+      room_id: room,
+      msg: '',
+    };
+    socket.send(JSON.stringify(roomData));
+  }
+
+  socket.onmessage = function(event) {
+    const message = event.data;
+    const chatDiv = document.getElementById('chat');
+    chatDiv.innerHTML += `<p>${message}</p>`;
+  };
+
+  function sendMessage() {
+    const messageInput = document.getElementById('message');
+    const message = messageInput.value;
+    const roomData = {
+      action: 'send_msg',
+      room_id: room,
+      msg: message
+    };
+    socket.send(JSON.stringify(roomData));
+    messageInput.value = '';
+  }
+</script>
+</body>
+</html>

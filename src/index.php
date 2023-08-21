@@ -16,4 +16,8 @@ $router->add("/post-load-home", '/post/lazyload_home_hndl.php');
 $router->add("/post-delete", '/post/delete_hndl.php');
 $router->add("/subscriptions", 'subscriptions_hndl.php');
 $router->add("/server-data", 'server_data_hndl.php');
+$router->add("/chat-list", 'chat/chat_list_hndl.php');
+$router->add("/chat-room/{room_id}", 'chat/chat_room_hndl.php');
+$router->add("/create-chat", 'chat/create_chat_hndl.php');
+$router->add("/load-msg", 'chat/lazyload_msg_hndl.php');
 $router->route();

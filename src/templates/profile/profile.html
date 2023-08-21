@@ -21,27 +21,35 @@
                 <img src="{{ static('img/default.jpeg') }}" alt="profile image">
             </div>
         {% endif %}
-        <form method="post" class="subscription_form">
-            <input type="hidden" name="is-sub">
-            <input type="hidden" name="sub-profile-id" value="{{ user['id'] }}">
-            {% if is_current_user_profile %}
-            <button type="button" class="profile-left-btn plb-edit">
-                <a class="plb-link" href="/profile/{{ user['username'] }}/edit">
-                    <span>Edit</span>
-                </a>
-            </button>
-            {% else %}
-                {% if user_subscribed() %}
+        <div class="profile-left-buttons">
+            <form method="post" class="subscription_form">
+                <input type="hidden" name="is-sub">
+                <input type="hidden" name="sub-profile-id" value="{{ user['id'] }}">
+                {% if is_current_user_profile %}
+                <button type="button" class="profile-left-btn plb-edit">
+                    <a class="plb-link" href="/profile/{{ user['username'] }}/edit">
+                        <span>Edit</span>
+                    </a>
+                </button>
+                {% else %}
+                    {% if user_subscribed() %}
                     <button type="submit" id="profile-left-btn-sub" class="profile-left-btn plb-gray">
                         Subscribed
                     </button>
-                {% else %}
+                    {% else %}
                     <button type="submit" id="profile-left-btn-sub" class="profile-left-btn">
                         Subscribe
                     </button>
+                    {% endif %}
                 {% endif %}
+            </form>
+            {% if not is_current_user_profile %}
+            <form class="profile-msg-form" method="post" action="/create-chat">
+                <input type="hidden" name="chat_user2_id" value="{{ user['id'] }}">
+                <button class="message_user"><img src="{{ static('img/msg.svg') }}" alt="msg"></button>
+            </form>
             {% endif %}
-        </form>
+        </div>
     </div>
     <div class="profile-right">
         <span class="form-error" id="form-error">{{ error }}</span>

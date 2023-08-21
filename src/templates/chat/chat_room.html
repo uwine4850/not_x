@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Chat room{% endblock %}
+
+{% block content %}
+<div class="chat-header" id="chat-header">
+    <div class="chat-header-user-image">
+        {% if user_interlocutor['path_to_user_image'] %}
+        <img src="{{ media_img(user_interlocutor['path_to_user_image']) }}" alt="user img">
+        {% else %}
+        <img src="{{ static('img/default.jpeg') }}" alt="user img">
+        {% endif %}
+    </div>
+    <a href="/profile/{{ user_interlocutor['username'] }}" class="chat-header-username">
+        @{{ user_interlocutor['username'] }}
+    </a>
+</div>
+<div class="chat-messages" id="chat-messages">
+    {% include 'includes/chat_messages.html' %}
+</div>
+<form class="chat-input" id="chat-input">
+    <textarea id="chat-input-text" ></textarea>
+    <button id="send_btn" type="button">Send</button>
+</form>
+{% endblock %}

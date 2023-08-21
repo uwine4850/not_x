@@ -10,6 +10,16 @@ services:
       - './src:/var/www/html'
       - './php.ini:/usr/local/etc/php/php.ini'
 
+  chat_socket:
+    build:
+      dockerfile: "Dockerfile.socket"
+    restart: always
+    ports:
+      - "50099:50099"
+    volumes:
+      - './src:/var/www/html'
+      - './php.ini:/usr/local/etc/php/php.ini'
+
   composer:
     image: composer:2.5.8
     volumes:
