@@ -3,6 +3,7 @@ require_once "utils/handler.php";
 require_once 'utils/database.php';
 require_once 'profile_utils.php';
 require_once 'handlers/twig_functions.php';
+require_once 'utils/router.php';
 
 class ProfileHndl extends BaseHandler {
     use \TwigFunc\PostFunc;
@@ -76,10 +77,16 @@ class ProfileHndl extends BaseHandler {
         return $this->post_images_db->all_where("parent_post=$post_id");
     }
 
+    private function post_count(): int{
+        $uid = $this->current_user_data['id'];
+        return $this->posts_db->count("user=$uid")[0];
+    }
+
     public function handle(): void
     {
         if (!$this->check_user_exist()){
-            return;
+            render_404();
+            exit();
         }
         $subscribe = new Subscribe($this->sub_db, $this->users_db, $this->current_user_data);
         $form_error = $subscribe->post_subscribe();
@@ -97,6 +104,7 @@ class ProfileHndl extends BaseHandler {
             'error' => $form_error,
             'subscribers' => $this->get_subscribers(),
             'posts' => $this->get_user_posts(),
+            'post_count' => $this->post_count(),
         ));
     }
 }

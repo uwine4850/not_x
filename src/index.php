@@ -5,6 +5,7 @@ $router = new XRouter(get_requested_url());
 $router->add("/", 'home_hndl.php');
 $router->add("/profile/{username}", '/profile/profile_hndl.php');
 $router->add("/profile/{username}/edit", '/profile/profile_edit_hndl.php');
+$router->add("/user-search", 'profile/search_profile_hndl.php');
 $router->add("/login", 'login_hndl.php');
 $router->add("/register", 'register_hndl.php');
 $router->add("/create-post", '/post/create_post_hndl.php');

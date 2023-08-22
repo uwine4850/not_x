@@ -10,7 +10,9 @@ class ChatPermissionsMddl extends Middleware{
             $uid = $_GET['user_g']['id'];
             $room_id = $_GET['room_id'];
             if (empty($db->all_where("id=$room_id AND (user1=$uid OR user2=$uid)"))){
-                header('Location: /');
+                require_once 'utils/router.php';
+                render_403();
+                exit();
             }
         }
     }

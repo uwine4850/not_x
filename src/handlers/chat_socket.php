@@ -29,10 +29,13 @@ class Chat implements MessageComponentInterface {
      */
     private function save_message(array $values): void{
         try {
+            date_default_timezone_set('Europe/Kyiv');
+            $values['time'] = date("Y-m-d H:i:s");
             $insert_values = array_to_db_assoc_array($values, array(
                 FormDbField::make('room_id', 'parent_chat'),
                 FormDbField::make('profile_user_id', 'user'),
                 FormDbField::make('msg', 'text'),
+                FormDbField::make('time', 'time'),
             ));
             $this->db_chat_messages->insert($insert_values);
         } catch (ArrayValueIsEmpty $e) {

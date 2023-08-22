@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Profile search{% endblock %}
+
+{% block content %}
+<div class="profile-search-container">
+    <form method="post" class="profile-search-form">
+        <input class="profile-search-input" name="search-username" placeholder="Username">
+        <button>Search</button>
+    </form>
+    <div class="search-users">
+        {% for user in users %}
+        <a href="/profile/{{ user['username'] }}" class="search-user">
+            <div class="search-user-image">
+                {% if user['path_to_user_image'] %}
+                <img src="{{ media_img(user['path_to_user_image']) }}" alt="">
+                {% else %}
+                <img src="{{ static('img/default.jpeg') }}" alt="">
+                {% endif %}
+            </div>
+            <div class="username">@{{ user['username'] }}</div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

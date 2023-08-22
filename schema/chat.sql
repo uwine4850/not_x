@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS chat_rooms(
 CREATE TABLE IF NOT EXISTS chat_messages(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     parent_chat INT NOT NULL,
+    time DATETIME NOT NULL,
     user INT NOT NULL,
     text TEXT NOT NULL,
     FOREIGN KEY (parent_chat) REFERENCES chat_rooms(id) ON DELETE CASCADE,

@@ -4,10 +4,16 @@
 {% if loop.first %}
 <div data-msg_id="{{ msg['id'] }}" data-chat_room_id="{{ msg['parent_chat'] }}" class="chat-message my-msg" id="chat-last-msg">
     {{ msg['text'] }}
+    <div class="msg-time my-msg-time">
+        {{ msg['time'] }}
+    </div>
 </div>
 {% else %}
 <div class="chat-message my-msg">
     {{ msg['text'] }}
+    <div class="msg-time my-msg-time">
+        {{ msg['time'] }}
+    </div>
 </div>
 {% endif %}
 
@@ -16,10 +22,16 @@
 {% if loop.first %}
 <div data-msg_id="{{ msg['id'] }}" data-chat_room_id="{{ msg['parent_chat'] }}" class="chat-message chat-last-msg" id="chat-last-msg">
     {{ msg['text'] }}
+    <div class="msg-time">
+        {{ msg['time'] }}
+    </div>
 </div>
 {% else %}
 <div class="chat-message">
     {{ msg['text'] }}
+    <div class="msg-time">
+        {{ msg['time'] }}
+    </div>
 </div>
 {% endif %}
 

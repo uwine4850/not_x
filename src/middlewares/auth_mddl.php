@@ -9,7 +9,9 @@ class AuthMddl extends Middleware{
         }
         if (isset($_COOKIE['UID'])){
             if ($_GET["url_pattern"] == '/login' || $_GET["url_pattern"] == '/register'){
-                header("Location: /");
+                require_once 'utils/router.php';
+                render_403();
+                exit();
             }
         }
         if (isset($_COOKIE['UID'])){

@@ -100,8 +100,18 @@
     background-color: $secondaryBgColor;
     max-width: 350px;
     overflow-wrap: break-word;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
     &:last-child{
       margin-bottom: auto;
+    }
+    .msg-time{
+      font-size: 12px;
+      color: $secondaryFontColor;
+    }
+    .my-msg-time{
+      margin-left: auto;
     }
   }
   .my-msg{

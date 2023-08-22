@@ -14,9 +14,12 @@ function is_current_user_profile(): bool{
 function get_user_data(){
     $username = $_GET['username'];
     $db = new Database('users');
-    $data = $db->all_where("username='$username'")[0];
+    $data = $db->all_where("username='$username'");
+    if (empty($data)){
+        return array();
+    }
     unset($data['password']);
-    return $data;
+    return $data[0];
 }
 
 function get_user_by_id(int $uid){

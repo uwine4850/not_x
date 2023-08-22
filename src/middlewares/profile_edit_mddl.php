@@ -7,7 +7,9 @@ class ProfileEditMddl extends Middleware{
     {
         if ($_GET["url_pattern"] == '/profile/{username}/edit'){
             if (!is_current_user_profile()){
-                header('Location: /');
+                require_once 'utils/router.php';
+                render_403();
+                exit();
             }
         }
     }

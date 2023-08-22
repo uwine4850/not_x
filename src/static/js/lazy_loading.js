@@ -67,9 +67,6 @@ export class LazyLoader{
             data: this.#get_element_data(),
             success: (response) => {
                 on_success(response);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown);
             }
         });
     }

@@ -1,0 +1,67 @@
+@import "vars";
+
+.profile-search-container{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+.profile-search-form{
+  display: flex;
+  .profile-search-input{
+    width: 100%;
+    font-size: 18px;
+    border-radius: 5px;
+    border: $defaultBorder;
+    outline: none;
+    background-color: $secondaryBgColor;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  button{
+    width: 100px;
+    margin-left: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: transparent;
+    border: $defaultBorder;
+    transition: .1s;
+    &:hover{
+      cursor: pointer;
+      background-color: $secondaryBgColor;
+    }
+  }
+}
+
+.search-users{
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  .search-user{
+    display: flex;
+    transition: .1s;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    &:hover{
+      cursor: pointer;
+      background-color: $secondaryBgColor;
+    }
+    .search-user-image{
+      width: 50px;
+      height: 50px;
+      overflow: hidden;
+      border-radius: 5px;
+      img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    .username{
+      margin: auto auto auto 10px;
+      font-size: 18px;
+    }
+  }
+}

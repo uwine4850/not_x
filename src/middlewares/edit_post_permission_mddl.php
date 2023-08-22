@@ -13,10 +13,14 @@ class EditPostPermissionMddl extends Middleware{
         $p_id = $_GET['post_id'];
         $post = $posts_db->all_where("id=$p_id");
         if (empty($post)){
-            header("Location: /");
+            require_once 'utils/router.php';
+            render_403();
+            exit();
         }
         if ($post[0]['user'] != $_GET['user_g']['id']){
-            header("Location: /");
+            require_once 'utils/router.php';
+            render_403();
+            exit();
         }
     }
 }

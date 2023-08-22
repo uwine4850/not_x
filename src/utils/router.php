@@ -141,6 +141,7 @@ class XRouter implements RouterUrls {
         if ($default_url != "") {
             $_GET['url_pattern'] = $default_url;
             $this->run_handler($_ENV["PATH_TO_HANDLERS"] . $this->urls[$default_url]);
+            exit();
         }
 
         // Start the address handler with slug parameters.
@@ -151,8 +152,11 @@ class XRouter implements RouterUrls {
             }
             $_GET['url_pattern'] = $slug_url;
             $this->run_handler($_ENV["PATH_TO_HANDLERS"] . $this->urls[$slug_url]);
+            exit();
         }
-        exit();
+        //If the address is found, the handler is started, after which the file is terminated using the "exit()" function.
+        //If the file execution reached this page, then none of the url paths were found.
+        render_404();
     }
 
     /**
@@ -170,6 +174,20 @@ class XRouter implements RouterUrls {
             throw $e;
         }
     }
+}
+
+function render_404(): void{
+    require_once 'handlers/errors/404_hndl.php';
+    http_response_code(404);
+    $err = new E404Handler();
+    $err->handle();
+}
+
+function render_403(): void{
+    require_once 'handlers/errors/403_hndl.php';
+    http_response_code(403);
+    $err = new E403Handler();
+    $err->handle();
 }
 
 /**

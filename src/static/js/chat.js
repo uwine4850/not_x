@@ -67,10 +67,15 @@ export function run_chat_ws(room_id, on_user_msg){
             case "send_msg":
                 const chat_messages = document.getElementById('chat-messages');
                 const isMyMessage = message.uid === currentUserId;
+                let msg_time = getCurrentDateTime();
                 if (isMyMessage){
-                    chat_messages.innerHTML += `<div class="chat-message my-msg">${message.msg}</div>`;
+                    chat_messages.innerHTML += `<div class="chat-message my-msg">${message.msg}
+                                                <div class="msg-time my-msg-time">${msg_time}</div>
+                                                </div>`;
                 } else {
-                    chat_messages.innerHTML += `<div class="chat-message">${message.msg}</div>`;
+                    chat_messages.innerHTML += `<div class="chat-message">${message.msg}
+                                                <div class="msg-time">${msg_time}</div>
+                                                </div>`;
                 }
                 scrollToLastMsg();
                 on_user_msg();
@@ -94,6 +99,18 @@ export function run_chat_ws(room_id, on_user_msg){
         socket.send(JSON.stringify(roomData));
         messageInput.value = '';
     }
+}
+
+function getCurrentDateTime() {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 function getCookie(name) {
