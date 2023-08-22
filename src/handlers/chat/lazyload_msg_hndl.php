@@ -1,15 +1,14 @@
 <?php
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
+require_once 'handlers/chat/chat_utils.php';
 
 class LoadMsg extends BaseHandler{
-    private Database $db_chat_messages;
     private array $messages;
 
     public function __construct()
     {
         parent::__construct();
-        $this->db_chat_messages = new Database('chat_messages');
     }
 
     private function get(): void{
@@ -18,7 +17,7 @@ class LoadMsg extends BaseHandler{
         }
         $msg_id = $_GET['msg_id'];
         $chat_room_id = $_GET['chat_room_id'];
-        $this->messages = $this->db_chat_messages->all_where("parent_chat=$chat_room_id AND id > $msg_id", 5);
+        $this->messages = get_room_messages($chat_room_id, $msg_id);
     }
 
     public function handle(): void

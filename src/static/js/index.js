@@ -11,7 +11,7 @@ import './ajax_form';
 import './lazy_loading';
 import {run_ajax_like_form} from "./ajax_form";
 import {handle_server_url} from './handle_url';
-import './chat';
+
 
 /**
  * Centers the authentication content relative to the size of the browser window.

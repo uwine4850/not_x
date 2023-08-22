@@ -27,7 +27,7 @@ export class LazyLoader{
      * Start a new instance of the observer and delete the old one.
      * @param on_target (func) The function to be performed.
      */
-    #observer_start(on_target) {
+    observer_start(on_target) {
         let target = document.getElementById(this.target_element_id);
         if (!target){
             return;
@@ -67,6 +67,9 @@ export class LazyLoader{
             data: this.#get_element_data(),
             success: (response) => {
                 on_success(response);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(errorThrown);
             }
         });
     }
@@ -80,11 +83,15 @@ export class LazyLoader{
      * @param on_success (func) A function that will be executed after each new data load.
      */
     start(on_success) {
-        this.#observer_start(() =>{
+        this.observer_start(() =>{
             this.#start_ajax(this.url, (response) => {
-                $(`#${this.insert_element_id}`).append(response);
+                this.display_response(response);
                 this.#observer.disconnect();
                 on_success();
+
+                if (this.remove_target_id){
+                    this.#target.removeAttr("id");
+                }
 
                 // Get a new target ID if the old one is deleted. Or not receive if the ID no longer exists.
                 this.#get_target_element_jq()
@@ -93,8 +100,24 @@ export class LazyLoader{
                 this.start(on_success);
             });
         });
-        if (this.remove_target_id){
-            this.#target.removeAttr("id");
-        }
     }
+
+    display_response(response){
+        $(`#${this.insert_element_id}`).append(response);
+    }
+
+    close_observer(){
+        this.#observer.disconnect();
+    }
+}
+
+export class ReverseLazyLoader extends LazyLoader{
+    constructor(target_element_id, data_fields, url, insert_element_id, remove_target_id=false) {
+        super(target_element_id, data_fields, url, insert_element_id, remove_target_id);
+    }
+
+    display_response(response) {
+        $(`#${this.insert_element_id}`).prepend(response);
+    }
+
 }

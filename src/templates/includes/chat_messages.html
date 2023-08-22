@@ -1,6 +1,7 @@
 {% for msg in messages %}
 {% if msg['user'] == user_g['id'] %}
-{% if loop.last %}
+
+{% if loop.first %}
 <div data-msg_id="{{ msg['id'] }}" data-chat_room_id="{{ msg['parent_chat'] }}" class="chat-message my-msg" id="chat-last-msg">
     {{ msg['text'] }}
 </div>
@@ -9,8 +10,10 @@
     {{ msg['text'] }}
 </div>
 {% endif %}
+
 {% else %}
-{% if loop.last %}
+
+{% if loop.first %}
 <div data-msg_id="{{ msg['id'] }}" data-chat_room_id="{{ msg['parent_chat'] }}" class="chat-message chat-last-msg" id="chat-last-msg">
     {{ msg['text'] }}
 </div>
@@ -19,5 +22,6 @@
     {{ msg['text'] }}
 </div>
 {% endif %}
+
 {% endif %}
 {% endfor %}

@@ -14,17 +14,20 @@ resize_msg_place();
 window.addEventListener("resize", resize_msg_place);
 
 // Scrolls down all messages.
-export function scrollTop(){
-    console.log('ok');
-    $("#chat-messages").animate({ scrollTop: $(document).height() }, "slow");
+export function scrollToLastMsg(){
+    let messages = $("#chat-messages");
+    if (!messages){
+        return;
+    }
+    let last_msg = messages.children().last();
+    messages.scrollTop(last_msg.offset().top - messages.offset().top + messages.scrollTop());
 }
-scrollTop();
 
 // Launches a websocket to listen in on the chat.
 // Each chat is always isolated by a room with its own id.
 // Each user has a unique id in the room. If this id is already in the room, it will be generated again. This id is also
 // used to define "my" message.
-export function run_chat_ws(room_id, uid){
+export function run_chat_ws(room_id, on_user_msg){
     let currentUserId = generateUniqueUserId();
     let profile_user_id = parseInt(getCookie('UID'));
     const socket = new WebSocket(`ws://localhost:50099`); // Замените порт, если нужно
@@ -69,7 +72,8 @@ export function run_chat_ws(room_id, uid){
                 } else {
                     chat_messages.innerHTML += `<div class="chat-message">${message.msg}</div>`;
                 }
-                scrollTop();
+                scrollToLastMsg();
+                on_user_msg();
         }
     };
 

@@ -7,6 +7,7 @@ require_once 'handlers/profile/profile_utils.php';
 
 class ChatListHandler extends BaseHandler{
     use \TwigFunc\GlobalFunc;
+    use HandlerUtils;
 
     private Database $db_chat_rooms;
     private Database $db_chat_messages;
@@ -15,6 +16,7 @@ class ChatListHandler extends BaseHandler{
         parent::__construct();
         $this->db_chat_rooms = new Database('chat_rooms');
         $this->db_chat_messages = new Database('chat_messages');
+        $this->set_current_url_pattern();
     }
 
     public function get_last_msg(int $room_id): array{

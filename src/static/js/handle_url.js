@@ -1,8 +1,8 @@
-import {LazyLoader} from "./lazy_loading";
+import {LazyLoader, ReverseLazyLoader} from "./lazy_loading";
 import {postDeletePopUpBoard, postMenuPopUpBoard} from "./pop_up_board";
 import {like_btn_click_style} from "./utils";
 import {run_ajax_like_form} from "./ajax_form";
-import {run_chat_ws} from "./chat";
+import {run_chat_ws, scrollToLastMsg, scrollTop} from "./chat";
 
 export function handle_server_url(){
     $.ajax({
@@ -40,10 +40,16 @@ function handle(resp){
             break;
         case "/chat-room/{room_id}":
             // Running websocket and lazy loading of messages.
-            run_chat_ws(resp['room_id'], resp['uid']);
-            let loadMessages = new LazyLoader('chat-last-msg', ['msg_id', 'chat_room_id'],
-            '/load-msg', 'chat-messages', true);
+            let loadMessages = new ReverseLazyLoader('chat-last-msg', ['msg_id', 'chat_room_id'],
+                '/load-msg', 'chat-messages', true);
             loadMessages.start(function (){});
+            run_chat_ws(resp['room_id'], function (){
+                loadMessages.close_observer();
+                let loadMessages1 = new ReverseLazyLoader('chat-last-msg', ['msg_id', 'chat_room_id'],
+                    '/load-msg', 'chat-messages', true);
+                loadMessages1.start(function (){});
+            });
+            scrollToLastMsg();
             break;
     }
 }
