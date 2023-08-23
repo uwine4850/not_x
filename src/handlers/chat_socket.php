@@ -15,11 +15,33 @@ class Chat implements MessageComponentInterface {
     protected array $rooms;
     private array $roomUsers = array();
     private Database $db_chat_messages;
+    private Database $db_chat_rooms;
+    private Database $db_chat_mc;
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
         $this->rooms = [];
         $this->db_chat_messages = new Database('chat_messages');
+        $this->db_chat_rooms = new Database('chat_rooms');
+        $this->db_chat_mc = new Database('chat_messages_notification');
+    }
+
+    /**
+     * Returns the ID of the conversation partner in the current chat.
+     * @param int $room_id Chat ID.
+     * @param int $send_msg_uid The ID of the user from whom the message came.
+     * @return int
+     */
+    private function get_interlocutor_id(int $room_id, int $send_msg_uid): int{
+        $u2 = $this->db_chat_rooms->all_where("id=$room_id AND user1=$send_msg_uid");
+        if (!empty($u2)){
+            return $u2[0]['user2'];
+        }
+        $u1 = $this->db_chat_rooms->all_where("id=$room_id AND user2=$send_msg_uid");
+        if (!empty($u1)){
+            return $u1[0]['user1'];
+        }
+        return 0;
     }
 
     /**
@@ -42,6 +64,18 @@ class Chat implements MessageComponentInterface {
         }
     }
 
+    /**
+     * Deletes a record of the number of messages in the current chat.
+     * @param $room_id Chat ID.
+     * @return void
+     */
+    private function delete_msgs_count($room_id): void{
+        $id = $this->db_chat_mc->all_where("room_id=$room_id");
+        if (!empty($id)){
+            $this->db_chat_mc->delete($id[0]['id']);
+        }
+    }
+
     public function onOpen(\Ratchet\ConnectionInterface $conn):void {
         $this->clients->attach($conn);
     }
@@ -56,6 +90,7 @@ class Chat implements MessageComponentInterface {
         if ($data['action'] === 'join_room') {
             $room_id = $data['room_id'];
             $this->rooms[$room_id][$from->resourceId] = $from;
+            $this->delete_msgs_count($data['room_id']);
         }
 
         $id_ok = true;
@@ -78,6 +113,7 @@ class Chat implements MessageComponentInterface {
         if ($id_ok && $data['action'] === 'send_msg'){
             $room_id = $data['room_id'];
             $this->save_message($data);
+            $data['interlocutor_id'] = $this->get_interlocutor_id($room_id, $data['send_msg_uid']);
             foreach ($this->rooms[$room_id] as $client) {
                 $client->send(json_encode($data));
             }

@@ -17,3 +17,14 @@ CREATE TABLE IF NOT EXISTS chat_messages(
     FOREIGN KEY (parent_chat) REFERENCES chat_rooms(id) ON DELETE CASCADE,
     FOREIGN KEY (user) REFERENCES not_x.users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS chat_messages_notification(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    user INT NOT NULL,
+    from_user INT NOT NULL,
+    room_id INT NOT NULL,
+    count INT NULL,
+    FOREIGN KEY (user) REFERENCES not_x.users(id) ON DELETE CASCADE,
+    FOREIGN KEY (from_user) REFERENCES not_x.users(id) ON DELETE CASCADE,
+    FOREIGN KEY (room_id) REFERENCES chat_rooms(id) ON DELETE CASCADE
+);

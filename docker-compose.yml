@@ -20,6 +20,16 @@ services:
       - './src:/var/www/html'
       - './php.ini:/usr/local/etc/php/php.ini'
 
+  notification_socket:
+    build:
+      dockerfile: "Dockerfile.notification_socket"
+    restart: always
+    ports:
+      - "50100:50100"
+    volumes:
+      - './src:/var/www/html'
+      - './php.ini:/usr/local/etc/php/php.ini'
+
   composer:
     image: composer:2.5.8
     volumes:

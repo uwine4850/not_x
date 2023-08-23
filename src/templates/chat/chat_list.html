@@ -24,6 +24,11 @@
                 {{ last_msg_username }}: {{ last_msg['text'] }}
             </div>
         </div>
+        {% if get_chat_room_msg_count(user['id']) %}
+        <div class="msg-count">
+            {{ get_chat_room_msg_count(user['id']) }}
+        </div>
+        {% endif %}
     </a>
     {% endfor %}
 </div>

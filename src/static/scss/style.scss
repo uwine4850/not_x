@@ -163,6 +163,17 @@ button{
   }
 }
 
+#messages-count{
+  position: absolute;
+  background-color: blue;
+  padding: 2px;
+  border-radius: 3px;
+}
+
+.messages-count-hidden{
+  display: none;
+}
+
 .log-out-pop-up{
   width: 500px;
   .log-out-form{

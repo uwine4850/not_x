@@ -26,6 +26,11 @@
                     <div class="menu-text">Profile</div>
                 </a>
                 <a class="menu-link" href="/chat-list">
+                    {% if msgn %}
+                    <span id="messages-count">{{ msgn }}</span>
+                    {% else %}
+                    <span id="messages-count" class="messages-count-hidden"></span>
+                    {% endif %}
                     <img src='{{ static("img/msg.svg") }}' alt="">
                     <div class="menu-text">Messages</div>
                 </a>

@@ -23,6 +23,9 @@ abstract class BaseHandler{
         if (!empty($_GET['user_g'])){
             $this->twig->addGlobal('user_g', $_GET['user_g']);
         }
+        if (!empty($_GET['msgn'])){
+            $this->twig->addGlobal('msgn', $_GET['msgn']);
+        }
     }
 
     protected function is_ajax(): bool{

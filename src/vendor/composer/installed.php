@@ -37,6 +37,24 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'guzzlehttp/guzzle' => array(
+            'pretty_version' => '7.7.0',
+            'version' => '7.7.0.0',
+            'reference' => 'fb7566caccf22d74d1ab270de3551f72a58399f5',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../guzzlehttp/guzzle',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'guzzlehttp/promises' => array(
+            'pretty_version' => '2.0.1',
+            'version' => '2.0.1.0',
+            'reference' => '111166291a0f8130081195ac4556a5587d7f1b5d',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../guzzlehttp/promises',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'guzzlehttp/psr7' => array(
             'pretty_version' => '2.6.0',
             'version' => '2.6.0.0',
@@ -63,6 +81,21 @@
             'install_path' => __DIR__ . '/../phpoption/phpoption',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'psr/http-client' => array(
+            'pretty_version' => '1.0.2',
+            'version' => '1.0.2.0',
+            'reference' => '0955afe48220520692d2d09f7ab7e0f93ffd6a31',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/http-client',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'psr/http-client-implementation' => array(
+            'dev_requirement' => false,
+            'provided' => array(
+                0 => '1.0',
+            ),
         ),
         'psr/http-factory' => array(
             'pretty_version' => '1.0.2',
