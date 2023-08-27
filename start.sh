@@ -11,4 +11,5 @@ fi
 if [ ! -d "./src/media/users" ]; then
   mkdir "./src/media/users"
 fi
-docker-compose exec php bash -c "chmod -R 777 /var/www/html/media"
+sudo docker compose exec php bash -c "chmod -R 777 /var/www/html/media"
+sudo docker compose run --rm composer install

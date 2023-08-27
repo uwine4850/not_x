@@ -45,13 +45,13 @@ class ProfileEditHandler extends BaseHandler{
 
         // If the form is submitted
         if ($post_data){
-            if (isset($_POST['profile-image-del'])){
+            if (isset($_POST['profile-image-del']) && $this->user['path_to_user_image']){
                 // Deleting an image file and clearing a column in the database
                 $insert_values['path_to_user_image'] = '';
                 $this->delete_image($this->user['path_to_user_image']);
             } else{
                 // Delete old image
-                if (!empty($_FILES['profile-image']['name'])){
+                if (!empty($_FILES['profile-image']['name']) && $this->user['path_to_user_image']){
                     $this->delete_image($this->user['path_to_user_image']);
                 }
                 // Save new image
