@@ -56,7 +56,13 @@ function get_answer_comments(int $comment_id): array{
  */
 function get_count_of_comment_by_post_id(int $post_id): int{
     $db = new Database('comments');
-    return $db->count("parent_post_id=$post_id")[0];
+    $res = $db->query("SELECT COUNT(*) AS total_comments_and_answers
+                        FROM (
+                            SELECT id FROM comments WHERE parent_post_id = $post_id
+                            UNION ALL
+                            SELECT answer_for_comment_id FROM comments_answer WHERE answer_for_comment_id IN (SELECT id FROM comments WHERE parent_post_id = $post_id)
+                        ) AS all_comments;");
+    return $res->fetch_all()[0][0];
 }
 
 /**
