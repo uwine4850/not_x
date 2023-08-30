@@ -1,6 +1,8 @@
-import {getCookie} from "./utils";
-
-export const NEW_MESSAGE = 1;
+import {getCookie} from "../utils";
+import {SocketDataTransfer} from "./sockets";
+import {
+    ACTIONS_NOTIFICATION_TYPES, ws_notification, ws_notification_join,
+} from "./config";
 
 /**
  * Starts a websocket to listen to notifications.
@@ -8,11 +10,9 @@ export const NEW_MESSAGE = 1;
 export function run_notification_ws(){
     const notificationSocket = new WebSocket('ws://localhost:50100');
     notificationSocket.onopen = function (){
-        const d = {
-            action: 'join',
-            join_uid: getCookie('UID'),
-        }
-        notificationSocket.send(JSON.stringify(d));
+        ws_notification_join.join_uid = getCookie('UID');
+        let s = new SocketDataTransfer(notificationSocket, ws_notification_join.action, ws_notification_join);
+        s.send();
     }
 
     notificationSocket.onmessage = function(event) {
@@ -28,7 +28,8 @@ export function run_notification_ws(){
  */
 function processing_notification(message){
     switch (message.type){
-        case NEW_MESSAGE:
+        // Increment the number of messages that are displayed to the user.
+        case ACTIONS_NOTIFICATION_TYPES.NEW_MESSAGE:
             let messages_count = document.getElementById('messages-count');
             if (!messages_count.innerHTML){
                 messages_count.classList.remove('messages-count-hidden');
@@ -43,21 +44,18 @@ function processing_notification(message){
 /**
  * Sending a message to the notification socket.
  * @param notificationSocket (socket) An instance of the notification socket
- * @param uid (int) The ID of the user for whom the notification is to be sent.
+ * @param recipient_id (int) The ID of the user for whom the notification is to be sent.
  * @param from_user (int) The ID of the user who sent the message in the chat.
  * @param room_id (int) Chat ID.
  * @param type (int) Notification Type.
- * @param text (string) Alert text. Optional.
  */
-export function send_notification(notificationSocket, uid, from_user, room_id, type, text=''){
-    const Data = {
-        action: 'notification',
-        uid: uid,
-        room_id: room_id,
-        from_user: from_user,
-        type: type,
-        text: text,
-    }
-    notificationSocket.send(JSON.stringify(Data));
+export function send_notification(notificationSocket, recipient_id, from_user, room_id, type){
+    let ws = notificationSocket;
+    ws_notification.recipient_id = recipient_id;
+    ws_notification.type = type;
+    ws_notification.room_id = room_id;
+    ws_notification.from_user = from_user;
+    let s = new SocketDataTransfer(ws, ws_notification.action, ws_notification);
+    s.send();
 }
 

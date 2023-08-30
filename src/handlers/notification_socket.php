@@ -9,8 +9,8 @@ require_once 'utils/database.php';
 require_once 'handlers/profile/profile_utils.php';
 require_once 'vendor/autoload.php';
 require_once 'utils/utils.php';
+require_once 'config.php';
 
-const NEW_MESSAGE = 1;
 
 class Notification implements MessageComponentInterface {
     protected \SplObjectStorage $clients;
@@ -28,19 +28,18 @@ class Notification implements MessageComponentInterface {
 
     public function onMessage(\Ratchet\ConnectionInterface $from, $msg):void {
         $data = json_decode($msg, true);
-        if ($data['action'] == 'join'){
+        if ($data['action'] == \config\WS_ACTIONS_NOTIFICATION::JOIN->value){
             $this->ids[$data['join_uid']] = $from;
         }
 
-        if ($data['action'] == 'notification'){
+        if ($data['action'] == \config\WS_ACTIONS_NOTIFICATION::NOTIFICATION->value){
             $d = $this->processing_notification($data);
-            $send_id = $d['uid'];
+            $send_id = $d['recipient_id'];
             if (isset($this->ids[$send_id])){
                 $client = $this->ids[$send_id];
                 $client->send(json_encode($data));
             }
         }
-
     }
 
     /**
@@ -50,8 +49,8 @@ class Notification implements MessageComponentInterface {
      */
     private function processing_notification(array $data): array{
         switch ($data['type']){
-            case NEW_MESSAGE:
-                $this->create_message_notification($data['uid'], $data['from_user'], $data['room_id']);
+            case \config\WS_ACTIONS_NOTIFICATION_TYPE::NEW_MESSAGE->value:
+                $this->create_message_notification($data['recipient_id'], $data['from_user'], $data['room_id']);
                 return $data;
             default:
                 break;

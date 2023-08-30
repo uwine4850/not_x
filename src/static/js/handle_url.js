@@ -2,8 +2,8 @@ import {LazyLoader, ReverseLazyLoader} from "./lazy_loading";
 import {postDeletePopUpBoard, postMenuPopUpBoard} from "./pop_up_board";
 import {like_btn_click_style} from "./utils";
 import {run_ajax_like_form} from "./ajax_form";
-import {run_chat_ws, scrollToLastMsg} from "./chat";
-import {run_notification_ws} from "./notification";
+import {run_chat_ws, scrollToLastMsg} from "./ws/chat";
+import {run_notification_ws} from "./ws/notification";
 
 let s = run_notification_ws();
 

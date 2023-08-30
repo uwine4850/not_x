@@ -9,6 +9,7 @@ require_once 'utils/database.php';
 require_once 'handlers/profile/profile_utils.php';
 require_once 'vendor/autoload.php';
 require_once 'utils/utils.php';
+require_once 'config.php';
 
 class Chat implements MessageComponentInterface {
     protected \SplObjectStorage $clients;
@@ -66,10 +67,10 @@ class Chat implements MessageComponentInterface {
 
     /**
      * Deletes a record of the number of messages in the current chat.
-     * @param $room_id Chat ID.
+     * @param int $room_id Chat ID.
      * @return void
      */
-    private function delete_msgs_count($room_id): void{
+    private function delete_msgs_count(int $room_id): void{
         $id = $this->db_chat_mc->all_where("room_id=$room_id");
         if (!empty($id)){
             $this->db_chat_mc->delete($id[0]['id']);
@@ -87,7 +88,7 @@ class Chat implements MessageComponentInterface {
         }
 
         // Registering the user in the room.
-        if ($data['action'] === 'join_room') {
+        if ($data['action'] === \config\WS_ACTIONS_CHAT::JOIN_CHAT_ROOM->value) {
             $room_id = $data['room_id'];
             $this->rooms[$room_id][$from->resourceId] = $from;
             $this->delete_msgs_count($data['room_id']);
@@ -96,24 +97,24 @@ class Chat implements MessageComponentInterface {
         $id_ok = true;
 
         // Checking the uniqueness of the user id.
-        if ($data['action'] === 'generate_id'){
-            $uid = $data['uid'];
+        if ($data['action'] === \config\WS_ACTIONS_CHAT::GENERATE_CHAT_ID->value){
+            $chat_user_id = $data['chat_user_id'];
             $room_id = $data['room_id'];
-            if (!empty($this->roomUsers[$room_id]) && in_array($uid, $this->roomUsers[$room_id])){
-                $data['action'] = 'regenerate_id';
+            if (!empty($this->roomUsers[$room_id]) && in_array($chat_user_id, $this->roomUsers[$room_id])){
+                $data['action'] = \config\WS_ACTIONS_CHAT::REGENERATE_CHAT_ID->value;
                 $id_ok = false;
                 foreach ($this->rooms[$room_id] as $client) {
                     $client->send(json_encode($data));
                 }
             }
-            $this->roomUsers[$room_id][] = $uid;
+            $this->roomUsers[$room_id][] = $chat_user_id;
         }
 
         // Sending a message to the client.
-        if ($id_ok && $data['action'] === 'send_msg'){
+        if ($id_ok && $data['action'] === \config\WS_ACTIONS_CHAT::SEND_MSG->value){
             $room_id = $data['room_id'];
             $this->save_message($data);
-            $data['interlocutor_id'] = $this->get_interlocutor_id($room_id, $data['send_msg_uid']);
+            $data['interlocutor_id'] = $this->get_interlocutor_id($room_id, $data['profile_user_id']);
             foreach ($this->rooms[$room_id] as $client) {
                 $client->send(json_encode($data));
             }

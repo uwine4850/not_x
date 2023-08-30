@@ -40,7 +40,7 @@ abstract class BaseHandler{
     }
 
     /**
-     * Returns the path to the static file if found.ы
+     * Returns the path to the static file if found.
      * @param string $filename The name of the static file.
      * @return string File Path.
      */

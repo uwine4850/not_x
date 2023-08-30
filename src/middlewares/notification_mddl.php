@@ -10,13 +10,9 @@ class NotificationMddl extends Middleware{
         }
         $db = new Database('chat_messages_notification');
         $uid = $_GET['user_g']['id'];
-        $msgn = $db->all_where("user=$uid");
+        $msgn = $db->count("user=$uid");
         if (!empty($msgn)){
-            $c = 0;
-            foreach ($msgn as $i){
-                $c += $i['count'];
-            }
-            $_GET['msgn'] = $c;
+            $_GET['msgn'] = $msgn[0];
         } else{
             $_GET['msgn'] = '';
         }
