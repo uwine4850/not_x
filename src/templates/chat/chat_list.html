@@ -7,8 +7,7 @@
     {% for room in rooms %}
     {% set user = interlocutor(room) %}
     {% set last_msg = get_last_msg(room['id']) %}
-    {% set last_msg_username = get_user_by_id(last_msg['user'])['username'] %}
-    <a href="/chat-room/{{ room['id'] }}" class="chat-list-item">
+    <a href="/chat-room/{{ room['id'] }}" class="chat-list-item" data-room_id="{{ room['id'] }}">
         <div class="chat-list-item-img">
             {% if user['path_to_user_image'] %}
             <img src="{{ media_img(user['path_to_user_image']) }}" alt="chat-img">
@@ -21,7 +20,9 @@
                 @{{ user['username'] }}
             </div>
             <div class="last-msg">
-                {{ last_msg_username }}: {{ last_msg['text'] }}
+                {% if last_msg %}
+                    {{ get_user_by_id(last_msg['user'])['username'] }}: {{ last_msg['text'] }}
+                {% endif %}
             </div>
         </div>
         {% if get_chat_room_msg_count(user['id']) %}

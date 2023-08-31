@@ -3,7 +3,12 @@ import {send_notification} from "./notification";
 import {getCookie, getCurrentDateTime} from "../utils";
 import {
     ACTIONS_CHAT,
-    ACTIONS_NOTIFICATION_TYPES, ws_generate_chat_id, ws_join_chat_room, ws_regenerate_chat_id, ws_send_msg
+    ACTIONS_NOTIFICATION_TYPES,
+    ws_decrement_chat_room_msg_count,
+    ws_generate_chat_id,
+    ws_join_chat_room,
+    ws_regenerate_chat_id,
+    ws_send_msg
 } from "./config";
 import {SocketDataTransfer} from "./sockets";
 
@@ -44,7 +49,6 @@ export function run_chat_ws(room_id, s, on_user_msg){
     socket.onopen = function (){
         ws_join_chat_room.room_id = room_id;
         ws_join_chat_room.auth_uid = getCookie('UID');
-        // socket.send(JSON.stringify(roomData));
         let s1 = new SocketDataTransfer(socket, ws_join_chat_room.action, ws_join_chat_room)
         s1.send();
 
@@ -56,8 +60,7 @@ export function run_chat_ws(room_id, s, on_user_msg){
 
     // A method that is executed when the server sends a message.
     socket.onmessage = function(event) {
-        const message = ws_send_msg;
-        Object.assign(message, JSON.parse(event.data));
+        const message = JSON.parse(event.data);
         switch (message.action){
             // Re-generating user id.
             case ACTIONS_CHAT.GENERATE_CHAT_ID:
@@ -74,7 +77,7 @@ export function run_chat_ws(room_id, s, on_user_msg){
                 let msg_time = getCurrentDateTime();
                 if (isMyMessage){
                     send_notification(s, message.interlocutor_id, parseInt(getCookie('UID')), room_id,
-                        ACTIONS_NOTIFICATION_TYPES.NEW_MESSAGE);
+                        ACTIONS_NOTIFICATION_TYPES.NEW_MESSAGE, message.username, message.msg);
                     chat_messages.innerHTML += `<div class="chat-message my-msg">${message.msg}
                                                 <div class="msg-time my-msg-time">${msg_time}</div>
                                                 </div>`;
@@ -85,6 +88,14 @@ export function run_chat_ws(room_id, s, on_user_msg){
                 }
                 scrollToLastMsg();
                 on_user_msg();
+                break;
+            case ACTIONS_CHAT.DECREMENT_CHAT_ROOM_MSG_COUNT:
+                const data = ws_decrement_chat_room_msg_count;
+                Object.assign(data, JSON.parse(event.data));
+                if (data.decrement){
+                    decrement_msg_chat_room_count();
+                }
+                break;
         }
     };
 
@@ -107,4 +118,15 @@ export function run_chat_ws(room_id, s, on_user_msg){
 
 function generateUniqueUserId() {
     return 'user_' + Math.floor(Math.random() * 100000);
+}
+
+// A visual reduction in the number of message chats.
+export function decrement_msg_chat_room_count(){
+    let messages_count = document.getElementById('messages-count');
+    let count = parseInt(messages_count.innerHTML);
+    count--;
+    if (count === 0){
+        messages_count.classList.add('messages-count-hidden');
+    }
+    messages_count.innerHTML = count;
 }

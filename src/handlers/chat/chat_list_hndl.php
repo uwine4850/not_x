@@ -21,8 +21,12 @@ class ChatListHandler extends BaseHandler{
         $this->set_current_url_pattern();
     }
 
-    public function get_last_msg(int $room_id): array{
-        return $this->db_chat_messages->all_where("parent_chat=$room_id ORDER BY id DESC", 1)[0];
+    public function get_last_msg(int $room_id): ?array{
+        $last_msg = $this->db_chat_messages->all_where("parent_chat=$room_id ORDER BY id DESC", 1);
+        if (!empty($last_msg)){
+            return $last_msg[0];
+        }
+        return null;
     }
 
     /**

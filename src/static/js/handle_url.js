@@ -30,7 +30,6 @@ function handle(resp){
                 run_ajax_like_form();
                 postDeletePopUpBoard();
             });
-            // run_notification_ws();
             break;
         case "/profile/{username}":
             let loadProfile = new LazyLoader('last-post', ['last_post_id', 'user_id'],

@@ -37,7 +37,7 @@ class Notification implements MessageComponentInterface {
             $send_id = $d['recipient_id'];
             if (isset($this->ids[$send_id])){
                 $client = $this->ids[$send_id];
-                $client->send(json_encode($data));
+                $client->send(json_encode($d));
             }
         }
     }
@@ -50,12 +50,23 @@ class Notification implements MessageComponentInterface {
     private function processing_notification(array $data): array{
         switch ($data['type']){
             case \config\WS_ACTIONS_NOTIFICATION_TYPE::NEW_MESSAGE->value:
+                if ($this->chat_new_chat_room_mgs($data['room_id'])){
+                    $data['new_chat_room_msg'] = true;
+                }
                 $this->create_message_notification($data['recipient_id'], $data['from_user'], $data['room_id']);
                 return $data;
             default:
                 break;
         }
         return $data;
+    }
+
+    private function chat_new_chat_room_mgs(int $chat_room_id): bool{
+        $notification = $this->db_chat_mn->all_where("room_id=$chat_room_id");
+        if (empty($notification)){
+            return true;
+        }
+        return false;
     }
 
     /**

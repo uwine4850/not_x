@@ -18,6 +18,7 @@ class Chat implements MessageComponentInterface {
     private Database $db_chat_messages;
     private Database $db_chat_rooms;
     private Database $db_chat_mc;
+    private Database $db_users;
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
@@ -25,6 +26,7 @@ class Chat implements MessageComponentInterface {
         $this->db_chat_messages = new Database('chat_messages');
         $this->db_chat_rooms = new Database('chat_rooms');
         $this->db_chat_mc = new Database('chat_messages_notification');
+        $this->db_users = new Database('users');
     }
 
     /**
@@ -68,13 +70,15 @@ class Chat implements MessageComponentInterface {
     /**
      * Deletes a record of the number of messages in the current chat.
      * @param int $room_id Chat ID.
-     * @return void
+     * @return bool
      */
-    private function delete_msgs_count(int $room_id): void{
-        $id = $this->db_chat_mc->all_where("room_id=$room_id");
+    private function delete_msgs_count(int $room_id, int $auth_uid): bool{
+        $id = $this->db_chat_mc->all_where("room_id=$room_id AND user=$auth_uid");
         if (!empty($id)){
             $this->db_chat_mc->delete($id[0]['id']);
+            return true;
         }
+        return false;
     }
 
     public function onOpen(\Ratchet\ConnectionInterface $conn):void {
@@ -89,9 +93,17 @@ class Chat implements MessageComponentInterface {
 
         // Registering the user in the room.
         if ($data['action'] === \config\WS_ACTIONS_CHAT::JOIN_CHAT_ROOM->value) {
+            $join_data = array();
             $room_id = $data['room_id'];
             $this->rooms[$room_id][$from->resourceId] = $from;
-            $this->delete_msgs_count($data['room_id']);
+            $is_del = $this->delete_msgs_count($data['room_id'], $data['auth_uid']);
+
+            // decrement messages count
+            if ($is_del){
+                $join_data['action'] = \config\WS_ACTIONS_CHAT::DECREMENT_CHAT_ROOM_MSG_COUNT->value;
+                $join_data['decrement'] = true;
+            }
+            $from->send(json_encode($join_data));
         }
 
         $id_ok = true;
@@ -114,7 +126,9 @@ class Chat implements MessageComponentInterface {
         if ($id_ok && $data['action'] === \config\WS_ACTIONS_CHAT::SEND_MSG->value){
             $room_id = $data['room_id'];
             $this->save_message($data);
-            $data['interlocutor_id'] = $this->get_interlocutor_id($room_id, $data['profile_user_id']);
+            $profile_user_id = $data['profile_user_id'];
+            $data['interlocutor_id'] = $this->get_interlocutor_id($room_id, $profile_user_id);
+            $data['username'] = $this->db_users->all_where("id=$profile_user_id")[0]['username'];
             foreach ($this->rooms[$room_id] as $client) {
                 $client->send(json_encode($data));
             }
