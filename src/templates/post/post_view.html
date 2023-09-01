@@ -3,6 +3,7 @@
 {% block title %}Post edit{% endblock %}
 
 {% block content %}
+{% include 'includes/post_delete_pop_up.html' %}
 <div class="post">
   <div class="post-user-image">
     {% if user['path_to_user_image'] %}
@@ -28,7 +29,7 @@
           <a href="/edit-post/{{ post['id'] }}" class="post-menu-board-item">
             Update
           </a>
-          <button class="post-menu-board-item">
+          <button data-del_post_id="{{ post['id'] }}" class="post-menu-board-item post-delete-btn">
             Delete
           </button>
         </span>
