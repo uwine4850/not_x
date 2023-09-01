@@ -5,7 +5,7 @@
 {% block content %}
 <div class="chat-list">
     {% for room in rooms %}
-    {% set user = interlocutor(room) %}
+    {% set user = interlocutor(room, db_users) %}
     {% set last_msg = get_last_msg(room['id']) %}
     <a href="/chat-room/{{ room['id'] }}" class="chat-list-item" data-room_id="{{ room['id'] }}">
         <div class="chat-list-item-img">
@@ -21,7 +21,7 @@
             </div>
             <div class="last-msg">
                 {% if last_msg %}
-                    {{ get_user_by_id(last_msg['user'])['username'] }}: {{ last_msg['text'] }}
+                    {{ get_user_by_id(last_msg['user'], db_users)['username'] }}: {{ last_msg['text'] }}
                 {% endif %}
             </div>
         </div>

@@ -16,5 +16,6 @@ class NotificationMddl extends Middleware{
         } else{
             $_GET['msgn'] = '';
         }
+        $db->close();
     }
 }

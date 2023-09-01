@@ -11,6 +11,11 @@ class PostDeleteHandler extends BaseHandler {
         $this->posts_db = new Database('posts');
     }
 
+    public function __destruct()
+    {
+        $this->posts_db->close();
+    }
+
     private function post(): void{
         if ($_SERVER['REQUEST_METHOD'] != 'POST'){
             return;

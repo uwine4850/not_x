@@ -12,21 +12,23 @@ require_once 'utils/utils.php';
 require_once 'config.php';
 
 class Chat implements MessageComponentInterface {
+    use ConnectToAllTables;
+
     protected \SplObjectStorage $clients;
     protected array $rooms;
     private array $roomUsers = array();
-    private Database $db_chat_messages;
-    private Database $db_chat_rooms;
-    private Database $db_chat_mc;
-    private Database $db_users;
+    private Database $db;
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
         $this->rooms = [];
-        $this->db_chat_messages = new Database('chat_messages');
-        $this->db_chat_rooms = new Database('chat_rooms');
-        $this->db_chat_mc = new Database('chat_messages_notification');
-        $this->db_users = new Database('users');
+        $this->db = new Database();
+        $this->connect_to_all_tables($this->db);
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
 
     /**
@@ -73,9 +75,9 @@ class Chat implements MessageComponentInterface {
      * @return bool
      */
     private function delete_msgs_count(int $room_id, int $auth_uid): bool{
-        $id = $this->db_chat_mc->all_where("room_id=$room_id AND user=$auth_uid");
+        $id = $this->db_chat_messages_notification->all_where("room_id=$room_id AND user=$auth_uid");
         if (!empty($id)){
-            $this->db_chat_mc->delete($id[0]['id']);
+            $this->db_chat_messages_notification->delete($id[0]['id']);
             return true;
         }
         return false;

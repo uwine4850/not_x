@@ -20,6 +20,7 @@ class AuthMddl extends Middleware{
             $user = $db->all_where("id=$uid")[0];
             unset($user['password']);
             $_GET['user_g'] = $user;
+            $db->close();
         }
     }
 }

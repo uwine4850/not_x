@@ -5,15 +5,20 @@ require_once 'handlers/twig_functions.php';
 
 class SubscriptionsHandler extends BaseHandler{
     use \TwigFunc\GlobalFunc;
+    use ConnectToAllTables;
 
-    private Database $sub_db;
-    private Database $user_db;
+    private Database $db;
 
     public function __construct()
     {
         parent::__construct();
-        $this->sub_db = new Database('subscriptions');
-        $this->user_db = new Database('users');
+        $this->db = new Database();
+        $this->connect_to_all_tables($this->db);
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
 
     /**
@@ -22,7 +27,7 @@ class SubscriptionsHandler extends BaseHandler{
      */
     private function get_subscriptions(): array{
         $id = $_GET['user_g']['id'];
-        return $this->sub_db->all_where("subscriber_id=$id");
+        return $this->db_subscriptions->all_where("subscriber_id=$id");
     }
 
     /**
@@ -31,7 +36,7 @@ class SubscriptionsHandler extends BaseHandler{
      * @return mixed
      */
     public function get_subscribe_profile_by_id(string $id): array{
-        $user = $this->user_db->all_where("id=$id")[0];
+        $user = $this->db_users->all_where("id=$id")[0];
         unset($user['password']);
         return $user;
     }

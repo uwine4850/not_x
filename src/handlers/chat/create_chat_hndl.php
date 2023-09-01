@@ -11,6 +11,11 @@ class CreateChatHandler extends BaseHandler{
         $this->db_chat_rooms = new Database('chat_rooms');
     }
 
+    public function __destruct()
+    {
+        $this->db_chat_rooms->close();
+    }
+
     private function post(): void{
         if ($_SERVER['REQUEST_METHOD'] != 'POST'){
             return;

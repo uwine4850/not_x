@@ -5,13 +5,18 @@ require_once 'utils/database.php';
 class RegisterHandler extends BaseHandler{
     private $form_error;
     private const form_fields = array('profile-name', 'profile-username', 'profile-password-reg', 'profile-password-reg-again');
-    private $db;
+    private Database $db;
     private const PATH_TO_MEDIA_USERS = '/var/www/html/media/users/';
 
     public function __construct()
     {
         parent::__construct();
         $this->db = new Database('users');
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
 
     private function validate_username(string $username): bool{

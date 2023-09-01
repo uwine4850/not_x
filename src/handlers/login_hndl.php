@@ -5,12 +5,17 @@ require_once 'utils/database.php';
 class LoginHandler extends BaseHandler{
     private $form_error = '';
     private const form_field = array('profile-username', 'profile-password');
-    private $db;
+    private Database $db;
 
     public function __construct()
     {
         parent::__construct();
         $this->db = new Database('users');
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
 
     private function post(): void{

@@ -8,17 +8,20 @@ require_once 'handlers/profile/profile_utils.php';
 class ChatListHandler extends BaseHandler{
     use \TwigFunc\GlobalFunc;
     use HandlerUtils;
+    use ConnectToAllTables;
 
-    private Database $db_chat_rooms;
-    private Database $db_chat_messages;
-    private Database $db_chat_mc;
+    private Database $db;
 
     public function __construct(){
         parent::__construct();
-        $this->db_chat_rooms = new Database('chat_rooms');
-        $this->db_chat_messages = new Database('chat_messages');
-        $this->db_chat_mc = new Database('chat_messages_notification');
+        $this->db = new Database();
+        $this->connect_to_all_tables($this->db);
         $this->set_current_url_pattern();
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
 
     public function get_last_msg(int $room_id): ?array{
@@ -36,7 +39,7 @@ class ChatListHandler extends BaseHandler{
      */
     public function get_chat_room_msg_count(int $from_user): int{
         $uid = $_GET['user_g']['id'];
-        $count = $this->db_chat_mc->all_where("user=$uid AND from_user=$from_user");
+        $count = $this->db_chat_messages_notification->all_where("user=$uid AND from_user=$from_user");
         if (!empty($count)){
             return $count[0]['count'];
         }
@@ -51,7 +54,8 @@ class ChatListHandler extends BaseHandler{
         $this->twig->addFunction((new Twig\TwigFunction('get_user_by_id', 'get_user_by_id')));
         $this->twig->addFunction((new Twig\TwigFunction('get_chat_room_msg_count', [$this, 'get_chat_room_msg_count'])));
         $this->render('chat/chat_list.html', array(
-            'rooms' => get_user_chat_rooms($_GET['user_g']['id']),
+            'rooms' => get_user_chat_rooms($_GET['user_g']['id'], $this->db_chat_rooms),
+            'db_users' => $this->db_users,
         ));
     }
 }

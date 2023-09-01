@@ -3,15 +3,21 @@ require_once 'utils/handler.php';
 require_once 'utils/database.php';
 
 class PostLikeHandler extends BaseHandler{
-    private Database $post_like_db;
-    private Database $posts_db;
+    use ConnectToAllTables;
+
+    private Database $db;
     private string $form_error = '';
     private array $user_g;
     public function __construct(){
         parent::__construct();
-        $this->post_like_db = new Database('post_like');
-        $this->posts_db = new Database('posts');
+        $this->db = new Database();
+        $this->connect_to_all_tables($this->db);
         $this->user_g = $_GET['user_g'];
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
 
     private function post(): void{
@@ -50,16 +56,16 @@ class PostLikeHandler extends BaseHandler{
         // Inserting and deleting data from the database.
         $luser_id = $insert_data['user_id'];
         $lpost_id = $insert_data['post_id'];
-        $post_like_id = $this->post_like_db->all_where("user_id=$luser_id AND post_id=$lpost_id");
+        $post_like_id = $this->db_post_like->all_where("user_id=$luser_id AND post_id=$lpost_id");
         if (empty($post_like_id)){
-            $this->post_like_db->insert($insert_data);
+            $this->db_post_like->insert($insert_data);
         } else{
-            $this->post_like_db->delete($post_like_id[0]['id']);
+            $this->db_post_like->delete($post_like_id[0]['id']);
         }
     }
 
     private function post_exist(string $post_id): bool{
-        if (!empty($this->posts_db->all_where("id=$post_id"))){
+        if (!empty($this->db_posts->all_where("id=$post_id"))){
             return true;
         }
         return false;

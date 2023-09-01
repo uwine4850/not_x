@@ -6,9 +6,8 @@
  * @param int $post_id
  * @return bool
  */
-function is_liked (int $user_id, int $post_id): bool{
-    $post_like_db = new Database('post_like');
-    if (empty($post_like_db->all_where("user_id=$user_id AND post_id=$post_id"))){
+function is_liked(int $user_id, int $post_id, Database $db_post_like_instance): bool{
+    if (empty($db_post_like_instance->all_where("user_id=$user_id AND post_id=$post_id"))){
         return false;
     } else{
         return true;
@@ -20,18 +19,18 @@ function is_liked (int $user_id, int $post_id): bool{
  * @param int $post_id
  * @return int
  */
-function post_like_count(int $post_id): int{
-    $post_like_db = new Database('post_like');
-    return $post_like_db->count("post_id=$post_id")[0];
+function post_like_count(int $post_id, Database $db_post_like_instance): int{
+    return $db_post_like_instance->count("post_id=$post_id")[0];
 }
 
 /**
  * Returns an array with the post's image data.
- * @param $post_id
+ * @param int $post_id
  * @return array
  */
-function get_post_image($post_id): array{
-    $post_images_db = new Database('post_image');
+function get_post_image(int $post_id, Database $post_image_instance): array{
+//    $post_images_db = new Database('post_image');
+    $post_images_db = $post_image_instance;
     return $post_images_db->all_where("parent_post=$post_id");
 }
 
@@ -40,9 +39,8 @@ function get_post_image($post_id): array{
  * @param int $comment_id
  * @return array
  */
-function get_answer_comments(int $comment_id): array{
-    $db = new Database('comments');
-    $res = $db->all_fk('comments_answer', 'answer_for_comment_id', where: "comments.id=$comment_id");
+function get_answer_comments(int $comment_id, Database $db_comments_instance): array{
+    $res = $db_comments_instance->all_fk('comments_answer', 'answer_for_comment_id', where: "comments.id=$comment_id");
     if (empty($res)){
         return array();
     }
@@ -54,9 +52,8 @@ function get_answer_comments(int $comment_id): array{
  * @param int $post_id
  * @return int
  */
-function get_count_of_comment_by_post_id(int $post_id): int{
-    $db = new Database('comments');
-    $res = $db->query("SELECT COUNT(*) AS total_comments_and_answers
+function get_count_of_comment_by_post_id(int $post_id, Database $db_comments_instance): int{
+    $res = $db_comments_instance->query("SELECT COUNT(*) AS total_comments_and_answers
                         FROM (
                             SELECT id FROM comments WHERE parent_post_id = $post_id
                             UNION ALL
@@ -72,9 +69,8 @@ function get_count_of_comment_by_post_id(int $post_id): int{
  * @param int $count Number of posts.
  * @return array
  */
-function load_user_posts(int $uid, int $start_post_id, int $count): array{
-    $db = new Database('posts');
-    return $db->all_where("id < $start_post_id AND user=$uid ORDER BY posts.id DESC", $count);
+function load_user_posts(int $uid, int $start_post_id, int $count, Database $db_posts_instance): array{
+    return $db_posts_instance->all_where("id < $start_post_id AND user=$uid ORDER BY posts.id DESC", $count);
 }
 
 function delete_post_by_id (int $post_id): void{

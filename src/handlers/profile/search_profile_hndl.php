@@ -15,7 +15,12 @@ class SearchProfileHandler extends BaseHandler{
         $this->db_users = new Database('users');
     }
 
-    private function post(){
+    public function __destruct()
+    {
+        $this->db_users->close();
+    }
+
+    private function post(): void{
         if ($_SERVER['REQUEST_METHOD'] != 'POST'){
             return;
         }

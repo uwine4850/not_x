@@ -7,6 +7,7 @@ require_once 'config.php';
 
 class ProfileEditHandler extends BaseHandler{
     use \TwigFunc\GlobalFunc;
+    use ConnectToAllTables;
 
     private string $form_error = "";
     private const form_fields = array('profile-name', 'description');
@@ -16,8 +17,14 @@ class ProfileEditHandler extends BaseHandler{
     public function __construct()
     {
         parent::__construct();
-        $this->db = new Database('users');
-        $this->user = get_user_data();
+        $this->db = new Database();
+        $this->connect_to_all_tables($this->db);
+        $this->user = get_user_data($this->db_users);
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
 
     private function post(): void{
@@ -65,7 +72,7 @@ class ProfileEditHandler extends BaseHandler{
             }
 
             // Updates user data in the database.
-            $this->db->update($this->user['id'], $insert_values);
+            $this->db_users->update($this->user['id'], $insert_values);
             $username = $this->user['username'];
             header("Location: /profile/$username");
         }
@@ -118,6 +125,9 @@ class ProfileEditHandler extends BaseHandler{
     {
         $this->post();
         $this->enable_global_func($this->twig);
-        $this->render('profile/profile_edit.html', array('error' => $this->form_error, 'user' => $this->user));
+        $this->render('profile/profile_edit.html', array(
+            'error' => $this->form_error,
+            'user' => $this->user,
+        ));
     }
 }

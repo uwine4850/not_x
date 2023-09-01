@@ -7,9 +7,9 @@ require_once 'config.php';
 
 class PostEditHandler extends BaseHandler{
     use \TwigFunc\GlobalFunc;
+    use ConnectToAllTables;
 
-    private Database $posts_db;
-    private Database $post_images_db;
+    private Database $db;
     private array $post;
     private array $post_images;
     private string $form_error = '';
@@ -17,15 +17,20 @@ class PostEditHandler extends BaseHandler{
     public function __construct()
     {
         parent::__construct();
-        $this->posts_db = new Database('posts');
-        $this->post_images_db = new Database('post_image');
+        $this->db = new Database();
+        $this->connect_to_all_tables($this->db);
         $this->post = $this->get_post();
-        $this->post_images = get_post_image($this->post['id']);
+        $this->post_images = get_post_image($this->post['id'], $this->db_post_image);
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
 
     private function get_post(): array{
         $p_id = $_GET['post_id'];
-        return $this->posts_db->all_where("id=$p_id")[0];
+        return $this->db_posts->all_where("id=$p_id")[0];
     }
 
     private function post(): void{
@@ -49,7 +54,7 @@ class PostEditHandler extends BaseHandler{
             $this->form_error = $e->getMessage();
             return;
         }
-        $this->posts_db->update($this->post['id'], $insert_data);
+        $this->db_posts->update($this->post['id'], $insert_data);
 
         $delete_id = $this->get_delete_id();
         $upload_img_count = $this->get_upload_files_count($_FILES['post-edit-new-images']);
@@ -72,7 +77,7 @@ class PostEditHandler extends BaseHandler{
             try {
                 $save_paths = $this->save_new_images($upload_img_count);
                 foreach ($save_paths as $save_path){
-                    $this->post_images_db->insert(array('parent_post' => $this->post['id'], 'image' => $save_path));
+                    $this->db_post_image->insert(array('parent_post' => $this->post['id'], 'image' => $save_path));
                 }
             } catch (ErrorUploadingFile|ExceedMaximumFileSize|FileTypeError $e) {
                 $this->form_error = $e->getMessage();
@@ -180,8 +185,8 @@ class PostEditHandler extends BaseHandler{
 
         // Deletion from file system and database.
         foreach ($delete_images_id as $del_img_id){
-            unlink($this->post_images_db->all_where("id=$del_img_id")[0]['image']);
-            $this->post_images_db->delete($del_img_id);
+            unlink($this->db_post_image->all_where("id=$del_img_id")[0]['image']);
+            $this->db_post_image->delete($del_img_id);
         }
     }
 

@@ -10,21 +10,32 @@ class ProfileHndl extends BaseHandler {
     use \TwigFunc\GlobalFunc;
 
     use HandlerUtils;
+    private Database $db;
     private Database $sub_db;
     private Database $users_db;
     private Database $posts_db;
     private Database $post_images_db;
+    private Database $db_post_like;
+    private Database $db_comments;
     private array $current_user_data;
 
     public function __construct()
     {
         parent::__construct();
         $this->set_current_url_pattern();
-        $this->sub_db = new Database('subscriptions');
-        $this->users_db = new Database('users');
-        $this->posts_db = new Database('posts');
-        $this->post_images_db = new Database('post_image');
-        $this->current_user_data = get_user_data();
+        $this->db = new Database();
+        $this->sub_db = clone $this->db->table_name('subscriptions');
+        $this->users_db = clone $this->db->table_name('users');
+        $this->posts_db = clone $this->db->table_name('posts');
+        $this->post_images_db = clone $this->db->table_name('post_image');
+        $this->db_post_like = clone $this->db->table_name('post_like');
+        $this->db_comments = clone $this->db->table_name('comments');
+        $this->current_user_data = get_user_data($this->users_db);
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
 
     /**
@@ -100,11 +111,15 @@ class ProfileHndl extends BaseHandler {
         $this->twig->addFunction((new \Twig\TwigFunction('user_subscribed', [$this, 'user_subscribed'])));
         $this->render("profile/profile.html", array(
             'user' => $this->current_user_data,
-            'is_current_user_profile' => is_current_user_profile(),
+            'is_current_user_profile' => is_current_user_profile($this->users_db),
             'error' => $form_error,
             'subscribers' => $this->get_subscribers(),
             'posts' => $this->get_user_posts(),
             'post_count' => $this->post_count(),
+            'users_db' => $this->users_db,
+            'post_image_db' => $this->post_images_db,
+            'db_post_like' => $this->db_post_like,
+            'db_comments' => $this->db_comments,
         ));
     }
 }
@@ -112,12 +127,15 @@ class ProfileHndl extends BaseHandler {
 class Subscribe{
     private string $form_error = '';
     private Database $sub_db;
-    private Database $users_db;
     private array $current_user_data;
     public function __construct(Database $sub_db, Database $users_db, array $current_user_data){
         $this->sub_db = $sub_db;
-        $this->users_db = $users_db;
         $this->current_user_data = $current_user_data;
+    }
+
+    public function __destruct()
+    {
+        $this->sub_db->close();
     }
 
     public function post_subscribe(): string{

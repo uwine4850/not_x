@@ -12,6 +12,7 @@ class EditPostPermissionMddl extends Middleware{
         $posts_db = new Database('posts');
         $p_id = $_GET['post_id'];
         $post = $posts_db->all_where("id=$p_id");
+        $posts_db->close();
         if (empty($post)){
             require_once 'utils/router.php';
             render_403();

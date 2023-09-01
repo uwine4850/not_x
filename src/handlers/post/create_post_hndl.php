@@ -4,16 +4,21 @@ require_once 'utils/database.php';
 require_once 'config.php';
 
 class CreatePostHandler extends BaseHandler{
-    private Database $posts_db;
-    private Database $post_image_db;
+    use ConnectToAllTables;
+
+    private Database $db;
     private string $form_error = '';
-//    private const PATH_TO_MEDIA_USERS = '/var/www/html/media/users/';
 
     public function __construct()
     {
         parent::__construct();
-        $this->posts_db = new Database('posts');
-        $this->post_image_db = new Database('post_image');
+        $this->db = new Database();
+        $this->connect_to_all_tables($this->db);
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
 
     private function post(): void{
@@ -46,13 +51,13 @@ class CreatePostHandler extends BaseHandler{
         }
 
         // Create a post in the table and return its ID.
-        $new_post_id = $this->posts_db->insert($insert_data_post);
+        $new_post_id = $this->db_posts->insert($insert_data_post);
 
         // Saving images if it is sent by form.
         $save_images_path = $this->save_images();
         if ($save_images_path){
             for ($i = 0; $i < count($save_images_path); $i++) {
-                $this->post_image_db->insert(array('parent_post' => $new_post_id, 'image' => $save_images_path[$i]));
+                $this->db_post_image->insert(array('parent_post' => $new_post_id, 'image' => $save_images_path[$i]));
             }
         }
         if (!$this->form_error){

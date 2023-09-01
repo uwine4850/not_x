@@ -39,9 +39,9 @@
       <span class="post-text post-text-post-view">
         {{ post['text'] | raw }}
       </span>
-      {% if get_post_image(post['id']) %}
+      {% if get_post_image(post['id'], post_image_db) %}
       <span class="post-images">
-        {% for img in get_post_image(post['id']) %}
+        {% for img in get_post_image(post['id'], post_image_db) %}
           <span class="post-image">
             <img alt="post image" src='{{ media_img(img["image"]) }}'>
           </span>
@@ -53,7 +53,7 @@
       <form method="post" class="post-interactions post-like-form">
         <input type="hidden" name="post_like_id" value="{{ post['id'] }}">
         <button type="submit" class="post-interaction post-like-btn">
-          {% if is_liked(user_g['id'], post['id']) %}
+          {% if is_liked(user_g['id'], post['id'], db_post_like) %}
           <svg class="like-btn-svg" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path class="like-btn-path is-like" d="M14.7992 5.83342L14 6.65305L13.2008 5.83344C10.7147 3.28394 6.68399 3.28393 4.19791 5.83344C1.77859 8.31448 1.70426 12.3129 4.02959 14.8867L10.7103 22.2813C12.4851 24.2458 15.5149 24.2457 17.2897 22.2813L23.9704 14.8867C26.2958 12.3129 26.2214 8.31445 23.8021 5.83342C21.316 3.28392 17.2853 3.28392 14.7992 5.83342Z" stroke="#5D6367" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -62,11 +62,11 @@
             <path class="like-btn-path" d="M14.7992 5.83342L14 6.65305L13.2008 5.83344C10.7147 3.28394 6.68399 3.28393 4.19791 5.83344C1.77859 8.31448 1.70426 12.3129 4.02959 14.8867L10.7103 22.2813C12.4851 24.2458 15.5149 24.2457 17.2897 22.2813L23.9704 14.8867C26.2958 12.3129 26.2214 8.31445 23.8021 5.83342C21.316 3.28392 17.2853 3.28392 14.7992 5.83342Z" stroke="#5D6367" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           {% endif %}
-          <span class="value">{{ post_like_count(post['id']) }}</span>
+          <span class="value">{{ post_like_count(post['id'], db_post_like) }}</span>
         </button>
         <a href="/post/{{ post['id'] }}" class="post-interaction">
           <img alt="post comments" src='{{ static("img/comments.svg") }}'>
-          <span class="value">{{ comments_count(post['id']) }}</span>
+          <span class="value">{{ comments_count(post['id'], db_comments) }}</span>
         </a>
       </form>
       <div class="publication-date">
@@ -89,7 +89,7 @@
 
 <div class="comments">
   {% for comment in comments %}
-  {% set post_user = get_post_user(comment['user_id']) %}
+  {% set post_user = get_post_user(comment['user_id'], users_db) %}
   <div class="comment">
     <div class="comment-info">
       <div class="comment-user-image">
@@ -111,8 +111,8 @@
     </div>
     <button data-comment-id="{{ comment['id'] }}" data-comment-username="{{ post_user['username'] }}" class="comment-answer-btn">Answer</button>
     <div class="comment-answers">
-      {% for answer in get_answer_comments(comment['id']) %}
-      {% set post_user = get_post_user(answer['user_id']) %}
+      {% for answer in get_answer_comments(comment['id'], db_comments) %}
+      {% set post_user = get_post_user(answer['user_id'], users_db) %}
         <div class="comment">
           <div class="comment-info">
             <div class="comment-user-image">

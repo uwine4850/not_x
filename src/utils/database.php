@@ -1,6 +1,7 @@
 <?php
 
 interface Db{
+    public function table_name(string $table_name): self;
     public function get_connection(): mysqli;
     public function close(): void;
     public function query(string $query): bool|mysqli_result;
@@ -17,13 +18,22 @@ class Database implements Db{
     private mysqli $connection;
     private string $table_name;
 
-    public function __construct(string $table_name)
+    public function __construct(string $table_name = '')
     {
-        $this->table_name = $table_name;
+//        print_r("INIT <br>");
+        if ($table_name){
+            $this->table_name = $table_name;
+        }
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         $this->connection = new mysqli(hostname: "mysql", username: "root", password: "1111", database: "not_x", port: 3406);
         $this->connection->set_charset('utf8mb4');
         $this->connection->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
+    }
+
+    public function table_name(string $table_name): Db
+    {
+        $this->table_name = $table_name;
+        return $this;
     }
 
     /**
@@ -162,11 +172,6 @@ class Database implements Db{
         $this->connection->close();
     }
 
-    public function __destruct()
-    {
-        $this->close();
-    }
-
     public function count(string $where): array{
         $res = $this->connection->query("SELECT COUNT(*) FROM $this->table_name WHERE $where");
         return $res->fetch_row();
@@ -189,5 +194,30 @@ class Database implements Db{
                                         JOIN $fk_table_name ON $fk_table_name.$fk_field_name = $this->table_name.id
                                         WHERE $where $limit;");
         return $res->fetch_all(MYSQLI_ASSOC);
+    }
+}
+
+trait ConnectToAllTables{
+    public Database $db_users;
+    public Database $db_subscriptions;
+    public Database $db_post_like;
+    public Database $db_post_image;
+    public Database $db_posts;
+    public Database $db_comments_answer;
+    public Database $db_comments;
+    public Database $db_chat_rooms;
+    public Database $db_chat_messages_notification;
+    public Database $db_chat_messages;
+    public function connect_to_all_tables(Database $db_instance): void{
+        $this->db_users = clone $db_instance->table_name('users');
+        $this->db_subscriptions = clone  $db_instance->table_name('subscriptions');
+        $this->db_post_like = clone  $db_instance->table_name('post_like');
+        $this->db_post_image = clone  $db_instance->table_name('post_image');
+        $this->db_posts = clone  $db_instance->table_name('posts');
+        $this->db_comments_answer = clone  $db_instance->table_name('comments_answer');
+        $this->db_comments = clone  $db_instance->table_name('comments');
+        $this->db_chat_rooms = clone  $db_instance->table_name('chat_rooms');
+        $this->db_chat_messages_notification = clone  $db_instance->table_name('chat_messages_notification');
+        $this->db_chat_messages = clone $db_instance->table_name('chat_messages');
     }
 }

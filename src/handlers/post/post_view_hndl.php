@@ -7,11 +7,9 @@ require_once 'handlers/twig_functions.php';
 class PostViewHandler extends BaseHandler{
     use \TwigFunc\PostFunc;
     use \TwigFunc\GlobalFunc;
+    use ConnectToAllTables;
 
-    private Database $posts_db;
-    private Database $users_db;
-    private Database $comments_db;
-    private Database $comments_answer_db;
+    private Database $db;
     private array $post;
     private array $user;
     private string $form_error = '';
@@ -20,22 +18,25 @@ class PostViewHandler extends BaseHandler{
     public function __construct()
     {
         parent::__construct();
-        $this->posts_db = new Database('posts');
-        $this->users_db = new Database('users');
-        $this->comments_db = new Database('comments');
-        $this->comments_answer_db = new Database('comments_answer');
+        $this->db = new Database();
+        $this->connect_to_all_tables($this->db);
         $this->post = $this->get_post();
         if ($this->post){
-            $this->user = get_user_by_id($this->post['user']);
+            $this->user = get_user_by_id($this->post['user'], $this->db_users);
             $post_id = $this->post['id'];
-            $this->comments = $this->posts_db->all_fk('comments',
+            $this->comments = $this->db_posts->all_fk('comments',
                 'parent_post_id', where: "posts.id=$post_id");
         }
     }
 
+    public function __destruct()
+    {
+        $this->db->close();
+    }
+
     private function get_post(): array{
         $post_id = $_GET['post_id'];
-        $post = $this->posts_db->all_where("id=$post_id");
+        $post = $this->db_posts->all_where("id=$post_id");
         if (empty($post)){
             return array();
         }
@@ -82,7 +83,7 @@ class PostViewHandler extends BaseHandler{
             if (!$this->parent_post_exist($insert_data['parent_post_id'])){
                 return;
             }
-            if ($this->comments_db->insert($insert_data)){
+            if ($this->db_comments->insert($insert_data)){
                 $post_id = $this->post['id'];
                 header("Location: /post/$post_id");
             }
@@ -94,7 +95,7 @@ class PostViewHandler extends BaseHandler{
                 $this->form_error = 'Answer comment not exist';
                 return;
             }
-            if ($this->comments_answer_db->insert($insert_data)){
+            if ($this->db_comments_answer->insert($insert_data)){
                 $post_id = $this->post['id'];
                 header("Location: /post/$post_id");
             };
@@ -107,7 +108,7 @@ class PostViewHandler extends BaseHandler{
      * @return bool
      */
     private function comment_exist(int $comment_id): bool{
-        if (empty($this->comments_db->all_where("id=$comment_id"))){
+        if (empty($this->db_comments->all_where("id=$comment_id"))){
             return false;
         }
         return true;
@@ -119,7 +120,7 @@ class PostViewHandler extends BaseHandler{
      * @return bool
      */
     private function parent_post_exist(int $parent_post_id): bool{
-        if (empty($this->posts_db->all_where("id=$parent_post_id"))){
+        if (empty($this->db_posts->all_where("id=$parent_post_id"))){
             return false;
         }
         return true;
@@ -139,6 +140,10 @@ class PostViewHandler extends BaseHandler{
             'user' => $this->user,
             'error' => $this->form_error,
             'comments' => $this->comments,
+            'users_db' => $this->db_users,
+            'post_image_db' => $this->db_post_image,
+            'db_post_like' => $this->db_post_like,
+            'db_comments' => $this->db_comments,
         ));
     }
 }

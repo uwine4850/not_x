@@ -6,7 +6,7 @@ class ProfileEditMddl extends Middleware{
     public function run(): void
     {
         if ($_GET["url_pattern"] == '/profile/{username}/edit'){
-            if (!is_current_user_profile()){
+            if (!is_current_user_profile(new Database('users'))){
                 require_once 'utils/router.php';
                 render_403();
                 exit();

@@ -3,10 +3,12 @@ namespace TwigFunc;
 
 require_once 'handlers/post/post_utils.php';
 require_once 'handlers/profile/profile_utils.php';
+require_once 'utils/database.php';
+use Database;
 use Twig\Environment;
 
 trait PostFunc{
-    public function enable_post_func(Environment $twig): void{
+    public function enable_post_func(Environment $twig, Database $db_instance = null): void{
         $twig->addFunction((new \Twig\TwigFunction("get_post_user", "get_user_by_id")));
         $twig->addFunction((new \Twig\TwigFunction("comments_count", "get_count_of_comment_by_post_id")));
         $twig->addFunction((new \Twig\TwigFunction("post_like_count", "post_like_count")));
