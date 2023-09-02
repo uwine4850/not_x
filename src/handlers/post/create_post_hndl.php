@@ -83,8 +83,9 @@ class CreatePostHandler extends BaseHandler{
         $file_count = 0;
         if ($_FILES['crt-p-images']['error'][0] != UPLOAD_ERR_NO_FILE){
             $names = $_FILES['crt-p-images']['name'];
-            if (count($names) > 2){
-                $this->form_error = 'More than 2 files have been uploaded.';
+            if (count($names) > config\MAX_IMAGES){
+                $max_images = config\MAX_IMAGES;
+                $this->form_error = "More than $max_images files have been uploaded.";
                 return array();
             }
             $file_count = count($names);

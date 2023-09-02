@@ -4,6 +4,7 @@ require_once 'utils/database.php';
 require_once 'profile_utils.php';
 require_once 'handlers/twig_functions.php';
 require_once 'utils/router.php';
+require_once 'config.php';
 
 class ProfileHndl extends BaseHandler {
     use \TwigFunc\PostFunc;
@@ -31,11 +32,6 @@ class ProfileHndl extends BaseHandler {
         $this->db_post_like = clone $this->db->table_name('post_like');
         $this->db_comments = clone $this->db->table_name('comments');
         $this->current_user_data = get_user_data($this->users_db);
-    }
-
-    public function __destruct()
-    {
-        $this->db->close();
     }
 
     /**
@@ -77,7 +73,7 @@ class ProfileHndl extends BaseHandler {
      */
     private function get_user_posts(): array{
         $user_id = $this->current_user_data['id'];
-        return $this->posts_db->all_where("id <= (SELECT MAX(id) FROM posts) AND user=$user_id ORDER BY posts.id DESC", 2);
+        return $this->posts_db->all_where("id <= (SELECT MAX(id) FROM posts) AND user=$user_id ORDER BY posts.id DESC", config\LOAD_POST_COUNT);
     }
 
     /**

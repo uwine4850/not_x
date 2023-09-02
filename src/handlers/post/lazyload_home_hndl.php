@@ -3,6 +3,7 @@ require_once 'utils/handler.php';
 require_once 'utils/database.php';
 require_once 'lazyload_post.php';
 require_once 'handlers/twig_functions.php';
+require_once 'config.php';
 
 class LazyLoadHomeHandler extends BaseHandler {
     use LazyLoadPost;
@@ -30,7 +31,7 @@ class LazyLoadHomeHandler extends BaseHandler {
         }
         $post_id = $_GET['last_post_id'];
         $uid = $_GET['user_g']['id'];
-        $this->posts = get_subscriptions_posts($uid, $post_id, 2, $this->posts_db);
+        $this->posts = get_subscriptions_posts($uid, $post_id, config\LOAD_POST_COUNT, $this->posts_db);
     }
 
     public function handle(): void

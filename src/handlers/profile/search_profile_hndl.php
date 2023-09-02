@@ -2,6 +2,7 @@
 require_once "utils/handler.php";
 require_once 'utils/database.php';
 require_once 'handlers/twig_functions.php';
+require_once 'config.php';
 
 class SearchProfileHandler extends BaseHandler{
     use \TwigFunc\GlobalFunc;
@@ -36,7 +37,7 @@ class SearchProfileHandler extends BaseHandler{
     }
 
     private function get_users(string $username): array{
-        $db_users = $this->db_users->all_where("username LIKE '%$username%'", 10);
+        $db_users = $this->db_users->all_where("username LIKE '%$username%'", config\SEARCH_PROFILE_COUNT);
         $users = array();
         foreach ($db_users as $u){
             unset($u['password']);

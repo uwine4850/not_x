@@ -4,6 +4,7 @@
  * Checks if a user has liked a post.
  * @param int $user_id
  * @param int $post_id
+ * @param Database $db_post_like_instance An instance of the post_like table connection database.
  * @return bool
  */
 function is_liked(int $user_id, int $post_id, Database $db_post_like_instance): bool{
@@ -17,6 +18,7 @@ function is_liked(int $user_id, int $post_id, Database $db_post_like_instance): 
 /**
  * Returns the number of likes of the post by id.
  * @param int $post_id
+ * @param Database $db_post_like_instance An instance of the post_like table connection database.
  * @return int
  */
 function post_like_count(int $post_id, Database $db_post_like_instance): int{
@@ -26,6 +28,7 @@ function post_like_count(int $post_id, Database $db_post_like_instance): int{
 /**
  * Returns an array with the post's image data.
  * @param int $post_id
+ * @param Database $post_image_instance An instance of the post_image table connection database.
  * @return array
  */
 function get_post_image(int $post_id, Database $post_image_instance): array{
@@ -37,6 +40,7 @@ function get_post_image(int $post_id, Database $post_image_instance): array{
 /**
  * Returns answers to the selected comment.
  * @param int $comment_id
+ * @param Database $db_comments_instance An instance of the comments table connection database.
  * @return array
  */
 function get_answer_comments(int $comment_id, Database $db_comments_instance): array{
@@ -50,6 +54,7 @@ function get_answer_comments(int $comment_id, Database $db_comments_instance): a
 /**
  * Outputs the number of comments on the post. Answers to comments are not counted.
  * @param int $post_id
+ * @param Database $db_comments_instance An instance of the comments table connection database.
  * @return int
  */
 function get_count_of_comment_by_post_id(int $post_id, Database $db_comments_instance): int{
@@ -67,6 +72,7 @@ function get_count_of_comment_by_post_id(int $post_id, Database $db_comments_ins
  * @param int $uid User ID.
  * @param int $start_post_id Id of the post from which the output starts.
  * @param int $count Number of posts.
+ * @param Database $db_posts_instance An instance of the posts table connection database.
  * @return array
  */
 function load_user_posts(int $uid, int $start_post_id, int $count, Database $db_posts_instance): array{

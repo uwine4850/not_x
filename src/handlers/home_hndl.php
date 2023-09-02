@@ -3,10 +3,10 @@ require_once 'utils/handler.php';
 require_once 'utils/database.php';
 require_once 'handlers/post/lazyload_post.php';
 require_once 'handlers/twig_functions.php';
+require_once 'config.php';
 
 class HomeHandler extends BaseHandler{
     use HandlerUtils;
-//    use LazyLoadPost;
     use \TwigFunc\PostFunc;
     use \TwigFunc\GlobalFunc;
 
@@ -22,7 +22,6 @@ class HomeHandler extends BaseHandler{
     public function __construct()
     {
         parent::__construct();
-//        $this->lazy_load_post_construct();
         $this->set_current_url_pattern();
         $this->db = new Database();
         $this->posts_db = clone $this->db->table_name('posts');
@@ -39,7 +38,7 @@ class HomeHandler extends BaseHandler{
 
     private function get(){
         $uid = $_GET['user_g']['id'];
-        $this->posts = get_subscriptions_posts($uid, 0, 2, $this->posts_db);
+        $this->posts = get_subscriptions_posts($uid, 0, config\LOAD_POST_COUNT, $this->posts_db);
         $this->user = $_GET['user_g'];
     }
 

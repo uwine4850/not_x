@@ -4,6 +4,7 @@ require_once 'utils/database.php';
 require_once 'handlers/profile/profile_utils.php';
 require_once 'lazyload_post.php';
 require_once 'handlers/twig_functions.php';
+require_once 'config.php';
 
 class LazyLoadPostHandler extends BaseHandler {
     use LazyLoadPost;
@@ -26,7 +27,7 @@ class LazyLoadPostHandler extends BaseHandler {
         }
         $post_id = $_GET['last_post_id'];
         $uid = $_GET['user_id'];
-        $this->posts = load_user_posts($uid, $post_id, 2, $this->posts_db);
+        $this->posts = load_user_posts($uid, $post_id, config\LOAD_POST_COUNT, $this->posts_db);
         $this->user = get_user_by_id($uid, $this->db_users);
     }
 
