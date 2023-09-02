@@ -140,10 +140,6 @@ class PostViewHandler extends BaseHandler{
             'user' => $this->user,
             'error' => $this->form_error,
             'comments' => $this->comments,
-            'users_db' => $this->db_users,
-            'post_image_db' => $this->db_post_image,
-            'db_post_like' => $this->db_post_like,
-            'db_comments' => $this->db_comments,
-        ));
+        ) + $this->get_post_tables());
     }
 }

@@ -15,6 +15,20 @@ trait PostFunc{
         $twig->addFunction((new \Twig\TwigFunction("is_liked", "is_liked")));
         $twig->addFunction((new \Twig\TwigFunction('get_post_image', 'get_post_image')));
     }
+
+    /**
+     * Return an array with tables to display the post correctly.
+     * IMPORTANT: the class must already have tables created.
+     * @return array
+     */
+    function get_post_tables(): array{
+        return array(
+            'users_db' => $this->db_users,
+            'post_image_db' => $this->db_post_image,
+            'db_post_like' => $this->db_post_like,
+            'db_comments' => $this->db_comments,
+        );
+    }
 }
 
 trait GlobalFunc{

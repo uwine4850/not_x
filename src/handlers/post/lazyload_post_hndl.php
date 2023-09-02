@@ -11,13 +11,10 @@ class LazyLoadPostHandler extends BaseHandler {
     use \TwigFunc\PostFunc;
     use \TwigFunc\GlobalFunc;
 
-    private Database $db_users;
-
     public function __construct()
     {
         parent::__construct();
         $this->lazy_load_post_construct();
-        $this->db_users = $this->db->table_name('users');
     }
 
     public function get(): void
@@ -27,7 +24,7 @@ class LazyLoadPostHandler extends BaseHandler {
         }
         $post_id = $_GET['last_post_id'];
         $uid = $_GET['user_id'];
-        $this->posts = load_user_posts($uid, $post_id, config\LOAD_POST_COUNT, $this->posts_db);
+        $this->posts = load_user_posts($uid, $post_id, config\LOAD_POST_COUNT, $this->db_posts);
         $this->user = get_user_by_id($uid, $this->db_users);
     }
 
@@ -44,11 +41,7 @@ class LazyLoadPostHandler extends BaseHandler {
         $this->render('includes/post.html', array(
             'posts' => $this->posts,
             'user' => $this->user,
-            'users_db' => $this->db_users,
-            'post_image_db' => $this->post_images_db,
-            'db_post_like' => $this->db_post_like,
-            'db_comments' => $this->db_comments,
-        ));
+        ) + $this->get_post_tables());
     }
 
 }

@@ -9,26 +9,18 @@ class HomeHandler extends BaseHandler{
     use HandlerUtils;
     use \TwigFunc\PostFunc;
     use \TwigFunc\GlobalFunc;
+    use ConnectToAllTables;
 
-    private Database $posts_db;
-    private Database $post_images_db;
     private array $posts;
     private array $user;
-    private Database $users_db;
     private Database $db;
-    private Database $db_post_like;
-    private Database $db_comments;
 
     public function __construct()
     {
         parent::__construct();
         $this->set_current_url_pattern();
         $this->db = new Database();
-        $this->posts_db = clone $this->db->table_name('posts');
-        $this->post_images_db = clone $this->db->table_name('post_image');
-        $this->users_db = clone $this->db->table_name('users');
-        $this->db_post_like = clone $this->db->table_name('post_like');
-        $this->db_comments = clone $this->db->table_name('comments');
+        $this->connect_to_all_tables($this->db);
     }
 
     public function __destruct()
@@ -38,7 +30,7 @@ class HomeHandler extends BaseHandler{
 
     private function get(){
         $uid = $_GET['user_g']['id'];
-        $this->posts = get_subscriptions_posts($uid, 0, config\LOAD_POST_COUNT, $this->posts_db);
+        $this->posts = get_subscriptions_posts($uid, 0, config\LOAD_POST_COUNT, $this->db_posts);
         $this->user = $_GET['user_g'];
     }
 
@@ -48,10 +40,6 @@ class HomeHandler extends BaseHandler{
         $this->enable_global_func($this->twig);
         $this->render('home.html', array(
             'posts' => $this->posts,
-            'users_db' => $this->users_db,
-            'post_image_db' => $this->post_images_db,
-            'db_post_like' => $this->db_post_like,
-            'db_comments' => $this->db_comments,
-        ));
+        ) + $this->get_post_tables());
     }
 }

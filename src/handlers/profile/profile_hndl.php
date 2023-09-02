@@ -9,15 +9,10 @@ require_once 'config.php';
 class ProfileHndl extends BaseHandler {
     use \TwigFunc\PostFunc;
     use \TwigFunc\GlobalFunc;
-
+    use ConnectToAllTables;
     use HandlerUtils;
+
     private Database $db;
-    private Database $sub_db;
-    private Database $users_db;
-    private Database $posts_db;
-    private Database $post_images_db;
-    private Database $db_post_like;
-    private Database $db_comments;
     private array $current_user_data;
 
     public function __construct()
@@ -25,13 +20,8 @@ class ProfileHndl extends BaseHandler {
         parent::__construct();
         $this->set_current_url_pattern();
         $this->db = new Database();
-        $this->sub_db = clone $this->db->table_name('subscriptions');
-        $this->users_db = clone $this->db->table_name('users');
-        $this->posts_db = clone $this->db->table_name('posts');
-        $this->post_images_db = clone $this->db->table_name('post_image');
-        $this->db_post_like = clone $this->db->table_name('post_like');
-        $this->db_comments = clone $this->db->table_name('comments');
-        $this->current_user_data = get_user_data($this->users_db);
+        $this->connect_to_all_tables($this->db);
+        $this->current_user_data = get_user_data($this->db_users);
     }
 
     /**
@@ -41,7 +31,7 @@ class ProfileHndl extends BaseHandler {
     public function user_subscribed(): bool{
         $subscriber_id = $_GET['user_g']['id'];
         $profile_id = $this->current_user_data['id'];
-        if (empty(get_subscription($this->sub_db, $subscriber_id, $profile_id))){
+        if (empty(get_subscription($this->db_subscriptions, $subscriber_id, $profile_id))){
             return false;
         }
         return true;
@@ -53,7 +43,7 @@ class ProfileHndl extends BaseHandler {
      */
     private function check_user_exist(): bool{
         $username = $_GET['username'];
-        if (empty($this->users_db->all_where("username='$username'"))){
+        if (empty($this->db_users->all_where("username='$username'"))){
             return false;
         }
         return true;
@@ -65,7 +55,7 @@ class ProfileHndl extends BaseHandler {
      */
     private function get_subscribers(): int{
         $id = $this->current_user_data['id'];
-        return $this->sub_db->count("profile_id=$id")[0];
+        return $this->db_subscriptions->count("profile_id=$id")[0];
     }
 
     /**
@@ -73,7 +63,7 @@ class ProfileHndl extends BaseHandler {
      */
     private function get_user_posts(): array{
         $user_id = $this->current_user_data['id'];
-        return $this->posts_db->all_where("id <= (SELECT MAX(id) FROM posts) AND user=$user_id ORDER BY posts.id DESC", config\LOAD_POST_COUNT);
+        return $this->db_posts->all_where("id <= (SELECT MAX(id) FROM posts) AND user=$user_id ORDER BY posts.id DESC", config\LOAD_POST_COUNT);
     }
 
     /**
@@ -81,12 +71,12 @@ class ProfileHndl extends BaseHandler {
      * @return array List of images of this post.
      */
     public function get_post_image(int $post_id): array{
-        return $this->post_images_db->all_where("parent_post=$post_id");
+        return $this->db_post_image->all_where("parent_post=$post_id");
     }
 
     private function post_count(): int{
         $uid = $this->current_user_data['id'];
-        return $this->posts_db->count("user=$uid")[0];
+        return $this->db_posts->count("user=$uid")[0];
     }
 
     public function handle(): void
@@ -95,7 +85,7 @@ class ProfileHndl extends BaseHandler {
             render_404();
             exit();
         }
-        $subscribe = new Subscribe($this->sub_db, $this->users_db, $this->current_user_data);
+        $subscribe = new Subscribe($this->db_subscriptions, $this->db_users, $this->current_user_data);
         $form_error = $subscribe->post_subscribe();
 
         if ($this->is_ajax()){
@@ -107,16 +97,12 @@ class ProfileHndl extends BaseHandler {
         $this->twig->addFunction((new \Twig\TwigFunction('user_subscribed', [$this, 'user_subscribed'])));
         $this->render("profile/profile.html", array(
             'user' => $this->current_user_data,
-            'is_current_user_profile' => is_current_user_profile($this->users_db),
+            'is_current_user_profile' => is_current_user_profile($this->db_users),
             'error' => $form_error,
             'subscribers' => $this->get_subscribers(),
             'posts' => $this->get_user_posts(),
             'post_count' => $this->post_count(),
-            'users_db' => $this->users_db,
-            'post_image_db' => $this->post_images_db,
-            'db_post_like' => $this->db_post_like,
-            'db_comments' => $this->db_comments,
-        ));
+        ) + $this->get_post_tables());
     }
 }
 
