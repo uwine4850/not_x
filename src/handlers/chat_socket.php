@@ -15,6 +15,7 @@ class Chat implements MessageComponentInterface {
     use ConnectToAllTables;
 
     protected \SplObjectStorage $clients;
+    private array $clients_uid;
     protected array $rooms;
     private array $roomUsers = array();
     private Database $db;
@@ -98,6 +99,7 @@ class Chat implements MessageComponentInterface {
             $join_data = array();
             $room_id = $data['room_id'];
             $this->rooms[$room_id][$from->resourceId] = $from;
+            $this->clients_uid[$from->resourceId] = $data['auth_uid'];
             $is_del = $this->delete_msgs_count($data['room_id'], $data['auth_uid']);
 
             // decrement messages count
@@ -108,36 +110,71 @@ class Chat implements MessageComponentInterface {
             $from->send(json_encode($join_data));
         }
 
-        $id_ok = true;
-
         // Checking the uniqueness of the user id.
         if ($data['action'] === \config\WS_ACTIONS_CHAT::GENERATE_CHAT_ID->value){
             $chat_user_id = $data['chat_user_id'];
             $room_id = $data['room_id'];
-            if (!empty($this->roomUsers[$room_id]) && in_array($chat_user_id, $this->roomUsers[$room_id])){
-                $data['action'] = \config\WS_ACTIONS_CHAT::REGENERATE_CHAT_ID->value;
-                $id_ok = false;
-                foreach ($this->rooms[$room_id] as $client) {
-                    $client->send(json_encode($data));
-                }
-            }
-            $this->roomUsers[$room_id][] = $chat_user_id;
+            $this->roomUsers[$chat_user_id] = $room_id;
         }
 
         // Sending a message to the client.
-        if ($id_ok && $data['action'] === \config\WS_ACTIONS_CHAT::SEND_MSG->value){
+        if ($data['action'] === \config\WS_ACTIONS_CHAT::SEND_MSG->value){
             $room_id = $data['room_id'];
             $this->save_message($data);
             $profile_user_id = $data['profile_user_id'];
-            $data['interlocutor_id'] = $this->get_interlocutor_id($room_id, $profile_user_id);
+            $interlocutor_id = $this->get_interlocutor_id($room_id, $profile_user_id);
+            $data['interlocutor_id'] = $interlocutor_id;
             $data['username'] = $this->db_users->all_where("id=$profile_user_id")[0]['username'];
             foreach ($this->rooms[$room_id] as $client) {
                 $client->send(json_encode($data));
+            }
+            $this->send_message_notification($room_id, $profile_user_id);
+        }
+    }
+
+    /**
+     * Deletes the given user in the chat when he/she leaves.
+     * @param int $resourceId
+     * @return void
+     */
+    private function leave_client(int $resourceId): void{
+        $room_id = $this->roomUsers[$this->clients_uid[$resourceId]];
+        unset($this->rooms[$room_id][$resourceId]);
+        unset($this->roomUsers[$this->clients_uid[$resourceId]]);
+    }
+
+    /**
+     * The conversation partner is notified of a new message if he/she is not currently in the chat.
+     * If the conversation partner is in the chat room, no notification is sent.
+     * @param int $room_id Chat ID.
+     * @param int $profile_user_id The ID of the user who is sending the message.
+     * @return void
+     */
+    private function send_message_notification(int $room_id, int $profile_user_id): void{
+        $chat = $this->db_chat_rooms->all_where("id=$room_id");
+        $interlocutor_id = 0;
+        if (!empty($chat)){
+            if ($chat[0]['user1'] == $profile_user_id){
+                $interlocutor_id = $chat[0]['user2'];
+            }
+            if ($chat[0]['user2'] == $profile_user_id){
+                $interlocutor_id = $chat[0]['user1'];
+            }
+        }
+        if ($interlocutor_id != 0){
+            if ((int)$this->roomUsers[$interlocutor_id] != $room_id){
+                foreach ($this->rooms[$room_id] as $client) {
+                    $client->send(json_encode(array(
+                        'action' => \config\WS_ACTIONS_CHAT::MSG_NOTIFICATION->value,
+                    )));
+                }
             }
         }
     }
 
     public function onClose(\Ratchet\ConnectionInterface $conn): void {
+        $this->leave_client($conn->resourceId);
+        unset($this->clients_uid[$conn->resourceId]);
         $this->clients->detach($conn);
     }
 

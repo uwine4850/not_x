@@ -7,7 +7,6 @@ import {
     ws_decrement_chat_room_msg_count,
     ws_generate_chat_id,
     ws_join_chat_room,
-    ws_regenerate_chat_id,
     ws_send_msg
 } from "./config";
 import {SocketDataTransfer} from "./sockets";
@@ -41,19 +40,20 @@ export function scrollToLastMsg(){
 // Each user has a unique id in the room. If this id is already in the room, it will be generated again. This id is also
 // used to define "my" message.
 export function run_chat_ws(room_id, s, on_user_msg){
-    let chat_user_id = generateUniqueUserId();
     let profile_user_id = parseInt(getCookie('UID'));
-    const socket = new WebSocket(`ws://localhost:50099`); // Замените порт, если нужно
+    const socket = new WebSocket(`ws://localhost:50099`);
+    let isMyMessage = true;
+    let last_msg = ws_send_msg;
 
     // User registration and user id.
     socket.onopen = function (){
         ws_join_chat_room.room_id = room_id;
-        ws_join_chat_room.auth_uid = getCookie('UID');
+        ws_join_chat_room.auth_uid = profile_user_id;
         let s1 = new SocketDataTransfer(socket, ws_join_chat_room.action, ws_join_chat_room)
         s1.send();
 
         ws_generate_chat_id.room_id = room_id;
-        ws_generate_chat_id.chat_user_id = chat_user_id;
+        ws_generate_chat_id.chat_user_id = profile_user_id;
         let s2 = new SocketDataTransfer(socket, ws_generate_chat_id.action, ws_generate_chat_id)
         s2.send();
     }
@@ -62,22 +62,12 @@ export function run_chat_ws(room_id, s, on_user_msg){
     socket.onmessage = function(event) {
         const message = JSON.parse(event.data);
         switch (message.action){
-            // Re-generating user id.
-            case ACTIONS_CHAT.GENERATE_CHAT_ID:
-                chat_user_id = generateUniqueUserId();
-                ws_regenerate_chat_id.room_id = room_id;
-                ws_regenerate_chat_id.chat_user_id = chat_user_id;
-                let sr = new SocketDataTransfer(socket, ws_regenerate_chat_id.action, ws_regenerate_chat_id);
-                sr.send();
-                break;
-            // Sending a message to the chat room. This message is saved in the database before it is sent.
             case ACTIONS_CHAT.SEND_MSG:
+                last_msg = message;
                 const chat_messages = document.getElementById('chat-messages');
-                const isMyMessage = message.chat_user_id === chat_user_id;
+                isMyMessage = message.chat_user_id === profile_user_id;
                 let msg_time = getCurrentDateTime();
                 if (isMyMessage){
-                    send_notification(s, message.interlocutor_id, parseInt(getCookie('UID')), room_id,
-                        ACTIONS_NOTIFICATION_TYPES.NEW_MESSAGE, message.username, message.msg);
                     chat_messages.innerHTML += `<div class="chat-message my-msg">${message.msg}
                                                 <div class="msg-time my-msg-time">${msg_time}</div>
                                                 </div>`;
@@ -96,6 +86,12 @@ export function run_chat_ws(room_id, s, on_user_msg){
                     decrement_msg_chat_room_count();
                 }
                 break;
+            // A message is sent to the conversation partner if he/she is not currently in the chat and the message is "mine".
+            case ACTIONS_CHAT.MSG_NOTIFICATION:
+                if (isMyMessage){
+                    send_notification(s, last_msg.interlocutor_id, parseInt(getCookie('UID')), room_id,
+                        ACTIONS_NOTIFICATION_TYPES.NEW_MESSAGE, last_msg.username, last_msg.msg);
+                }
         }
     };
 
@@ -107,17 +103,13 @@ export function run_chat_ws(room_id, s, on_user_msg){
             return;
         }
         ws_send_msg.room_id = room_id;
-        ws_send_msg.chat_user_id = chat_user_id;
+        ws_send_msg.chat_user_id = profile_user_id;
         ws_send_msg.profile_user_id = profile_user_id;
         ws_send_msg.msg = message;
         let sm = new SocketDataTransfer(socket, ws_send_msg.action, ws_send_msg);
         sm.send();
         messageInput.value = '';
     }
-}
-
-function generateUniqueUserId() {
-    return 'user_' + Math.floor(Math.random() * 100000);
 }
 
 // A visual reduction in the number of message chats.

@@ -4,6 +4,7 @@ export const ACTIONS_CHAT = {
     REGENERATE_CHAT_ID: 'REGENERATE_CHAT_ID',
     SEND_MSG: 'SEND_MSG',
     DECREMENT_CHAT_ROOM_MSG_COUNT: 'DECREMENT_CHAT_ROOM_MSG_COUNT',
+    MSG_NOTIFICATION: 'MSG_NOTIFICATION',
 }
 
 export const ACTIONS_NOTIFICATION = {
@@ -15,7 +16,7 @@ export const ACTIONS_NOTIFICATION_TYPES = {
     NEW_MESSAGE: 'NEW_MESSAGE',
 }
 
-// join_uid - Id of the user who connected to the broadcast socket.
+// join_uid - ID of the user who connected to the broadcast socket.
 export const ws_notification_join = {
     action: ACTIONS_NOTIFICATION.JOIN,
     join_uid: null,
