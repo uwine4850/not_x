@@ -4,6 +4,8 @@ namespace TwigFunc;
 require_once 'handlers/post/post_utils.php';
 require_once 'handlers/profile/profile_utils.php';
 require_once 'utils/database.php';
+require_once "utils/csrf.php";
+use csrf;
 use Database;
 use Twig\Environment;
 
@@ -34,5 +36,6 @@ trait PostFunc{
 trait GlobalFunc{
     public function enable_global_func(Environment $twig): void{
         $twig->addFunction((new \Twig\TwigFunction("media_img", "get_path_to_media_image")));
+        $twig->addFunction((new \Twig\TwigFunction("csrf_token", "csrf\\get_csrf_input")));
     }
 }

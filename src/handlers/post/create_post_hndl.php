@@ -2,9 +2,11 @@
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
 require_once 'config.php';
+require_once 'handlers/twig_functions.php';
 
 class CreatePostHandler extends BaseHandler{
     use ConnectToAllTables;
+    use \TwigFunc\GlobalFunc;
 
     private Database $db;
     private string $form_error = '';
@@ -22,6 +24,17 @@ class CreatePostHandler extends BaseHandler{
     }
 
     private function post(): void{
+        if ($_SERVER['REQUEST_METHOD'] != 'POST'){
+            return;
+        }
+
+        try {
+            validate_csrf_token($_POST);
+        } catch (ErrInvalidCsrfToken $e) {
+            $this->form_error = $e->getMessage();
+            return;
+        }
+
         // Check if the required fields exist.
         $post_data = array();
         try {
@@ -104,6 +117,7 @@ class CreatePostHandler extends BaseHandler{
 
     public function handle(): void
     {
+        $this->enable_global_func($this->twig);
         $this->post();
         $this->render('post/create_post.html', array('error' => $this->form_error));
     }

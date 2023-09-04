@@ -4,6 +4,7 @@
 
 {% block content %}
 <form method="post" action="" class="create-post-content" enctype="multipart/form-data">
+    {{ csrf_token() | raw }}
     <h1 class="content-title">
         Create post
     </h1>

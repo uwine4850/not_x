@@ -48,6 +48,13 @@ class PostViewHandler extends BaseHandler{
             return;
         }
 
+        try {
+            validate_csrf_token($_POST);
+        } catch (ErrInvalidCsrfToken $e) {
+            $this->form_error = $e->getMessage();
+            return;
+        }
+
         $post_data = array();
         try {
             $post_data = validate_post_data(['answer_id', 'comment-text-input']);

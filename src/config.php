@@ -5,6 +5,7 @@ const MAX_IMAGES = 2;
 const SEARCH_PROFILE_COUNT = 10;
 const LOAD_POST_COUNT = 2;
 const LOAD_MSG_COUNT = 20;
+const CSRF_TOKEN_LIFETIME = 10;
 
 
 enum WS_ACTIONS_CHAT: string{

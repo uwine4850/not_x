@@ -78,6 +78,7 @@
 
 <span class="form-error">{{ error }}</span>
 <form method="post" class="comment-form">
+  {{ csrf_token() | raw }}
   <input type="hidden" id="answer_id" name="answer_id">
   <div class="input-field">
     <label class="if-name" for="comment-text-input">New comment</label>

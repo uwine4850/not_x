@@ -1,9 +1,12 @@
 <?php
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
+require_once 'handlers/twig_functions.php';
 
 class RegisterHandler extends BaseHandler{
-    private $form_error;
+    use \TwigFunc\GlobalFunc;
+
+    private string $form_error = '';
     private const form_fields = array('profile-name', 'profile-username', 'profile-password-reg', 'profile-password-reg-again');
     private Database $db;
     private const PATH_TO_MEDIA_USERS = '/var/www/html/media/users/';
@@ -37,7 +40,19 @@ class RegisterHandler extends BaseHandler{
 
     private function post(): void
     {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST'){
+            return;
+        }
+
         //Form Data Validation.
+
+        try {
+            validate_csrf_token($_POST);
+        } catch (ErrInvalidCsrfToken $e) {
+            $this->form_error = $e->getMessage();
+            return;
+        }
+
         $post_data = array();
         try {
             $post_data = validate_post_data(self::form_fields);
@@ -88,6 +103,7 @@ class RegisterHandler extends BaseHandler{
     }
     public function handle(): void
     {
+        $this->enable_global_func($this->twig);
         $this->post();
         $this->render('register.html', array('form_error' =>$this->form_error));
     }

@@ -1,9 +1,12 @@
 <?php
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
+require_once 'handlers/twig_functions.php';
 
 class LoginHandler extends BaseHandler{
-    private $form_error = '';
+    use \TwigFunc\GlobalFunc;
+
+    private string $form_error = '';
     private const form_field = array('profile-username', 'profile-password');
     private Database $db;
 
@@ -19,7 +22,18 @@ class LoginHandler extends BaseHandler{
     }
 
     private function post(): void{
+        if ($_SERVER['REQUEST_METHOD'] != 'POST'){
+            return;
+        }
+
         // validate data
+        try {
+            validate_csrf_token($_POST);
+        } catch (ErrInvalidCsrfToken $e) {
+            $this->form_error = $e->getMessage();
+            return;
+        }
+
         $post_data = array();
         try {
             $post_data = validate_post_data(self::form_field);
@@ -51,6 +65,7 @@ class LoginHandler extends BaseHandler{
 
     public function handle(): void
     {
+        $this->enable_global_func($this->twig);
         $this->post();
         $this->render('login.html', array('form_error' =>$this->form_error));
     }

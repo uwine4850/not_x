@@ -4,6 +4,7 @@
 
 {% block content %}
 <form method="post" class="content-post-edit" enctype="multipart/form-data">
+    {{ csrf_token() | raw }}
     <input type="hidden" name="del_images" id="del_images">
     <h1 class="content-title">
         Post edit

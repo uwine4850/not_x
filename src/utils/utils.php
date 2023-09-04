@@ -35,6 +35,27 @@ class FormFieldNotExist extends Exception{
 }
 
 /**
+ * @throws ErrInvalidCsrfToken
+ */
+function validate_csrf_token(array $form_fields): void{
+    if (!isset($form_fields['csrf_token'])){
+        throw new ErrInvalidCsrfToken();
+    }
+    require_once 'csrf.php';
+    $token = \csrf\get_csrf_token();
+    if ($token != $form_fields['csrf_token']){
+        throw new ErrInvalidCsrfToken();
+    }
+}
+
+class ErrInvalidCsrfToken extends Exception{
+    public function __construct(string $message = "Security session has expired try again.", int $code = 0, ?Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+}
+
+/**
  * Checks the form for the required fields.
  * @param array $form_fields Fields that must be in the $_POST array.
  * @return array An array of found fields. If everything is valid.
@@ -385,4 +406,10 @@ class ErrorUploadingFile extends Exception{}
  */
 function get_path_to_media_image(string $absolute_path_to_image): string{
     return '/media' . explode('/media', $absolute_path_to_image, 2)[1];
+}
+
+function utils_start_session(): void{
+    if (session_status() != PHP_SESSION_ACTIVE){
+        session_start();
+    }
 }

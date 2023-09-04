@@ -4,6 +4,7 @@
 
 {% block content %}
 <form method="post" class="content-profile-edit" enctype="multipart/form-data">
+    {{ csrf_token() | raw }}
     <h1 class="content-title">
         Profile edit
     </h1>

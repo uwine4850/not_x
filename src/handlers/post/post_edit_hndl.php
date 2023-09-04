@@ -34,6 +34,17 @@ class PostEditHandler extends BaseHandler{
     }
 
     private function post(): void{
+        if ($_SERVER['REQUEST_METHOD'] != 'POST'){
+            return;
+        }
+
+        try {
+            validate_csrf_token($_POST);
+        } catch (ErrInvalidCsrfToken $e) {
+            $this->form_error = $e->getMessage();
+            return;
+        }
+
         $post_data = array();
         try {
             $post_data = validate_post_data(['del_images', 'post-text-edit']);

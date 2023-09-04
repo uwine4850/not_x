@@ -7,6 +7,7 @@ require_once 'config.php';
 class SearchProfileHandler extends BaseHandler{
     use \TwigFunc\GlobalFunc;
 
+    private string $error = '';
     private Database $db_users;
     private array $users = array();
 
@@ -25,10 +26,19 @@ class SearchProfileHandler extends BaseHandler{
         if ($_SERVER['REQUEST_METHOD'] != 'POST'){
             return;
         }
+
+        try {
+            validate_csrf_token($_POST);
+        } catch (ErrInvalidCsrfToken $e) {
+            $this->error = $e->getMessage();
+            return;
+        }
+
         $post_data = array();
         try {
             $post_data = validate_post_data(['search-username']);
         } catch (FormFieldNotExist $e) {
+            $this->error = $e->getMessage();
             return;
         }
 
@@ -51,6 +61,7 @@ class SearchProfileHandler extends BaseHandler{
         $this->post();
         $this->render('profile/profile_search.html', array(
             'users' => $this->users,
+            'error' => $this->error,
         ));
     }
 }

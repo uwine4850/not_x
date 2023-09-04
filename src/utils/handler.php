@@ -11,6 +11,8 @@ use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
 abstract class BaseHandler{
+    use TwigGlobalVars;
+
     protected Environment $twig;
 
     public function __construct()
@@ -26,6 +28,7 @@ abstract class BaseHandler{
         if (!empty($_GET['msgn'])){
             $this->twig->addGlobal('msgn', $_GET['msgn']);
         }
+        $this->set_global_twig_vars($this->twig);
     }
 
     protected function is_ajax(): bool{
@@ -83,6 +86,12 @@ function exec_handler(string $handler_name): void{
         $handler_instance->handle();
     } catch (Exception $e) {
         throw $e;
+    }
+}
+
+trait TwigGlobalVars{
+    public function set_global_twig_vars(Environment $twig): void{
+
     }
 }
 

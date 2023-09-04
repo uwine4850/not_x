@@ -4,6 +4,7 @@
 
 {% block content %}
 <form method="post" class="auth-content-wrap" id="auth-content">
+    {{ csrf_token() | raw }}
     <div class="auth-title">
         <div class="a-logo">not X </div>
         <div class="a-title">— Log in</div>
