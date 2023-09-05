@@ -32,7 +32,9 @@ export function scrollToLastMsg(){
         return;
     }
     let last_msg = messages.children().last();
-    messages.scrollTop(last_msg.offset().top - messages.offset().top + messages.scrollTop());
+    if (last_msg.className === 'chat-message'){
+        messages.scrollTop(last_msg.offset().top - messages.offset().top + messages.scrollTop());
+    }
 }
 
 // Launches a websocket to listen in on the chat.

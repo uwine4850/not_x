@@ -1,6 +1,7 @@
 import {getCookie} from "../utils";
 import {SocketDataTransfer} from "./sockets";
 import {
+    ACTIONS_NOTIFICATION,
     ACTIONS_NOTIFICATION_TYPES, ws_notification, ws_notification_join,
 } from "./config";
 
@@ -18,6 +19,7 @@ export function run_notification_ws(){
     notificationSocket.onmessage = function(event) {
         const message = JSON.parse(event.data);
         processing_notification(message);
+        processing_notification_action(message);
     }
     return notificationSocket
 }
@@ -41,6 +43,57 @@ function processing_notification(message){
                 }
             }
             break;
+    }
+}
+
+function processing_notification_action(message){
+    switch (message.action){
+        case ACTIONS_NOTIFICATION.CREATE_NEW_CHAT:
+            if (window.location.toString() !== 'http://localhost:8000/chat-list'){
+                break;
+            }
+            add_new_chat(message);
+    }
+}
+
+/**
+ * Visually creates a new chat from the transferred data if the user is currently viewing the chat list.
+ * @param chat_data (object) Chat data.
+ */
+function add_new_chat(chat_data){
+    let user_data = chat_data['user_data'];
+    $('#chat-list').append(
+        `<a href="/chat-room/${chat_data['new_room_id']}" class="chat-list-item" data-room_id="${chat_data['new_room_id']}">
+        <div class="chat-list-item-img">
+            <img src="${user_image(user_data['path_to_user_image'])}" alt="chat-img">
+        </div>
+        <div class="chat-info">
+            <div class="chat-user">
+                @${user_data['username']}
+            </div>
+            <div class="last-msg">
+            </div>
+        </div>
+    </a>`
+    );
+}
+
+/**
+ * Displays the correct path to the image in the /media directory.
+ * @param path (string) Absolute path to the image.
+ */
+function user_image(path){
+    if (!path){
+        return '/static/img/default.jpeg'
+    }
+    const fullPath = path;
+    const mediaPath = '/media';
+
+    const startIndex = fullPath.indexOf(mediaPath);
+    if (startIndex !== -1) {
+        return  fullPath.substring(startIndex);
+    } else {
+        return '';
     }
 }
 

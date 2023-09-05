@@ -11,7 +11,6 @@ require_once 'vendor/autoload.php';
 require_once 'utils/utils.php';
 require_once 'config.php';
 
-
 class Notification implements MessageComponentInterface {
     use ConnectToAllTables;
 
@@ -46,6 +45,16 @@ class Notification implements MessageComponentInterface {
             if (isset($this->ids[$send_id])){
                 $client = $this->ids[$send_id];
                 $client->send(json_encode($d));
+            }
+        }
+
+        if ($data['action'] == config\WS_ACTIONS_NOTIFICATION::CREATE_NEW_CHAT->value){
+            $send_id = $data['to_user_id'];
+            $from_id = $data['from_user_id'];
+            if (isset($this->ids[$send_id])){
+                $data['user_data'] = get_user_by_id($from_id, $this->db_users);
+                $client = $this->ids[$send_id];
+                $client->send(json_encode($data));
             }
         }
     }

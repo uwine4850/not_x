@@ -3,7 +3,7 @@
 {% block title %}Chat list{% endblock %}
 
 {% block content %}
-<div class="chat-list">
+<div class="chat-list" id="chat-list">
     {% for room in rooms %}
     {% set user = interlocutor(room, db_users) %}
     {% set last_msg = get_last_msg(room['id']) %}

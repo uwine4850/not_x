@@ -1,6 +1,7 @@
 <?php
 require_once 'utils/handler.php';
 require_once 'utils/database.php';
+require_once 'handlers/server_data_hndl.php';
 
 class CreateChatHandler extends BaseHandler{
     private Database $db_chat_rooms;
@@ -46,6 +47,11 @@ class CreateChatHandler extends BaseHandler{
         $chat_room = $this->chat_exist($insert_data['user1'], $insert_data['user2']);
         if (!$chat_room){
             $new_chat = $this->db_chat_rooms->insert($insert_data);
+            send_data(array(\config\TRIGGER_JS::CREATE_NEW_CHAT->value => array(
+                'from_user_id' => $insert_data['user1'],
+                'to_user_id' => $insert_data['user2'],
+                'new_room_id' => $new_chat,
+            )));
             header("Location: /chat-room/$new_chat");
         } else{
             header("Location: /chat-room/$chat_room");

@@ -10,6 +10,7 @@ export const ACTIONS_CHAT = {
 export const ACTIONS_NOTIFICATION = {
     NOTIFICATION: 'NOTIFICATION',
     JOIN: 'JOIN',
+    CREATE_NEW_CHAT: 'CREATE_NEW_CHAT',
 }
 
 export const ACTIONS_NOTIFICATION_TYPES = {
@@ -83,4 +84,12 @@ export const ws_send_msg = {
 export const ws_decrement_chat_room_msg_count = {
     action: ACTIONS_CHAT.DECREMENT_CHAT_ROOM_MSG_COUNT,
     decrement: false,
+}
+
+export const ws_create_new_chat = {
+    action: ACTIONS_NOTIFICATION.CREATE_NEW_CHAT,
+    from_user_id: null,
+    to_user_id: null,
+    new_room_id: null,
+    user_data: null,
 }

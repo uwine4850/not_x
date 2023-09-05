@@ -4,6 +4,8 @@ import {like_btn_click_style} from "./utils";
 import {run_ajax_like_form} from "./ajax_form";
 import {run_chat_ws, scrollToLastMsg} from "./ws/chat";
 import {run_notification_ws} from "./ws/notification";
+import {ws_create_new_chat} from "./ws/config";
+import {SocketDataTransfer} from "./ws/sockets";
 
 let s = run_notification_ws();
 
@@ -15,6 +17,9 @@ export function handle_server_url(){
         dataType: 'json',
         success: (response) => {
             handle(response);
+            if (response.hasOwnProperty(TRIGGER_JS.TRIGGER)){
+                trigger_js(response[TRIGGER_JS.TRIGGER]);
+            }
         }
     });
 }
@@ -55,4 +60,25 @@ function handle(resp){
             scrollToLastMsg();
             break;
     }
+}
+
+/**
+ * Runs the trigger for the js method.
+ */
+function trigger_js(trigger_data){
+    for (const t in trigger_data) {
+        switch (t){
+            case TRIGGER_JS.CREATE_NEW_CHAT:
+                ws_create_new_chat.from_user_id = trigger_data[t]['from_user_id'];
+                ws_create_new_chat.to_user_id = trigger_data[t]['to_user_id'];
+                ws_create_new_chat.new_room_id = trigger_data[t]['new_room_id'];
+                let sock = new SocketDataTransfer(s, ws_create_new_chat.action, ws_create_new_chat);
+                sock.send()
+        }
+    }
+}
+
+const TRIGGER_JS = {
+    TRIGGER: 'TRIGGER_JS',
+    CREATE_NEW_CHAT: 'CREATE_NEW_CHAT',
 }
