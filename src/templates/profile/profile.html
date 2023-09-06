@@ -3,6 +3,8 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
+{% include 'chat/create_chat.html' %}
+
 <div class="pop-up-board pop-up-board-hidden pop-up-style descr-board">
     <div class="pop-up-title">
         Profile description
@@ -44,10 +46,17 @@
                 {% endif %}
             </form>
             {% if not is_current_user_profile %}
-            <form class="profile-msg-form" method="post" action="/create-chat">
-                <input type="hidden" name="chat_user2_id" value="{{ user['id'] }}">
-                <button class="message_user"><img src="{{ static('img/msg.svg') }}" alt="msg"></button>
-            </form>
+                {% if is_new_chat_btn %}
+                    <div class="profile-msg-form">
+                        <button id="message_user" class="message_user"><img src="{{ static('img/msg.svg') }}" alt="msg"></button>
+                    </div>
+                {% else %}
+                    <form class="profile-msg-form" method="post" action="/create-chat">
+                        <input type="hidden" name="chat_user2_id" value="{{ user['id'] }}">
+                        <input type="hidden" id="first_message" name="first_message" value="1">
+                        <button type="submit" class="message_user"><img src="{{ static('img/msg.svg') }}" alt="msg"></button>
+                    </form>
+                {% endif %}
             {% endif %}
         </div>
     </div>

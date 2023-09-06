@@ -46,3 +46,16 @@ function get_user_by_id(int $uid, Database $users_db_instance): array{
     return $u[0];
 }
 
+/**
+ * @param int $current_user_id The ID of the currently logged in user.
+ * @param int $to_user_id The ID of the user to whom the message is sent.
+ * @param Database $db_chat_rooms An instance of the chat_rooms table connection database.
+ * @return bool
+ */
+function is_new_chat_btn(int $current_user_id, int $to_user_id, Database $db_chat_rooms): bool{
+    $res = $db_chat_rooms->all_where("user1=$current_user_id AND user2=$to_user_id");
+    if (empty($res)){
+        return true;
+    }
+    return false;
+}

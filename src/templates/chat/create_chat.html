@@ -1,0 +1,9 @@
+<div id="create-chat-bg" class="create-chat-bg new-chat-hidden"></div>
+<form id="create-chat-form" class="create-chat-form" method="post" action="/create-chat">
+    <input type="hidden" name="chat_user2_id" value="{{ user['id'] }}">
+    <div class="input-field">
+        <label class="if-name" for="first_message">Message</label>
+        <textarea id="first_message" name="first_message"></textarea>
+    </div>
+    <button type="submit">Send</button>
+</form>

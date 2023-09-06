@@ -10,6 +10,7 @@ require_once 'handlers/profile/profile_utils.php';
 require_once 'vendor/autoload.php';
 require_once 'utils/utils.php';
 require_once 'config.php';
+require_once 'handlers/chat/chat_utils.php';
 
 class Chat implements MessageComponentInterface {
     use ConnectToAllTables;
@@ -48,26 +49,6 @@ class Chat implements MessageComponentInterface {
             return $u1[0]['user1'];
         }
         return 0;
-    }
-
-    /**
-     * Saves the message in the database.
-     * @param array $values Client data about the message.
-     * @return void
-     */
-    private function save_message(array $values): void{
-        try {
-            date_default_timezone_set('Europe/Kyiv');
-            $values['time'] = date("Y-m-d H:i:s");
-            $insert_values = array_to_db_assoc_array($values, array(
-                FormDbField::make('room_id', 'parent_chat'),
-                FormDbField::make('profile_user_id', 'user'),
-                FormDbField::make('msg', 'text'),
-                FormDbField::make('time', 'time'),
-            ));
-            $this->db_chat_messages->insert($insert_values);
-        } catch (ArrayValueIsEmpty $e) {
-        }
     }
 
     /**
@@ -120,7 +101,7 @@ class Chat implements MessageComponentInterface {
         // Sending a message to the client.
         if ($data['action'] === \config\WS_ACTIONS_CHAT::SEND_MSG->value){
             $room_id = $data['room_id'];
-            $this->save_message($data);
+            save_message($data, $this->db_chat_messages);
             $profile_user_id = $data['profile_user_id'];
             $interlocutor_id = $this->get_interlocutor_id($room_id, $profile_user_id);
             $data['interlocutor_id'] = $interlocutor_id;

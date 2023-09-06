@@ -86,10 +86,16 @@ export const ws_decrement_chat_room_msg_count = {
     decrement: false,
 }
 
+// from_user_id - The ID of the user who sent the message.
+// to_user_id - The ID of the user to whom the chat is created and the first message.
+// new_room_id - ID of the created chat room.
+// first_message - The text of the first message.
+// user_data - Array of data of the user who created the chat.
 export const ws_create_new_chat = {
     action: ACTIONS_NOTIFICATION.CREATE_NEW_CHAT,
     from_user_id: null,
     to_user_id: null,
     new_room_id: null,
+    first_message: null,
     user_data: null,
 }

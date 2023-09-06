@@ -102,6 +102,7 @@ class ProfileHndl extends BaseHandler {
             'subscribers' => $this->get_subscribers(),
             'posts' => $this->get_user_posts(),
             'post_count' => $this->post_count(),
+            'is_new_chat_btn' => is_new_chat_btn($_GET['user_g']['id'], $this->current_user_data['id'], $this->db_chat_rooms),
         ) + $this->get_post_tables());
     }
 }

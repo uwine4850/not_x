@@ -55,3 +55,24 @@ function get_room_messages(int $room_id, Database $db_chat_messages_instance, in
                     SELECT * FROM `chat_messages` WHERE parent_chat=$room_id $id_where ORDER BY id DESC LIMIT $c ) AS msg ORDER BY id;");
     return $res->fetch_all(MYSQLI_ASSOC);
 }
+
+/**
+ * Saves the message in the database.
+ * @param array $values Client data about the message.
+ * @param Database $db_chat_messages
+ * @return void
+ */
+function save_message(array $values, Database $db_chat_messages): void{
+    try {
+        date_default_timezone_set('Europe/Kyiv');
+        $values['time'] = date("Y-m-d H:i:s");
+        $insert_values = array_to_db_assoc_array($values, array(
+            FormDbField::make('room_id', 'parent_chat'),
+            FormDbField::make('profile_user_id', 'user'),
+            FormDbField::make('msg', 'text'),
+            FormDbField::make('time', 'time'),
+        ));
+        $db_chat_messages->insert($insert_values);
+    } catch (ArrayValueIsEmpty $e) {
+    }
+}

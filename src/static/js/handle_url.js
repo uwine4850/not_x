@@ -72,8 +72,9 @@ function trigger_js(trigger_data){
                 ws_create_new_chat.from_user_id = trigger_data[t]['from_user_id'];
                 ws_create_new_chat.to_user_id = trigger_data[t]['to_user_id'];
                 ws_create_new_chat.new_room_id = trigger_data[t]['new_room_id'];
+                ws_create_new_chat.first_message = trigger_data[t]['first_message'];
                 let sock = new SocketDataTransfer(s, ws_create_new_chat.action, ws_create_new_chat);
-                sock.send()
+                sock.send();
         }
     }
 }

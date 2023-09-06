@@ -19,7 +19,7 @@ export function run_notification_ws(){
     notificationSocket.onmessage = function(event) {
         const message = JSON.parse(event.data);
         processing_notification(message);
-        processing_notification_action(message);
+        processing_notification_action(message, notificationSocket);
     }
     return notificationSocket
 }
@@ -46,13 +46,14 @@ function processing_notification(message){
     }
 }
 
-function processing_notification_action(message){
+function processing_notification_action(message, ws){
     switch (message.action){
         case ACTIONS_NOTIFICATION.CREATE_NEW_CHAT:
             if (window.location.toString() !== 'http://localhost:8000/chat-list'){
                 break;
             }
             add_new_chat(message);
+            send_notification(ws, message.to_user_id, message.from_user_id, message.new_room_id, ACTIONS_NOTIFICATION_TYPES.NEW_MESSAGE, message.user_data['username'], message.first_message);
     }
 }
 
